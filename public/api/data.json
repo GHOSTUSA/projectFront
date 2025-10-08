@@ -1,0 +1,304 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "lastName": "Dupont",
+      "firstName": "Jean",
+      "email": "a",
+      "password": "a",
+      "role": "admin",
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": 2,
+      "lastName": "Martin",
+      "firstName": "Marie",
+      "email": "b",
+      "password": "b",
+      "role": "user",
+      "createdAt": "2024-02-20T14:45:00Z"
+    }
+  ],
+  "restaurants": [
+    {
+      "id": 1,
+      "name": "Le Bistrot Parisien",
+      "address": "15 Rue de la Paix, 75001 Paris",
+      "phone": "01 42 60 30 30",
+      "cuisineType": "French",
+      "averageRating": 4.5,
+      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+      "dishes": [
+        {
+          "id": 1,
+          "name": "Coq au Vin",
+          "description": "Chicken braised in red wine with seasonal vegetables",
+          "price": 18.5,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1604152135912-04a022e23696?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten"]
+        },
+        {
+          "id": 2,
+          "name": "Escargots de Bourgogne",
+          "description": "12 snails with parsley butter",
+          "price": 12.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": []
+        },
+        {
+          "id": 3,
+          "name": "Tarte Tatin",
+          "description": "Caramelized apple tart served warm",
+          "price": 8.5,
+          "category": "Dessert",
+          "image": "https://images.unsplash.com/photo-1611915387288-fd8d2f5f928b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "eggs"]
+        },
+        {
+          "id": 4,
+          "name": "French Onion Soup",
+          "description": "Traditional soup topped with melted cheese",
+          "price": 9.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        },
+        {
+          "id": 5,
+          "name": "Beef Bourguignon",
+          "description": "Beef braised in red wine with traditional garnish",
+          "price": 22.0,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1600298881974-6be191ceeda1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Sakura Sushi",
+      "address": "28 Avenue des Champs-Élysées, 75008 Paris",
+      "phone": "01 45 62 88 88",
+      "cuisineType": "Japanese",
+      "averageRating": 4.8,
+      "image": "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80",
+      "dishes": [
+        {
+          "id": 6,
+          "name": "Sashimi Assortment",
+          "description": "Selection of thinly sliced raw fish",
+          "price": 24.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1563612116625-3012372fccce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["fish"]
+        },
+        {
+          "id": 7,
+          "name": "Tonkotsu Ramen",
+          "description": "Noodle soup with pork broth",
+          "price": 16.5,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1591814468924-caf88d1232e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "eggs"]
+        },
+        {
+          "id": 8,
+          "name": "Salmon Avocado Maki",
+          "description": "8 pieces of salmon avocado maki",
+          "price": 13.0,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["fish"]
+        },
+        {
+          "id": 9,
+          "name": "Shrimp Tempura",
+          "description": "Japanese-style breaded and fried shrimp",
+          "price": 18.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "shellfish"]
+        },
+        {
+          "id": 10,
+          "name": "Ice Cream Mochi",
+          "description": "3 pieces of ice cream mochi (vanilla, matcha, strawberry)",
+          "price": 9.5,
+          "category": "Dessert",
+          "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Bella Italia",
+      "address": "42 Rue de Rivoli, 75004 Paris",
+      "phone": "01 48 87 55 55",
+      "cuisineType": "Italian",
+      "averageRating": 4.3,
+      "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80",
+      "dishes": [
+        {
+          "id": 11,
+          "name": "Pizza Margherita",
+          "description": "Tomato, mozzarella, fresh basil",
+          "price": 14.0,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "dairy"]
+        },
+        {
+          "id": 12,
+          "name": "Spaghetti Carbonara",
+          "description": "Pasta with eggs, bacon, parmesan",
+          "price": 16.5,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "eggs", "dairy"]
+        },
+        {
+          "id": 13,
+          "name": "Antipasti",
+          "description": "Assortment of Italian cold cuts and cheeses",
+          "price": 19.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1610125833468-4ad3c1ccfa2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        },
+        {
+          "id": 14,
+          "name": "Tiramisu",
+          "description": "Traditional mascarpone and coffee dessert",
+          "price": 7.5,
+          "category": "Dessert",
+          "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["eggs", "dairy"]
+        },
+        {
+          "id": 15,
+          "name": "Mushroom Risotto",
+          "description": "Creamy rice with seasonal mushrooms",
+          "price": 17.0,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Taj Mahal",
+      "address": "67 Boulevard Saint-Germain, 75005 Paris",
+      "phone": "01 43 25 17 17",
+      "cuisineType": "Indian",
+      "averageRating": 4.4,
+      "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80",
+      "dishes": [
+        {
+          "id": 16,
+          "name": "Chicken Tikka Masala",
+          "description": "Marinated chicken in creamy spiced sauce",
+          "price": 19.5,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        },
+        {
+          "id": 17,
+          "name": "Vegetable Samosas",
+          "description": "3 pastries filled with spiced vegetables",
+          "price": 8.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten"]
+        },
+        {
+          "id": 18,
+          "name": "Lamb Biryani",
+          "description": "Fragrant basmati rice with lamb and spices",
+          "price": 21.0,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1563379091339-03246963d7d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": []
+        },
+        {
+          "id": 19,
+          "name": "Cheese Naan",
+          "description": "Indian bread topped with melted cheese",
+          "price": 6.5,
+          "category": "Side Dish",
+          "image": "https://images.unsplash.com/photo-1628294895950-9805252327bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "dairy"]
+        },
+        {
+          "id": 20,
+          "name": "Kulfi",
+          "description": "Traditional Indian ice cream with cardamom",
+          "price": 6.0,
+          "category": "Dessert",
+          "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "El Sombrero",
+      "address": "33 Rue de la Roquette, 75011 Paris",
+      "phone": "01 47 00 73 73",
+      "cuisineType": "Mexican",
+      "averageRating": 4.2,
+      "image": "https://208family.fr/img/logo/main208.webp",
+      "dishes": [
+        {
+          "id": 21,
+          "name": "Chicken Tacos",
+          "description": "3 tacos with marinated chicken and guacamole",
+          "price": 15.5,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten"]
+        },
+        {
+          "id": 22,
+          "name": "Cheese Quesadilla",
+          "description": "Tortilla filled with melted cheese and jalapeños",
+          "price": 12.0,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1618040996337-56904b7850b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["gluten", "dairy"]
+        },
+        {
+          "id": 23,
+          "name": "Chili con Carne",
+          "description": "Beef stew with red beans and spices",
+          "price": 18.0,
+          "category": "Main Course",
+          "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": []
+        },
+        {
+          "id": 24,
+          "name": "Nachos Supreme",
+          "description": "Corn chips with cheese, guacamole and salsa",
+          "price": 11.5,
+          "category": "Appetizer",
+          "image": "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["dairy"]
+        },
+        {
+          "id": 25,
+          "name": "Vanilla Flan",
+          "description": "Mexican-style caramel custard",
+          "price": 7.0,
+          "category": "Dessert",
+          "image": "https://images.unsplash.com/photo-1551024506-0bccd828d307?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          "allergens": ["eggs", "dairy"]
+        }
+      ]
+    }
+  ]
+}
