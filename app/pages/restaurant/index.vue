@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-import { AuthStore } from "~/stores/authentification/AuthStore";
 import type { Restaurant } from "~/types/Restaurant";
-const authStore = AuthStore();
-if (!authStore.isAuthenticated) {
-  throw createError({
-    statusCode: 403,
-    statusMessage:
-      "Accès interdit - Vous devez être connecté pour accéder à cette page",
-  });
-}
 
 async function fetchRestaurants() {
   const data: any = await $fetch("/api/data.json");

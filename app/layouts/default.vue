@@ -1,17 +1,30 @@
 <script lang="ts" setup>
-import { AuthStore } from "~/stores/authentification/AuthStore";
+import { useAuthStore } from "~/stores/authentification/AuthStore";
 
-const authStore = AuthStore();
+const authStore = ref<any>(null);
+const isAuthenticated = ref(false);
+
+onMounted(() => {
+  try {
+    authStore.value = useAuthStore();
+    isAuthenticated.value = authStore.value?.isAuthenticated || false;
+  } catch (error) {
+    console.error("Erreur d'initialisation du store dans le layout:", error);
+  }
+});
 
 function logout() {
-  authStore.logout();
-  navigateTo("/");
+  if (authStore.value) {
+    authStore.value.logout();
+    isAuthenticated.value = false;
+    navigateTo("/");
+  }
 }
 </script>
 
 <template>
   <div>
-    <header v-if="authStore.isAuthenticated">
+    <header v-if="isAuthenticated">
       <nav>
         <ul>
           <li><NuxtLink to="/restaurant">Restaurant</NuxtLink></li>
@@ -50,8 +63,5 @@ nav ul li a:hover {
 }
 li div {
   float: right;
-}
-main {
-  padding: 1rem;
 }
 </style>

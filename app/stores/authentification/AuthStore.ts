@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { User } from "@/types/User";
 
-export const AuthStore = defineStore("auth", {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
     isAuthenticated: false,
     user: null as null | User,
@@ -19,5 +19,8 @@ export const AuthStore = defineStore("auth", {
       this.isAuthenticated = false;
       this.user = null;
     },
+  },
+  persist: {
+    storage: process.client ? localStorage : undefined,
   },
 });

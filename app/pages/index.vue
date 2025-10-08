@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { AuthStore } from "~/stores/authentification/AuthStore";
+import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { User } from "~/types/User";
-
-const authStore = AuthStore();
-
-if (authStore.isAuthenticated) {
-  navigateTo("/restaurant");
-}
 
 let userName = ref<string>("");
 let passWord = ref<string>("");
+
+// Vérification d'authentification côté client uniquement
+onMounted(() => {
+  try {
+    const authStore = useAuthStore();
+    if (authStore.isAuthenticated) {
+      navigateTo("/restaurant");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification d'authentification:", error);
+  }
+});
 
 async function submitForm() {
   console.log("Nom d'utilisateur:", userName.value);
@@ -26,6 +32,8 @@ async function submitForm() {
     if (user) {
       console.log("Connexion réussie !");
       console.log("Utilisateur connecté:", user);
+
+      const authStore = useAuthStore();
       authStore.login(user);
       navigateTo("/restaurant");
     } else {
