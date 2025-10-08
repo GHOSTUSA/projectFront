@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
+import { useCartStore } from "~/stores/panier/cardStore";
 
 const authStore = ref<any>(null);
 const isAuthenticated = ref(false);
+const cartStore = useCartStore();
 
 onMounted(() => {
   try {
@@ -29,6 +31,14 @@ function logout() {
         <ul>
           <li><NuxtLink to="/restaurant">Restaurant</NuxtLink></li>
           <li><div @click="logout">Logout</div></li>
+          <li>
+            <NuxtLink to="/panier"
+              >Panier ({{ cartStore.cartItemCount }})</NuxtLink
+            >
+          </li>
+          <li>
+            <NuxtLink to="/compte">Compte</NuxtLink>
+          </li>
         </ul>
       </nav>
     </header>
