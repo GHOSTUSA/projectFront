@@ -7,33 +7,6 @@ const cartStore = useCartStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
-/**
- * Récupère un restaurant par son ID avec SSR/ISR optimisé
- * @param id - ID du restaurant
- * @returns Restaurant trouvé ou erreur 404
- */
-async function fetchRestaurantById(id: string): Promise<Restaurant> {
-  try {
-    const data: any = await $fetch(`/api/data.json`);
-    const restaurant: Restaurant | undefined = data.restaurants.find(
-      (r: Restaurant) => String(r.id) === id
-    );
-
-    if (!restaurant) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Restaurant not found",
-      });
-    }
-
-    console.log(`Restaurant ${restaurant.name} chargé côté serveur (SSR/ISR)`);
-    return restaurant;
-  } catch (error) {
-    console.error("Erreur lors du chargement du restaurant:", error);
-    throw error;
-  }
-}
-
 // Validation de l'ID du restaurant
 if (!restaurantId || Array.isArray(restaurantId)) {
   throw createError({
@@ -42,8 +15,59 @@ if (!restaurantId || Array.isArray(restaurantId)) {
   });
 }
 
-// Chargement du restaurant côté serveur (SSR/ISR)
-const restaurant: Restaurant = await fetchRestaurantById(restaurantId);
+/**
+ * Récupère un restaurant par son ID avec optimisation useFetch
+ */
+const {
+  data: restaurantData,
+  error,
+  pending,
+  refresh,
+} = await useFetch(`/api/data.json`, {
+  key: `restaurant-${restaurantId}`,
+  server: true, // SSR pour le SEO
+  lazy: false, // Bloque le rendu jusqu'au chargement
+  transform: (data: any) => {
+    const restaurant: Restaurant | undefined = data.restaurants?.find(
+      (r: Restaurant) => String(r.id) === restaurantId
+    );
+
+    if (!restaurant) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: `Restaurant avec l'ID ${restaurantId} introuvable`,
+      });
+    }
+
+    console.log(`Restaurant ${restaurant.name} chargé côté serveur (SSR)`);
+    return restaurant;
+  },
+  onResponseError({ error }) {
+    console.error("Erreur de réponse:", error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Erreur lors du chargement du restaurant",
+    });
+  },
+  onRequestError({ error }) {
+    console.error("Erreur de requête:", error);
+    throw createError({
+      statusCode: 503,
+      statusMessage: "Service temporairement indisponible",
+    });
+  },
+});
+
+// Gestion d'erreur si pas de données
+if (error.value) {
+  throw createError({
+    statusCode: error.value.statusCode || 500,
+    statusMessage:
+      error.value.statusMessage || "Erreur lors du chargement du restaurant",
+  });
+}
+
+const restaurant = restaurantData.value!;
 
 // Configuration SEO dynamique basée sur le restaurant
 useSeoMeta({

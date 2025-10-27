@@ -8,50 +8,6 @@ const route = useRoute();
 const dishId = route.params.dishId;
 const restaurantId = route.params.restaurantId;
 
-/**
- * Récupère un plat spécifique avec son restaurant (SSR optimisé)
- * @param restId - ID du restaurant
- * @param platId - ID du plat
- * @returns Objet contenant le plat et le restaurant
- */
-async function fetchDishWithRestaurant(restId: string, platId: string) {
-  try {
-    const data: any = await $fetch(`/api/data.json`);
-
-    // Trouver le restaurant
-    const restaurant: Restaurant | undefined = data.restaurants.find(
-      (r: Restaurant) => String(r.id) === restId
-    );
-
-    if (!restaurant) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Restaurant not found",
-      });
-    }
-
-    // Trouver le plat dans ce restaurant
-    const dish: Dish | undefined = restaurant.dishes.find(
-      (d: Dish) => String(d.id) === platId
-    );
-
-    if (!dish) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Dish not found in this restaurant",
-      });
-    }
-
-    console.log(
-      `Plat ${dish.name} du restaurant ${restaurant.name} chargé côté serveur (SSR)`
-    );
-    return { dish, restaurant };
-  } catch (error) {
-    console.error("Erreur lors du chargement du plat:", error);
-    throw error;
-  }
-}
-
 // Validation des paramètres de route
 if (
   !dishId ||
@@ -65,11 +21,74 @@ if (
   });
 }
 
-// Chargement des données côté serveur (SSR)
-const { dish, restaurant } = await fetchDishWithRestaurant(
-  restaurantId,
-  dishId
-);
+/**
+ * Récupère un plat spécifique avec son restaurant via useFetch optimisé
+ */
+const {
+  data: dishData,
+  error,
+  pending,
+  refresh,
+} = await useFetch(`/api/data.json`, {
+  key: `dish-${restaurantId}-${dishId}`,
+  server: true, // SSR pour le SEO
+  lazy: false, // Bloque le rendu
+  transform: (data: any) => {
+    // Trouver le restaurant
+    const restaurant: Restaurant | undefined = data.restaurants?.find(
+      (r: Restaurant) => String(r.id) === restaurantId
+    );
+
+    if (!restaurant) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: `Restaurant avec l'ID ${restaurantId} introuvable`,
+      });
+    }
+
+    // Trouver le plat dans ce restaurant
+    const dish: Dish | undefined = restaurant.dishes?.find(
+      (d: Dish) => String(d.id) === dishId
+    );
+
+    if (!dish) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: `Plat avec l'ID ${dishId} introuvable dans ce restaurant`,
+      });
+    }
+
+    console.log(
+      `Plat ${dish.name} du restaurant ${restaurant.name} chargé côté serveur (SSR)`
+    );
+    return { dish, restaurant };
+  },
+  onResponseError({ error }) {
+    console.error("Erreur de réponse:", error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Erreur lors du chargement du plat",
+    });
+  },
+  onRequestError({ error }) {
+    console.error("Erreur de requête:", error);
+    throw createError({
+      statusCode: 503,
+      statusMessage: "Service temporairement indisponible",
+    });
+  },
+});
+
+// Gestion d'erreur si pas de données
+if (error.value) {
+  throw createError({
+    statusCode: error.value.statusCode || 500,
+    statusMessage:
+      error.value.statusMessage || "Erreur lors du chargement du plat",
+  });
+}
+
+const { dish, restaurant } = dishData.value!;
 
 // Configuration SEO avancée pour le plat
 useSeoMeta({
