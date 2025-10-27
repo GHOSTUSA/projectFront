@@ -1,10 +1,25 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
+import { useCommandStore } from "~/stores/commande/commandStore";
 import type { User } from "~/types/User";
 
+// Appliquer le middleware d'authentification
+definePageMeta({
+  middleware: "auth",
+});
+
 const authStore = useAuthStore();
+const commandStore = useCommandStore();
 
 const user = ref<User | null>(null);
+
+// Charger les commandes au montage du composant
+onMounted(async () => {
+  await commandStore.loadCommands();
+});
+
+// Commandes de l'utilisateur via le getter du store
+const userCommands = computed(() => commandStore.userCommands);
 
 watch(
   () => authStore.user,
@@ -67,7 +82,20 @@ function updateProfile() {
         Mettre à jour le profil
       </button>
     </div>
-    <commandCard :user="user" />
+
+    <div class="commands-section">
+      <h2>Mes commandes</h2>
+      <div v-if="userCommands.length > 0" class="commands-list">
+        <CommandCard
+          v-for="command in userCommands"
+          :key="command.id"
+          :command="command"
+        />
+      </div>
+      <div v-else class="no-commands">
+        <p>Vous n'avez pas encore de commandes.</p>
+      </div>
+    </div>
   </div>
 
   <div v-else class="loading">
@@ -143,5 +171,30 @@ p {
   text-align: center;
   margin-bottom: 2rem;
   color: #666;
+}
+
+.commands-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.commands-section h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.commands-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.no-commands {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
 }
 </style>

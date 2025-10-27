@@ -6,4 +6,5 @@ export type Dish = {
   category: string;
   image: string;
   allergens: string[];
+  restaurantId?: number; // ID du restaurant d'origine
 };

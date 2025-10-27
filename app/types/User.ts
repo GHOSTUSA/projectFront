@@ -1,3 +1,5 @@
+import type { Command } from "./Command";
+
 export type User = {
   id: number;
   lastName: string;
@@ -6,4 +8,5 @@ export type User = {
   password: string;
   role: string;
   createdAt: string;
+  commands?: Command[];
 };

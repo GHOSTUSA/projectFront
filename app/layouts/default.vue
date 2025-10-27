@@ -2,25 +2,24 @@
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCartStore } from "~/stores/panier/cardStore";
 
-const authStore = ref<any>(null);
-const isAuthenticated = ref(false);
+const authStore = useAuthStore();
 const cartStore = useCartStore();
 
-onMounted(() => {
-  try {
-    authStore.value = useAuthStore();
-    isAuthenticated.value = authStore.value?.isAuthenticated || false;
-  } catch (error) {
-    console.error("Erreur d'initialisation du store dans le layout:", error);
-  }
-});
+// Utiliser computed pour que la navbar soit réactive
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+// Watcher pour s'assurer que les changements sont bien détectés
+watch(
+  () => authStore.isAuthenticated,
+  (newValue) => {
+    console.log("État d'authentification changé:", newValue);
+  },
+  { immediate: true }
+);
 
 function logout() {
-  if (authStore.value) {
-    authStore.value.logout();
-    isAuthenticated.value = false;
-    navigateTo("/");
-  }
+  authStore.logout();
+  navigateTo("/");
 }
 </script>
 
