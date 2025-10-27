@@ -18,11 +18,11 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   if (authStore.isAuthenticated && to.path === "/") {
     console.log("Utilisateur déjà connecté, redirection selon le rôle");
-    
+
     // Redirection selon le rôle
-    if (authStore.user?.role === 'admin') {
+    if (authStore.user?.role === "admin") {
       return navigateTo("/Admin/backOffice");
-    } else if (authStore.user?.role === 'restaurateur') {
+    } else if (authStore.user?.role === "restaurateur") {
       return navigateTo("/Admin/restaurateur");
     } else {
       return navigateTo("/utilisateur/restaurant");

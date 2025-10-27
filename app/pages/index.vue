@@ -12,9 +12,9 @@ onMounted(() => {
     const authStore = useAuthStore();
     if (authStore.isAuthenticated) {
       // Redirection selon le rôle
-      if (authStore.user?.role === 'admin') {
+      if (authStore.user?.role === "admin") {
         navigateTo("/Admin/backOffice");
-      } else if (authStore.user?.role === 'restaurateur') {
+      } else if (authStore.user?.role === "restaurateur") {
         navigateTo("/Admin/restaurateur");
       } else {
         navigateTo("/utilisateur/restaurant");
@@ -42,11 +42,11 @@ async function submitForm() {
 
       const authStore = useAuthStore();
       authStore.login(user);
-      
+
       // Redirection selon le rôle après connexion
-      if (user.role === 'admin') {
+      if (user.role === "admin") {
         navigateTo("/Admin/backOffice");
-      } else if (user.role === 'restaurateur') {
+      } else if (user.role === "restaurateur") {
         navigateTo("/Admin/restaurateur");
       } else {
         navigateTo("/utilisateur/restaurant");
