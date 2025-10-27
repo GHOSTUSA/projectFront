@@ -17,6 +17,26 @@
       "password": "b",
       "role": "user",
       "createdAt": "2024-02-20T14:45:00Z"
+    },
+    {
+      "id": 3,
+      "lastName": "Leroy",
+      "firstName": "Pierre",
+      "email": "c",
+      "password": "c",
+      "role": "restaurateur",
+      "restaurantId": 1,
+      "createdAt": "2024-01-20T09:15:00Z"
+    },
+    {
+      "id": 4,
+      "lastName": "Tanaka",
+      "firstName": "Hiroshi",
+      "email": "d",
+      "password": "d",
+      "role": "restaurateur",
+      "restaurantId": 2,
+      "createdAt": "2024-02-10T11:30:00Z"
     }
   ],
   "restaurants": [
@@ -388,6 +408,95 @@
           "productId": 3,
           "quantity": 1,
           "unitPrice": 8.5
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "userId": 3,
+      "restaurantId": 2,
+      "status": "in-progress",
+      "orderDate": "2024-10-27T20:15:00Z",
+      "deliveryDate": null,
+      "totalPrice": 42.5,
+      "items": [
+        {
+          "productId": 7,
+          "quantity": 2,
+          "unitPrice": 16.5
+        },
+        {
+          "productId": 10,
+          "quantity": 1,
+          "unitPrice": 9.5
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "userId": 1,
+      "restaurantId": 1,
+      "status": "cancelled",
+      "orderDate": "2024-10-25T12:00:00Z",
+      "deliveryDate": null,
+      "totalPrice": 21.0,
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 1,
+          "unitPrice": 12.0
+        },
+        {
+          "productId": 4,
+          "quantity": 1,
+          "unitPrice": 9.0
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "userId": 4,
+      "restaurantId": 2,
+      "status": "delivered",
+      "orderDate": "2024-10-25T19:30:00Z",
+      "deliveryDate": "2024-10-25T20:45:00Z",
+      "totalPrice": 55.0,
+      "items": [
+        {
+          "productId": 6,
+          "quantity": 1,
+          "unitPrice": 24.0
+        },
+        {
+          "productId": 7,
+          "quantity": 1,
+          "unitPrice": 16.5
+        },
+        {
+          "productId": 8,
+          "quantity": 1,
+          "unitPrice": 13.0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "userId": 2,
+      "restaurantId": 1,
+      "status": "pending",
+      "orderDate": "2024-10-27T21:00:00Z",
+      "deliveryDate": null,
+      "totalPrice": 40.5,
+      "items": [
+        {
+          "productId": 1,
+          "quantity": 1,
+          "unitPrice": 18.5
+        },
+        {
+          "productId": 5,
+          "quantity": 1,
+          "unitPrice": 22.0
         }
       ]
     }

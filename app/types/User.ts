@@ -6,7 +6,8 @@ export type User = {
   firstName: string;
   email: string;
   password: string;
-  role: string;
+  role: "admin" | "user" | "restaurateur";
+  restaurantId?: number; // Pour les restaurateurs
   createdAt: string;
   commands?: Command[];
 };

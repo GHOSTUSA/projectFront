@@ -20,7 +20,7 @@ const restaurants = await fetchRestaurants();
       v-for="restaurant in restaurants"
       :key="restaurant.id"
     >
-      <router-link :to="`/restaurant/${restaurant.id}`">
+      <router-link :to="`/utilisateur/restaurant/${restaurant.id}`">
         <RestaurantCard :restaurant="restaurant" />
       </router-link>
     </div>

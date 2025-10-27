@@ -4,11 +4,27 @@ import { useCartStore } from "~/stores/panier/cardStore";
 
 const authStore = useAuthStore();
 const cartStore = useCartStore();
+const route = useRoute();
 
-// Utiliser computed pour que la navbar soit réactive
 const isAuthenticated = computed(() => authStore.isAuthenticated);
+const isAdmin = computed(() => authStore.user?.role === "admin");
+const isRestaurateur = computed(() => authStore.user?.role === "restaurateur");
 
-// Watcher pour s'assurer que les changements sont bien détectés
+// Rediriger selon le rôle de l'utilisateur
+watch(
+  [isAuthenticated, isAdmin, isRestaurateur],
+  ([auth, admin, resto]) => {
+    if (auth && admin && !route.path.startsWith("/Admin/backOffice")) {
+      // Administrateur connecté et pas déjà dans l'interface admin
+      navigateTo("/Admin/backOffice");
+    } else if (auth && resto && !route.path.startsWith("/Admin/restaurateur")) {
+      // Restaurateur connecté et pas déjà dans l'interface restaurateur
+      navigateTo("/Admin/restaurateur");
+    }
+  },
+  { immediate: true }
+);
+
 watch(
   () => authStore.isAuthenticated,
   (newValue) => {
@@ -25,18 +41,18 @@ function logout() {
 
 <template>
   <div>
-    <header v-if="isAuthenticated">
+    <header v-if="isAuthenticated && !isAdmin && !isRestaurateur">
       <nav>
         <ul>
-          <li><NuxtLink to="/restaurant">Restaurant</NuxtLink></li>
+          <li><NuxtLink to="/utilisateur/restaurant">Restaurant</NuxtLink></li>
           <li><div @click="logout">Logout</div></li>
           <li>
-            <NuxtLink to="/panier"
+            <NuxtLink to="/utilisateur/panier"
               >Panier ({{ cartStore.cartItemCount }})</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="/compte">Compte</NuxtLink>
+            <NuxtLink to="/utilisateur/compte">Compte</NuxtLink>
           </li>
         </ul>
       </nav>

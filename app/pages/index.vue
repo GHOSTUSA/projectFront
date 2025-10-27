@@ -11,7 +11,14 @@ onMounted(() => {
   try {
     const authStore = useAuthStore();
     if (authStore.isAuthenticated) {
-      navigateTo("/restaurant");
+      // Redirection selon le rôle
+      if (authStore.user?.role === 'admin') {
+        navigateTo("/Admin/backOffice");
+      } else if (authStore.user?.role === 'restaurateur') {
+        navigateTo("/Admin/restaurateur");
+      } else {
+        navigateTo("/utilisateur/restaurant");
+      }
     }
   } catch (error) {
     console.error("Erreur lors de la vérification d'authentification:", error);
@@ -35,7 +42,15 @@ async function submitForm() {
 
       const authStore = useAuthStore();
       authStore.login(user);
-      navigateTo("/restaurant");
+      
+      // Redirection selon le rôle après connexion
+      if (user.role === 'admin') {
+        navigateTo("/Admin/backOffice");
+      } else if (user.role === 'restaurateur') {
+        navigateTo("/Admin/restaurateur");
+      } else {
+        navigateTo("/utilisateur/restaurant");
+      }
     } else {
       console.log("Identifiants incorrects");
       alert("Nom d'utilisateur ou mot de passe incorrect");

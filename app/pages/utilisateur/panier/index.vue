@@ -72,7 +72,7 @@ async function validateOrder() {
 
     // Rediriger vers la page de compte après 2 secondes
     setTimeout(() => {
-      navigateTo("/compte");
+      navigateTo("/utilisateur/compte");
     }, 2000);
   } catch (error) {
     console.error("Erreur lors de la validation de la commande:", error);
