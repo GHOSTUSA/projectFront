@@ -7,7 +7,6 @@ const cartStore = useCartStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
-// Fonction pour ajouter au panier avec feedback
 function addToCart(dish: any) {
   cartStore.addToCart(dish);
   console.log("Plat ajouté au panier:", dish.name);

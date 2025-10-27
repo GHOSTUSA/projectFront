@@ -158,49 +158,72 @@ function logout() {
 }
 
 .user-main {
-  /* padding: 2rem; */
-  /* max-width: 1200px; */
-  margin: 0 auto;
+  min-height: calc(100vh - 80px);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .user-nav {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
   }
 
   .nav-menu {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .nav-menu li:last-child {
+    grid-column: 1 / -1;
   }
 
   .nav-brand h2 {
     font-size: 1.2rem;
   }
-
-  /* .user-main {
-    padding: 1rem;
-  } */
 }
 
 @media (max-width: 480px) {
+  .user-nav {
+    padding: 0.5rem;
+  }
+
+  .nav-brand {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .nav-brand h2 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
   .nav-menu {
     flex-direction: column;
     width: 100%;
-  }
-
-  .nav-menu li {
-    width: 100%;
+    gap: 0.25rem;
   }
 
   .nav-menu li a,
   .logout-btn {
-    width: 100%;
+    /* width: 100%; */
     text-align: center;
     display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .user-info {
+    margin: 0;
+    text-align: center;
+  }
+
+  .user-info span {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
 }
 </style>

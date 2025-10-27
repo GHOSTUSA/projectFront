@@ -2,6 +2,7 @@
 import { useCartStore } from "~/stores/panier/cardStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
+import type { Dish } from "~/types/Dish";
 
 // Appliquer le middleware d'authentification
 definePageMeta({
@@ -17,19 +18,16 @@ const isOrderProcessing = ref(false);
 const orderSuccess = ref(false);
 const orderError = ref("");
 
-// Déterminer le restaurant ID basé sur les articles du panier
 const getRestaurantId = async () => {
   if (cartStore.cartItems.length === 0) return 1;
 
   try {
-    // Récupérer les données des restaurants pour identifier le restaurant de chaque plat
-    const data = await $fetch<any>("/api/data.json");
+    const data = await $fetch<{ restaurants: Restaurant[] }>("/api/data.json");
 
-    // Chercher le restaurant du premier plat du panier
     for (const restaurant of data.restaurants) {
       if (restaurant.dishes && cartStore.cartItems[0]) {
         const dish = restaurant.dishes.find(
-          (d: any) => d.id === cartStore.cartItems[0].id
+          (d: Dish) => d.id === cartStore.cartItems[0].id
         );
         if (dish) {
           return restaurant.id;
@@ -37,7 +35,6 @@ const getRestaurantId = async () => {
       }
     }
 
-    // Par défaut, retourner le restaurant 1
     return 1;
   } catch (error) {
     console.error("Erreur lors de la récupération du restaurant:", error);
@@ -45,7 +42,6 @@ const getRestaurantId = async () => {
   }
 };
 
-// Fonction pour valider la commande
 async function validateOrder() {
   if (cartStore.cartItems.length === 0) {
     orderError.value = "Votre panier est vide";
@@ -58,19 +54,15 @@ async function validateOrder() {
   try {
     const restaurantId = await getRestaurantId();
 
-    // Créer la commande
     const newCommand = await commandStore.createCommand(
       cartStore.cartItems,
       restaurantId
     );
 
-    // Vider le panier après succès
     cartStore.clearCart();
 
-    // Marquer le succès
     orderSuccess.value = true;
 
-    // Rediriger vers la page de compte après 2 secondes
     setTimeout(() => {
       navigateTo("/utilisateur/compte");
     }, 2000);
