@@ -5,6 +5,21 @@ import { useCartStore } from "~/stores/panier/cardStore";
 // Internationalisation
 const { t } = useI18n();
 
+// Lazy loading du LanguageSelector pour optimiser les performances
+const LanguageSelector = defineAsyncComponent({
+  loader: () => import("~/components/LanguageSelector.vue"),
+  loadingComponent: defineComponent({
+    template: `
+      <div class="language-selector-skeleton" role="status" aria-label="Chargement du sélecteur de langue">
+        <div class="skeleton-flag"></div>
+        <div class="skeleton-text"></div>
+      </div>
+    `,
+  }),
+  delay: 50,
+  timeout: 2000,
+});
+
 const authStore = useAuthStore();
 const cartStore = useCartStore();
 const route = useRoute();
@@ -87,6 +102,9 @@ function logout() {
     <main class="user-main">
       <slot />
     </main>
+
+    <!-- Gestionnaire PWA temporairement désactivé -->
+    <!-- <PWAManager /> -->
   </div>
 </template>
 
@@ -203,6 +221,63 @@ function logout() {
 
   .nav-brand h2 {
     font-size: 1.2rem;
+  }
+}
+
+/* Language Selector Skeleton */
+.language-selector-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+}
+
+.skeleton-flag {
+  width: 24px;
+  height: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+  border-radius: 3px;
+}
+
+.skeleton-text {
+  width: 40px;
+  height: 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
   }
 }
 

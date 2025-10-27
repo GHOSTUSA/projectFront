@@ -9,7 +9,14 @@ const props = defineProps<{
 <template>
   <div class="restaurant-card">
     <div class="restaurant-image">
-      <img :src="props.restaurant.image" :alt="props.restaurant.name" />
+      <OptimizedImage
+        :src="props.restaurant.image"
+        :alt="`Photo du restaurant ${props.restaurant.name}`"
+        :width="320"
+        :height="200"
+        loading="lazy"
+        class="restaurant-img"
+      />
       <div class="image-overlay"></div>
     </div>
     <div class="restaurant-info">
@@ -54,15 +61,19 @@ const props = defineProps<{
 
 .restaurant-image {
   position: relative;
-  height: 200px;
+  height: 250px;
   overflow: hidden;
 }
 
-.restaurant-image img {
+.restaurant-image .restaurant-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+}
+
+.restaurant-card:hover .restaurant-image .restaurant-img {
+  transform: scale(1.05);
 }
 
 .restaurant-card:hover .restaurant-image img {

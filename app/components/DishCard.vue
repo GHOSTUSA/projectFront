@@ -41,6 +41,7 @@ onMounted(() => {
         loading="lazy"
         width="300"
         height="200"
+        class="dish-img"
       />
       <div class="price-badge" aria-hidden="true">{{ props.dish.price }}€</div>
     </div>
@@ -107,14 +108,14 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.dish-image img {
+.dish-image .dish-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.dish-card:hover .dish-image img {
+.dish-card:hover .dish-image .dish-img {
   transform: scale(1.05);
 }
 

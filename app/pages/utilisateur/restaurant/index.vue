@@ -5,6 +5,32 @@ import { useRestaurantStore } from "~/stores/restaurant/restaurantStore";
 // Internationalisation
 const { t } = useI18n();
 
+// Lazy loading des composants lourds pour optimiser les performances
+const RestaurantCard = defineAsyncComponent({
+  loader: () => import("~/components/restaurantCard.vue"),
+  loadingComponent: defineComponent({
+    template: `
+      <div class="restaurant-card-skeleton" role="status" aria-label="Chargement de la carte restaurant">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-subtitle"></div>
+          <div class="skeleton-rating"></div>
+        </div>
+      </div>
+    `,
+  }),
+  errorComponent: defineComponent({
+    template: `
+      <div class="restaurant-card-error" role="alert">
+        <p>Erreur de chargement de la carte restaurant</p>
+      </div>
+    `,
+  }),
+  delay: 100,
+  timeout: 3000,
+});
+
 // Store pour la gestion optimisée des restaurants
 const restaurantStore = useRestaurantStore();
 
@@ -210,35 +236,58 @@ watchEffect(() => {
         }}
       </div>
 
-      <!-- Grille de restaurants accessible -->
-      <section
-        class="restaurants-grid"
-        id="restaurant-list"
-        role="region"
-        :aria-label="
-          t('pages.restaurant.list.screenReader.listOf', {
-            count: restaurants.length,
-          })
-        "
-      >
-        <router-link
-          v-for="(restaurant, index) in restaurants"
-          :key="restaurant.id"
-          :to="`/utilisateur/restaurant/${restaurant.id}`"
-          class="restaurant-link link-accessible"
-          :aria-label="
-            t('pages.restaurant.list.screenReader.viewRestaurant', {
-              name: restaurant.name,
-              cuisine: restaurant.cuisineType,
-              rating: restaurant.averageRating,
-            })
-          "
-          :aria-posinset="index + 1"
-          :aria-setsize="restaurants.length"
-        >
-          <RestaurantCard :restaurant="restaurant" />
-        </router-link>
-      </section>
+      <!-- Grille de restaurants accessible avec Suspense pour lazy loading -->
+      <Suspense>
+        <template #default>
+          <section
+            class="restaurants-grid"
+            id="restaurant-list"
+            role="region"
+            :aria-label="
+              t('pages.restaurant.list.screenReader.listOf', {
+                count: restaurants.length,
+              })
+            "
+          >
+            <router-link
+              v-for="(restaurant, index) in restaurants"
+              :key="restaurant.id"
+              :to="`/utilisateur/restaurant/${restaurant.id}`"
+              class="restaurant-link link-accessible"
+              :aria-label="
+                t('pages.restaurant.list.screenReader.viewRestaurant', {
+                  name: restaurant.name,
+                  cuisine: restaurant.cuisineType,
+                  rating: restaurant.averageRating,
+                })
+              "
+              :aria-posinset="index + 1"
+              :aria-setsize="restaurants.length"
+            >
+              <RestaurantCard :restaurant="restaurant" />
+            </router-link>
+          </section>
+        </template>
+
+        <template #fallback>
+          <div class="restaurants-grid" role="status" aria-live="polite">
+            <!-- Skeletons de chargement pendant le lazy loading -->
+            <div
+              v-for="i in Math.min(6, restaurants.length || 6)"
+              :key="`skeleton-${i}`"
+              class="restaurant-card-skeleton"
+              :aria-label="`Chargement de la carte restaurant ${i}`"
+            >
+              <div class="skeleton-image"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-subtitle"></div>
+                <div class="skeleton-rating"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </Suspense>
 
       <!-- Statistiques pour les lecteurs d'écran -->
       <div class="sr-only">
@@ -450,6 +499,81 @@ watchEffect(() => {
 
 .refresh-data-btn:hover {
   background: linear-gradient(135deg, #5a6268, #6c757d);
+}
+
+/* Skeleton Loading Components */
+.restaurant-card-skeleton {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+}
+
+.skeleton-image {
+  height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+}
+
+.skeleton-content {
+  padding: 1rem;
+}
+
+.skeleton-title {
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-subtitle {
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  width: 70%;
+}
+
+.skeleton-rating {
+  height: 14px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s infinite;
+  border-radius: 4px;
+  width: 50%;
+}
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.restaurant-card-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
 }
 
 /* Responsive Design */
