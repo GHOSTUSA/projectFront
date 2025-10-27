@@ -7,6 +7,12 @@ const cartStore = useCartStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
+// Fonction pour ajouter au panier avec feedback
+function addToCart(dish: any) {
+  cartStore.addToCart(dish);
+  console.log("Plat ajouté au panier:", dish.name);
+}
+
 async function fetchRestaurantById(id: string): Promise<Restaurant> {
   const data: any = await $fetch(`/api/data.json`);
   const restaurant: Restaurant | undefined = data.restaurants.find(
@@ -32,148 +38,276 @@ const restaurant: Restaurant = await fetchRestaurantById(restaurantId);
 </script>
 
 <template>
-  <img :src="restaurant.image" :alt="restaurant.name" />
-  <div>
-    <h1>{{ restaurant.name }}</h1>
-    <p id="cuisine-type">{{ restaurant.cuisineType }}</p>
-    <div id="rating">
-      <p id="rating-label">Note</p>
-      <div>
-        <p>{{ restaurant.averageRating }}</p>
-        <div id="star">
-          <p
-            v-for="n in 5"
-            :key="n"
-            class="star"
-            :class="{ filled: n <= Math.floor(restaurant.averageRating) }"
-          >
-            ★
-          </p>
+  <div class="restaurant-detail">
+    <div class="restaurant-header">
+      <img
+        :src="restaurant.image"
+        :alt="restaurant.name"
+        class="restaurant-image"
+      />
+      <div class="restaurant-info">
+        <h1>{{ restaurant.name }}</h1>
+        <p class="cuisine-type">{{ restaurant.cuisineType }}</p>
+
+        <div class="rating-section">
+          <span class="rating-label">Note</span>
+          <div class="rating-content">
+            <span class="rating-value">{{ restaurant.averageRating }}</span>
+            <div class="stars">
+              <span
+                v-for="n in 5"
+                :key="n"
+                class="star"
+                :class="{ filled: n <= Math.floor(restaurant.averageRating) }"
+              >
+                ★
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-info">
+          <h3>Informations de contact</h3>
+          <p>{{ restaurant.address }}</p>
+          <p>{{ restaurant.phone }}</p>
         </div>
       </div>
     </div>
-    <div id="contact">
-      Contact :
-      <div>{{ restaurant.address }}</div>
-      <div>{{ restaurant.phone }}</div>
-    </div>
-    <div id="dishes"></div>
-    <h2>Plats disponibles :</h2>
-    <ul>
-      <div v-for="dish in restaurant.dishes" :key="dish.id">
-        <DishCard :dish="dish" />
-        <div id="buttons">
-          <button @click="cartStore.addToCart(dish)">Ajouter au panier</button>
-          <button id="order-button">Commander</button>
+
+    <div class="dishes-section">
+      <h2>Plats disponibles</h2>
+      <div class="dishes-grid">
+        <div v-for="dish in restaurant.dishes" :key="dish.id" class="dish-item">
+          <DishCard :dish="dish" />
+          <div class="dish-actions">
+            <button @click="addToCart(dish)" class="add-to-cart-btn">
+              Ajouter au panier
+            </button>
+          </div>
         </div>
       </div>
-    </ul>
+    </div>
   </div>
 </template>
 
 <style scoped>
-img {
+.restaurant-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.restaurant-header {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+.restaurant-image {
   width: 100%;
-  height: 200px;
+  height: 300px;
   object-fit: cover;
 }
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  margin: 1rem 0;
+
+.restaurant-info {
+  padding: 2rem;
 }
-#cuisine-type {
-  font-style: italic;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-#rating {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  justify-self: center;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 70vw;
-  height: 10vh;
-  gap: 0.5rem;
-  font-size: 1.2rem;
-  border: 6px solid black;
-  border-radius: 15px;
-}
-#rating-label {
-  font-weight: bold;
+
+.restaurant-info h1 {
   font-size: 2.5rem;
-  border-right: 1px solid black;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
 }
-#rating div {
+
+.cuisine-type {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  font-style: italic;
+  margin: 0 0 2rem 0;
+}
+
+.rating-section {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 0.3rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #27ae60;
 }
-#star {
+
+.rating-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.rating-content {
   display: flex;
-  flex-direction: row !important;
-  gap: 0.1rem !important;
+  align-items: center;
+  gap: 0.5rem;
 }
+
+.rating-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
 .star {
   color: #ddd;
-  font-size: 1.5rem;
-  margin: 0;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
 }
+
 .star.filled {
   color: #ffd700;
 }
-#contact {
-  margin-top: 2rem;
-  margin-left: 1rem;
-  font-size: 1.1rem;
-}
-#contact div {
-  font-style: italic;
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-}
-h2 {
-  border-top: 1px solid rgb(99, 99, 99);
-  margin-top: 2rem;
-  padding-top: 2rem;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  justify-items: center;
-}
-#buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 7vh;
-  padding: 2%;
-  border-bottom: 1px solid black;
-  border-radius: 5px;
-  margin-bottom: 2rem;
+
+.contact-info {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
 }
 
-button {
-  padding: 8px 16px;
-  background-color: #28a745;
+.contact-info h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.contact-info p {
+  margin: 0.5rem 0;
+  color: #7f8c8d;
+  font-size: 0.95rem;
+}
+
+.dishes-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.dishes-section h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0 0 2rem 0;
+  font-weight: 600;
+  border-bottom: 2px solid #27ae60;
+  padding-bottom: 1rem;
+}
+
+.dishes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.dish-item {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.dish-item:hover {
+  transform: translateY(-5px);
+}
+
+.dish-actions {
+  padding: 1.5rem;
+  text-align: center;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  margin-top: auto;
+}
+
+.add-to-cart-btn {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-#order-button {
-  background-color: #ff0000;
+
+.add-to-cart-btn:hover {
+  background: linear-gradient(135deg, #229954, #27ae60);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .restaurant-detail {
+    padding: 1rem 0.5rem;
+  }
+
+  .restaurant-image {
+    height: 200px;
+  }
+
+  .restaurant-info {
+    padding: 1.5rem;
+  }
+
+  .restaurant-info h1 {
+    font-size: 2rem;
+  }
+
+  .dishes-section {
+    padding: 1.5rem;
+  }
+
+  .dishes-section h2 {
+    font-size: 1.7rem;
+  }
+
+  .dishes-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .rating-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-info h1 {
+    font-size: 1.8rem;
+  }
+
+  .dishes-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .rating-section,
+  .contact-info {
+    padding: 1rem;
+  }
 }
 </style>

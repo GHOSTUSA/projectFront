@@ -43,74 +43,122 @@ function updateProfile() {
 </script>
 
 <template>
-  <div v-if="user">
-    <h1>Mon compte</h1>
-    <p>Bienvenue {{ user.firstName }} {{ user.lastName }}</p>
-
-    <div class="profile-form">
-      <div class="form-group">
-        <label for="email">Email :</label>
-        <input
-          type="email"
-          id="email"
-          v-model="user.email"
-          placeholder="Votre email"
-        />
+  <div class="account-page">
+    <div v-if="user">
+      <div class="page-header">
+        <h1>Mon Compte</h1>
+        <p>Bienvenue {{ user.firstName }} {{ user.lastName }}</p>
       </div>
 
-      <div class="form-group">
-        <label for="lastName">Nom :</label>
-        <input
-          type="text"
-          id="lastName"
-          v-model="user.lastName"
-          placeholder="Votre nom"
-        />
+      <div class="profile-section">
+        <h2>Informations personnelles</h2>
+        <div class="profile-form">
+          <div class="form-group">
+            <label for="email">Email :</label>
+            <input
+              type="email"
+              id="email"
+              v-model="user.email"
+              placeholder="Votre email"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Nom :</label>
+            <input
+              type="text"
+              id="lastName"
+              v-model="user.lastName"
+              placeholder="Votre nom"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="firstName">Prénom :</label>
+            <input
+              type="text"
+              id="firstName"
+              v-model="user.firstName"
+              placeholder="Votre prénom"
+            />
+          </div>
+
+          <button @click="updateProfile" class="update-btn">
+            Mettre à jour le profil
+          </button>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="firstName">Prénom :</label>
-        <input
-          type="text"
-          id="firstName"
-          v-model="user.firstName"
-          placeholder="Votre prénom"
-        />
+      <div class="commands-section">
+        <h2>Mes commandes</h2>
+        <div v-if="userCommands.length > 0" class="commands-list">
+          <CommandCard
+            v-for="command in userCommands"
+            :key="command.id"
+            :command="command"
+          />
+        </div>
+        <div v-else class="no-commands">
+          <h3>Aucune commande</h3>
+          <p>Vous n'avez pas encore passé de commandes.</p>
+          <NuxtLink to="/utilisateur/restaurant" class="browse-restaurants-btn">
+            Découvrir nos restaurants
+          </NuxtLink>
+        </div>
       </div>
-
-      <button @click="updateProfile" class="update-btn">
-        Mettre à jour le profil
-      </button>
     </div>
 
-    <div class="commands-section">
-      <h2>Mes commandes</h2>
-      <div v-if="userCommands.length > 0" class="commands-list">
-        <CommandCard
-          v-for="command in userCommands"
-          :key="command.id"
-          :command="command"
-        />
-      </div>
-      <div v-else class="no-commands">
-        <p>Vous n'avez pas encore de commandes.</p>
-      </div>
+    <div v-else class="loading">
+      <p>Chargement de votre compte...</p>
     </div>
-  </div>
-
-  <div v-else class="loading">
-    <p>Chargement...</p>
   </div>
 </template>
 
 <style scoped>
+.account-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.page-header p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.profile-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.profile-section h2 {
+  color: #2c3e50;
+  margin: 0 0 2rem 0;
+  font-size: 1.8rem;
+  text-align: center;
+  border-bottom: 2px solid #27ae60;
+  padding-bottom: 1rem;
+}
+
 .profile-form {
   max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  margin: 0 auto;
 }
 
 .form-group {
@@ -120,81 +168,156 @@ function updateProfile() {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #333;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1rem;
 }
 
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
   font-size: 1rem;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #27ae60;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
 }
 
 .update-btn {
-  background-color: #007bff;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .update-btn:hover {
-  background-color: #0056b3;
-}
-
-.loading {
-  text-align: center;
-  padding: 2rem;
-  font-style: italic;
-  color: #666;
-}
-
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-p {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #666;
+  background: linear-gradient(135deg, #229954, #27ae60);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
 }
 
 .commands-section {
-  max-width: 800px;
-  margin: 2rem auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 2rem;
 }
 
 .commands-section h2 {
+  color: #2c3e50;
+  margin: 0 0 2rem 0;
+  font-size: 1.8rem;
   text-align: center;
-  color: #333;
-  margin-bottom: 2rem;
+  border-bottom: 2px solid #27ae60;
+  padding-bottom: 1rem;
 }
 
 .commands-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .no-commands {
   text-align: center;
-  padding: 2rem;
-  color: #666;
+  padding: 4rem 2rem;
+}
+
+.no-commands h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.no-commands p {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.browse-restaurants-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.browse-restaurants-btn:hover {
+  background: linear-gradient(135deg, #229954, #27ae60);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.loading p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
   font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .account-page {
+    padding: 1rem 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .profile-section,
+  .commands-section {
+    padding: 1.5rem;
+  }
+
+  .profile-section h2,
+  .commands-section h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .profile-section,
+  .commands-section {
+    padding: 1rem;
+  }
+
+  .no-commands {
+    padding: 2rem 1rem;
+  }
 }
 </style>

@@ -7,61 +7,177 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div id="main" :style="`background-image: url(${props.restaurant.image});`">
-    <div id="cover"></div>
-    <div id="info">
-      <p id="title">{{ props.restaurant.name }}</p>
-      <p id="cuisine">
-        <i>{{ props.restaurant.cuisineType }}</i>
-      </p>
-      <p id="rating">{{ props.restaurant.averageRating }}</p>
+  <div class="restaurant-card">
+    <div class="restaurant-image">
+      <img :src="props.restaurant.image" :alt="props.restaurant.name" />
+      <div class="image-overlay"></div>
+    </div>
+    <div class="restaurant-info">
+      <h3 class="restaurant-name">{{ props.restaurant.name }}</h3>
+      <p class="restaurant-cuisine">{{ props.restaurant.cuisineType }}</p>
+      <div class="restaurant-rating">
+        <div class="stars">
+          <span
+            v-for="n in 5"
+            :key="n"
+            class="star"
+            :class="{ filled: n <= Math.floor(props.restaurant.averageRating) }"
+          >
+            ★
+          </span>
+        </div>
+        <span class="rating-value">{{ props.restaurant.averageRating }}</span>
+      </div>
+      <div class="restaurant-details">
+        <p class="restaurant-address">{{ props.restaurant.address }}</p>
+        <p class="restaurant-phone">{{ props.restaurant.phone }}</p>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-#main {
+.restaurant-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.restaurant-image {
   position: relative;
-  height: 15vh;
-  width: 80vw;
-  border: 1px solid black;
-  margin: 3vw;
-  background-size: cover;
-  background-position: center;
-  border-radius: 15px;
+  height: 200px;
+  overflow: hidden;
 }
-#cover {
-  position: absolute;
+
+.restaurant-image img {
   width: 100%;
   height: 100%;
-  border-radius: 15px;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
-#info {
-  width: 100%;
-  height: 100%;
+
+.restaurant-card:hover .restaurant-image img {
+  transform: scale(1.05);
+}
+
+.image-overlay {
   position: absolute;
-  z-index: 2;
-  color: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-#title {
-  margin-top: 3vh;
-  font-size: 1.7rem;
-  font-weight: bold;
-}
-#cuisine {
-  font-size: 1.2rem;
-}
-#rating {
-  position: absolute;
-  font-size: 1.2rem;
-  margin: 1ch;
+  top: 0;
+  left: 0;
   right: 0;
   bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+.restaurant-info {
+  padding: 1.5rem;
+}
+
+.restaurant-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.restaurant-cuisine {
+  color: #7f8c8d;
+  font-style: italic;
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.restaurant-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: #ddd;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.rating-value {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.restaurant-details {
+  border-top: 1px solid #f1f3f4;
+  padding-top: 1rem;
+}
+
+.restaurant-address,
+.restaurant-phone {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.restaurant-address {
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .restaurant-card {
+    max-width: 100%;
+  }
+
+  .restaurant-image {
+    height: 150px;
+  }
+
+  .restaurant-info {
+    padding: 1rem;
+  }
+
+  .restaurant-name {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-image {
+    height: 120px;
+  }
+
+  .restaurant-name {
+    font-size: 1.2rem;
+  }
+
+  .restaurant-rating {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
 }
 </style>

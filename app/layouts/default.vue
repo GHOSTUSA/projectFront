@@ -40,53 +40,167 @@ function logout() {
 </script>
 
 <template>
-  <div>
-    <header v-if="isAuthenticated && !isAdmin && !isRestaurateur">
-      <nav>
-        <ul>
-          <li><NuxtLink to="/utilisateur/restaurant">Restaurant</NuxtLink></li>
-          <li><div @click="logout">Logout</div></li>
+  <div class="user-layout">
+    <header
+      v-if="isAuthenticated && !isAdmin && !isRestaurateur"
+      class="user-header"
+    >
+      <nav class="user-nav">
+        <div class="nav-brand">
+          <h2>FoodDelivery</h2>
+        </div>
+        <ul class="nav-menu">
+          <li><NuxtLink to="/utilisateur/restaurant">Restaurants</NuxtLink></li>
           <li>
-            <NuxtLink to="/utilisateur/panier"
-              >Panier ({{ cartStore.cartItemCount }})</NuxtLink
+            <NuxtLink to="/utilisateur/panier">
+              Panier ({{ cartStore.cartItemCount }})
+            </NuxtLink>
+          </li>
+          <li><NuxtLink to="/utilisateur/compte">Mon Compte</NuxtLink></li>
+          <li class="user-info">
+            <span
+              >{{ authStore.user?.firstName }}
+              {{ authStore.user?.lastName }}</span
             >
           </li>
           <li>
-            <NuxtLink to="/utilisateur/compte">Compte</NuxtLink>
+            <button @click="logout" class="logout-btn">Déconnexion</button>
           </li>
         </ul>
       </nav>
     </header>
-    <main>
+    <main class="user-main">
       <slot />
     </main>
   </div>
 </template>
 
 <style scoped>
-nav {
-  background-color: #333;
-  padding: 1rem;
+.user-layout {
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
-nav ul {
-  list-style: none;
+
+.user-header {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid #229954;
+}
+
+.user-nav {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-brand h2 {
+  color: white;
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
   margin: 0;
   padding: 0;
+  gap: 2rem;
+  align-items: center;
 }
-nav ul li {
-  color: white;
-  cursor: pointer;
-}
-nav ul li a {
+
+.nav-menu li a {
   color: white;
   text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
 }
-nav ul li a:hover {
-  text-decoration: underline;
+
+.nav-menu li a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
-li div {
-  float: right;
+
+.nav-menu li a.router-link-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.user-main {
+  /* padding: 2rem; */
+  /* max-width: 1200px; */
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-nav {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .nav-brand h2 {
+    font-size: 1.2rem;
+  }
+
+  /* .user-main {
+    padding: 1rem;
+  } */
+}
+
+@media (max-width: 480px) {
+  .nav-menu {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-menu li {
+    width: 100%;
+  }
+
+  .nav-menu li a,
+  .logout-btn {
+    width: 100%;
+    text-align: center;
+    display: block;
+  }
 }
 </style>
