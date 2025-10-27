@@ -1,0 +1,164 @@
+{
+  "nav": {
+    "home": "Home",
+    "restaurants": "Restaurants",
+    "cart": "Cart",
+    "account": "My Account",
+    "login": "Login",
+    "register": "Sign Up",
+    "logout": "Logout",
+    "admin": "Administration"
+  },
+  "pages": {
+    "home": {
+      "title": "Welcome to FoodDelivery",
+      "subtitle": "Order your favorite dishes in just a few clicks",
+      "cta": "Discover our restaurants",
+      "features": {
+        "fast": {
+          "title": "Fast delivery",
+          "description": "Within 30 minutes maximum"
+        },
+        "quality": {
+          "title": "Quality guaranteed",
+          "description": "Carefully selected restaurants"
+        },
+        "secure": {
+          "title": "Secure payment",
+          "description": "Your data is protected"
+        }
+      }
+    },
+    "restaurants": {
+      "title": "Available restaurants",
+      "subtitle": "Discover {count} quality restaurants. Where would you like to order today?",
+      "loading": "Loading restaurants...",
+      "error": "Loading error",
+      "retry": "Retry",
+      "refresh": "Refresh",
+      "noResults": "No restaurants available",
+      "noResultsMessage": "Our restaurants are temporarily unavailable. Come back soon to discover our selection.",
+      "card": {
+        "rating": "Rating",
+        "dishes": "dishes",
+        "viewMenu": "View menu"
+      }
+    },
+    "restaurant": {
+      "contact": "Contact information",
+      "dishes": "Available dishes",
+      "addToCart": "Add to cart",
+      "category": "Category",
+      "allergens": "Allergens",
+      "price": "Price"
+    },
+    "dish": {
+      "description": "Description",
+      "allergens": "Allergens",
+      "restaurant": "Offered by {name}",
+      "addToCart": "Add to cart - €{price}",
+      "viewRestaurant": "View restaurant"
+    },
+    "cart": {
+      "title": "My cart",
+      "empty": "Your cart is empty",
+      "total": "Total",
+      "checkout": "Checkout",
+      "remove": "Remove",
+      "quantity": "Quantity",
+      "continue": "Continue shopping"
+    },
+    "account": {
+      "title": "My account",
+      "profile": "Profile",
+      "orders": "My orders",
+      "preferences": "Preferences",
+      "security": "Security"
+    },
+    "auth": {
+      "login": {
+        "title": "Login",
+        "email": "Email address",
+        "password": "Password",
+        "submit": "Sign in",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "createAccount": "Create account"
+      },
+      "register": {
+        "title": "Sign up",
+        "name": "Full name",
+        "email": "Email address",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "submit": "Sign up",
+        "hasAccount": "Already have an account?",
+        "login": "Sign in"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "required": "Required",
+    "optional": "Optional",
+    "yes": "Yes",
+    "no": "No",
+    "euro": "€",
+    "and": "and",
+    "or": "or"
+  },
+  "errors": {
+    "network": "Network connection error",
+    "server": "Server error",
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "validation": "Validation error",
+    "generic": "An error occurred"
+  },
+  "messages": {
+    "itemAdded": "Item added to cart",
+    "itemRemoved": "Item removed from cart",
+    "orderPlaced": "Order placed successfully",
+    "accountCreated": "Account created successfully",
+    "loginSuccess": "Login successful",
+    "logoutSuccess": "Logout successful",
+    "profileUpdated": "Profile updated"
+  },
+  "accessibility": {
+    "skipToMain": "Skip to main content",
+    "skipToNav": "Skip to navigation",
+    "menu": "Menu",
+    "search": "Search",
+    "languageSelector": "Language selector",
+    "currentLanguage": "Current language: English",
+    "switchToFrench": "Switch to French",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "loading": "Loading",
+    "error": "Error",
+    "pagination": "Pagination",
+    "sortBy": "Sort by",
+    "filterBy": "Filter by"
+  },
+  "seo": {
+    "defaultTitle": "FoodDelivery - Online food delivery",
+    "defaultDescription": "Order your favorite meals online and get fast delivery. Wide selection of quality restaurants.",
+    "keywords": "delivery, food, restaurant, online order, food delivery"
+  }
+}

@@ -69,82 +69,8 @@ if (error.value) {
 
 const restaurant = restaurantData.value!;
 
-// Configuration SEO dynamique basée sur le restaurant
-useSeoMeta({
-  title: `${restaurant.name} - ${restaurant.cuisineType} | FoodDelivery`,
-  ogTitle: `Commandez chez ${restaurant.name}`,
-  description: `Découvrez ${restaurant.name}, restaurant ${restaurant.cuisineType} noté ${restaurant.averageRating}/5. ${restaurant.dishes.length} plats disponibles. Livraison rapide.`,
-  ogDescription: `${restaurant.cuisineType} • Note ${restaurant.averageRating}/5 • ${restaurant.dishes.length} plats délicieux • Commandez maintenant !`,
-  keywords: `${restaurant.name}, ${restaurant.cuisineType}, restaurant, livraison, ${restaurant.address}`,
-  ogImage: restaurant.image,
-  twitterCard: "summary_large_image",
-});
-
-// Configuration des balises structurées pour le SEO
-useHead({
-  link: [
-    {
-      rel: "canonical",
-      href: `https://fooddelivery.com/utilisateur/restaurant/${restaurant.id}`,
-    },
-  ],
-  meta: [
-    {
-      name: "robots",
-      content: "index, follow",
-    },
-    {
-      property: "og:type",
-      content: "restaurant",
-    },
-    {
-      property: "place:location:latitude",
-      content: "48.8566", // Coordonnées exemple - à remplacer par vraies données
-    },
-    {
-      property: "place:location:longitude",
-      content: "2.3522",
-    },
-  ],
-  script: [
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Restaurant",
-        name: restaurant.name,
-        image: restaurant.image,
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: restaurant.address,
-        },
-        telephone: restaurant.phone,
-        servesCuisine: restaurant.cuisineType,
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: restaurant.averageRating,
-          bestRating: "5",
-        },
-        hasMenu: {
-          "@type": "Menu",
-          hasMenuSection: {
-            "@type": "MenuSection",
-            hasMenuItem: restaurant.dishes.map((dish) => ({
-              "@type": "MenuItem",
-              name: dish.name,
-              description: dish.description,
-              offers: {
-                "@type": "Offer",
-                price: dish.price,
-                priceCurrency: "EUR",
-              },
-            })),
-          },
-        },
-      }),
-    },
-  ],
-});
+// Configuration SEO dynamique optimisée
+useRestaurantSEO(restaurant);
 
 // Configuration ISR (Incremental Static Regeneration)
 definePageMeta({

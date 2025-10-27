@@ -1,0 +1,96 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "restaurants": "Restaurants",
+    "cart": "Panier ({count})",
+    "account": "Mon compte",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "admin": "Administration"
+  },
+  "pages": {
+    "home": {
+      "seo": {
+        "title": "Connexion - FoodDelivery",
+        "description": "Connectez-vous à votre compte FoodDelivery pour commander vos plats préférés en ligne."
+      },
+      "login": {
+        "title": "Connexion",
+        "welcome": "Bienvenue sur FoodDelivery"
+      },
+      "form": {
+        "email": "Email",
+        "emailPlaceholder": "Entrez votre email",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "Entrez votre mot de passe",
+        "signIn": "Se connecter",
+        "signingIn": "Connexion..."
+      },
+      "features": {
+        "title": "Découvrez nos restaurants",
+        "subtitle": "Commandez vos plats préférés en quelques clics",
+        "wideSelection": "Large choix de restaurants",
+        "fastDelivery": "Livraison rapide",
+        "securePayment": "Paiement sécurisé"
+      }
+    },
+    "restaurant": {
+      "list": {
+        "title": "Restaurants disponibles",
+        "description": "Découvrez {count} restaurants de qualité. Où voulez-vous commander aujourd'hui ?",
+        "seo": {
+          "noRestaurantsTitle": "Aucun restaurant disponible - FoodDelivery",
+          "noRestaurantsDescription": "Nos restaurants sont temporairement indisponibles. Revenez bientôt pour découvrir notre sélection."
+        },
+        "noRestaurants": {
+          "title": "Aucun restaurant disponible",
+          "description": "Nos restaurants sont temporairement indisponibles. Veuillez réessayer plus tard.",
+          "refreshAriaLabel": "Actualiser pour recharger les restaurants"
+        },
+        "screenReader": {
+          "available": "{count} restaurant disponible | {count} restaurants disponibles",
+          "listOf": "Liste de {count} restaurant | Liste de {count} restaurants",
+          "viewRestaurant": "Voir {name}, cuisine {cuisine}, noté {rating} sur 5",
+          "listEnd": "Fin de la liste. {count} restaurant affiché | Fin de la liste. {count} restaurants affichés"
+        }
+      }
+    }
+  },
+  "common": {
+    "loading": {
+      "restaurants": "Chargement des restaurants..."
+    },
+    "buttons": {
+      "retry": "Réessayer",
+      "refresh": "Actualiser",
+      "refreshList": "Actualiser la liste des restaurants",
+      "retryLoading": "Réessayer le chargement",
+      "retryAttempt": "Tentative {current} sur {max}",
+      "attempt": "Tentative {current}/{max}"
+    }
+  },
+  "errors": {
+    "form": {
+      "allFieldsRequired": "Veuillez remplir tous les champs"
+    },
+    "loading": {
+      "title": "Erreur de chargement",
+      "restaurantsGeneral": "Impossible de charger les restaurants"
+    },
+    "network": {
+      "connectionError": "Erreur de connexion. Veuillez réessayer."
+    }
+  },
+  "accessibility": {
+    "skipToMainContent": "Aller au contenu principal",
+    "skipToRestaurantList": "Aller à la liste des restaurants",
+    "pleaseWait": "Veuillez patienter pendant le chargement",
+    "languageSelector": {
+      "label": "Changer de langue",
+      "currentLanguage": "Langue actuelle : Français",
+      "switchTo": "Passer à {language}",
+      "menu": "Menu des langues"
+    }
+  }
+}

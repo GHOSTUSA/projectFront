@@ -1,37 +1,87 @@
 <script lang="ts" setup>
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 import type { Dish } from "~/types/Dish";
 import { useCartStore } from "~/stores/panier/cardStore";
+
 const cartStore = useCartStore();
+const { announceSuccess } = useScreenReaderAnnouncements();
 
 const props = defineProps<{
   dish: Dish;
 }>();
+
+const emit = defineEmits<{
+  dishSelected: [dish: Dish];
+}>();
+
+// Gestion accessibilité focus
+const { setupAccessibleComponent } = useAccessibility();
+const cardRef = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  setupAccessibleComponent(cardRef);
+});
 </script>
 
 <template>
-  <div class="dish-card">
+  <article
+    ref="cardRef"
+    class="dish-card card-accessible"
+    :aria-label="`${props.dish.name}, ${props.dish.price}€, ${props.dish.category}`"
+    tabindex="0"
+    role="button"
+    @click="emit('dishSelected', props.dish)"
+    @keydown.enter="emit('dishSelected', props.dish)"
+    @keydown.space.prevent="emit('dishSelected', props.dish)"
+  >
     <div class="dish-image">
-      <img :src="props.dish.image" :alt="props.dish.name" />
-      <div class="price-badge">{{ props.dish.price }}€</div>
+      <img
+        :src="props.dish.image"
+        :alt="`Photo de ${props.dish.name}`"
+        loading="lazy"
+        width="300"
+        height="200"
+      />
+      <div class="price-badge" aria-hidden="true">{{ props.dish.price }}€</div>
     </div>
     <div class="dish-content">
       <h3 class="dish-name">{{ props.dish.name }}</h3>
       <p class="dish-description">{{ props.dish.description }}</p>
+
+      <!-- Prix lisible par les lecteurs d'écran -->
+      <div class="sr-only">Prix: {{ props.dish.price }} euros</div>
+
       <div class="dish-footer">
-        <span class="dish-category">{{ props.dish.category }}</span>
+        <span
+          class="dish-category"
+          :aria-label="`Catégorie: ${props.dish.category}`"
+        >
+          {{ props.dish.category }}
+        </span>
+
         <div
           v-if="props.dish.allergens && props.dish.allergens.length > 0"
           class="allergens"
+          role="alert"
+          :aria-label="`Attention allergènes: ${props.dish.allergens.join(
+            ', '
+          )}`"
         >
-          <span class="allergens-label">Allergènes :</span>
+          <span class="allergens-label" aria-hidden="true"
+            >⚠️ Allergènes :</span
+          >
           <span class="allergen-list">{{
             props.dish.allergens.join(", ")
           }}</span>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Indicateur visuel pour navigation clavier -->
+    <div class="keyboard-hint sr-only" aria-live="polite">
+      Appuyez sur Entrée ou Espace pour voir les détails de ce plat
+    </div>
+  </article>
 </template>
 
 <style scoped>

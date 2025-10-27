@@ -3,17 +3,19 @@ import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { User } from "~/types/User";
 
+// Internationalisation
+const { t } = useI18n();
+
 // Configuration pour le rendu côté client uniquement (CSR)
 definePageMeta({
   ssr: false, // Force le rendu côté client
   auth: false, // Page publique, pas besoin d'authentification
 });
 
-// Configuration SEO pour la page de connexion
+// Configuration SEO pour la page de connexion avec i18n
 useSeoMeta({
-  title: "Connexion - FoodDelivery",
-  description:
-    "Connectez-vous à votre compte FoodDelivery pour commander vos plats préférés en ligne.",
+  title: t("pages.home.seo.title"),
+  description: t("pages.home.seo.description"),
   robots: "noindex, nofollow", // Pas d'indexation pour les pages de connexion
 });
 
@@ -58,7 +60,7 @@ function redirectUserByRole(user: any) {
  */
 async function submitForm() {
   if (!userName.value || !passWord.value) {
-    errorMessage.value = "Veuillez remplir tous les champs";
+    errorMessage.value = t("errors.form.allFieldsRequired");
     return;
   }
 
@@ -84,11 +86,11 @@ async function submitForm() {
       // Redirection selon le rôle
       redirectUserByRole(user);
     } else {
-      errorMessage.value = "Email ou mot de passe incorrect";
+      errorMessage.value = t("errors.auth.invalidCredentials");
     }
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);
-    errorMessage.value = "Erreur de connexion. Veuillez réessayer.";
+    errorMessage.value = t("errors.network.connectionError");
   } finally {
     isLoading.value = false;
   }
@@ -106,8 +108,8 @@ function clearError() {
     <div class="login-container">
       <div class="login-content">
         <div class="login-header">
-          <h1>Connexion</h1>
-          <p>Bienvenue sur FoodDelivery</p>
+          <h1>{{ t("pages.home.login.title") }}</h1>
+          <p>{{ t("pages.home.login.welcome") }}</p>
         </div>
 
         <form @submit.prevent="submitForm" class="login-form">
@@ -120,12 +122,12 @@ function clearError() {
           </div>
 
           <div class="form-group">
-            <label for="username">Email</label>
+            <label for="username">{{ t("pages.home.form.email") }}</label>
             <input
               v-model="userName"
               id="username"
               name="username"
-              placeholder="Entrez votre email"
+              :placeholder="t('pages.home.form.emailPlaceholder')"
               :disabled="isLoading"
               required
               autocomplete="email"
@@ -133,13 +135,13 @@ function clearError() {
           </div>
 
           <div class="form-group">
-            <label for="password">Mot de passe</label>
+            <label for="password">{{ t("pages.home.form.password") }}</label>
             <input
               type="password"
               v-model="passWord"
               id="password"
               name="password"
-              placeholder="Entrez votre mot de passe"
+              :placeholder="t('pages.home.form.passwordPlaceholder')"
               :disabled="isLoading"
               required
               autocomplete="current-password"
@@ -150,30 +152,38 @@ function clearError() {
             type="submit"
             class="login-btn"
             :disabled="isLoading"
-            :aria-label="isLoading ? 'Connexion en cours...' : 'Se connecter'"
+            :aria-label="
+              isLoading
+                ? t('pages.home.form.signingIn')
+                : t('pages.home.form.signIn')
+            "
           >
             <span v-if="isLoading" class="loading-spinner">⟳</span>
-            {{ isLoading ? "Connexion..." : "Se connecter" }}
+            {{
+              isLoading
+                ? t("pages.home.form.signingIn")
+                : t("pages.home.form.signIn")
+            }}
           </button>
         </form>
       </div>
 
       <div class="login-image">
         <div class="image-content">
-          <h2>Découvrez nos restaurants</h2>
-          <p>Commandez vos plats préférés en quelques clics</p>
+          <h2>{{ t("pages.home.features.title") }}</h2>
+          <p>{{ t("pages.home.features.subtitle") }}</p>
           <div class="features">
             <div class="feature">
               <span class="feature-icon">●</span>
-              <span>Large choix de restaurants</span>
+              <span>{{ t("pages.home.features.wideSelection") }}</span>
             </div>
             <div class="feature">
               <span class="feature-icon">●</span>
-              <span>Livraison rapide</span>
+              <span>{{ t("pages.home.features.fastDelivery") }}</span>
             </div>
             <div class="feature">
               <span class="feature-icon">●</span>
-              <span>Paiement sécurisé</span>
+              <span>{{ t("pages.home.features.securePayment") }}</span>
             </div>
           </div>
         </div>

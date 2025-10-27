@@ -2,6 +2,9 @@
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCartStore } from "~/stores/panier/cardStore";
 
+// Internationalisation
+const { t } = useI18n();
+
 const authStore = useAuthStore();
 const cartStore = useCartStore();
 const route = useRoute();
@@ -49,14 +52,24 @@ function logout() {
         <div class="nav-brand">
           <h2>FoodDelivery</h2>
         </div>
+
+        <!-- Sélecteur de langue accessible -->
+        <LanguageSelector />
+
         <ul class="nav-menu">
-          <li><NuxtLink to="/utilisateur/restaurant">Restaurants</NuxtLink></li>
+          <li>
+            <NuxtLink to="/utilisateur/restaurant">{{
+              t("nav.restaurants")
+            }}</NuxtLink>
+          </li>
           <li>
             <NuxtLink to="/utilisateur/panier">
-              Panier ({{ cartStore.cartItemCount }})
+              {{ t("nav.cart", { count: cartStore.cartItemCount }) }}
             </NuxtLink>
           </li>
-          <li><NuxtLink to="/utilisateur/compte">Mon Compte</NuxtLink></li>
+          <li>
+            <NuxtLink to="/utilisateur/compte">{{ t("nav.account") }}</NuxtLink>
+          </li>
           <li class="user-info">
             <span
               >{{ authStore.user?.firstName }}
@@ -64,7 +77,9 @@ function logout() {
             >
           </li>
           <li>
-            <button @click="logout" class="logout-btn">Déconnexion</button>
+            <button @click="logout" class="logout-btn">
+              {{ t("nav.logout") }}
+            </button>
           </li>
         </ul>
       </nav>
@@ -94,6 +109,12 @@ function logout() {
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  gap: 2rem;
+}
+
+.user-nav > :nth-child(2) {
+  margin-left: auto;
+  margin-right: 1rem;
 }
 
 .nav-brand h2 {

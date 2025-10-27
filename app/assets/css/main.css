@@ -1,10 +1,84 @@
+/* Import des styles d'accessibilité */
+@import url("./accessibility.css");
+
 *,
-* {
+*::before,
+*::after {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
+
 #__nuxt {
   height: 100vh;
   width: 100vw;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  line-height: 1.6;
+  color: #2c3e50;
+  background: #f8f9fa;
+}
+
+/* Base reset pour l'accessibilité */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Amélioration de la lisibilité */
+body {
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus management */
+:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+}
+
+/* Amélioration des liens */
+a {
+  color: #0066cc;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* Amélioration des images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Skip links pour navigation clavier */
+.skip-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Conteneur principal accessible */
+.container-accessible {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .container-accessible {
+    padding: 0 32px;
+  }
 }

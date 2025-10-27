@@ -2,6 +2,9 @@
 import type { Restaurant } from "~/types/Restaurant";
 import { useRestaurantStore } from "~/stores/restaurant/restaurantStore";
 
+// Internationalisation
+const { t } = useI18n();
+
 // Store pour la gestion optimisée des restaurants
 const restaurantStore = useRestaurantStore();
 
@@ -78,69 +81,11 @@ async function retryFetch() {
   }
 }
 
-// Configuration SEO pour la page liste des restaurants
-useSeoMeta({
-  title: "Restaurants disponibles - FoodDelivery",
-  ogTitle: "Découvrez nos restaurants partenaires",
-  description: `Découvrez ${restaurants.value.length} restaurants de qualité. Cuisine française, italienne, asiatique et plus encore. Livraison rapide et service client exceptionnel.`,
-  ogDescription:
-    "Large choix de restaurants • Livraison rapide • Paiement sécurisé • Commandez maintenant !",
-  keywords: "restaurant, livraison, commande en ligne, food delivery, cuisine",
-  ogImage: "/images/restaurants-hero.jpg",
-  twitterCard: "summary_large_image",
-});
-
-// Configuration de la balise canonique
-useHead({
-  link: [
-    {
-      rel: "canonical",
-      href: "https://fooddelivery.com/utilisateur/restaurant",
-    },
-  ],
-  meta: [
-    {
-      name: "robots",
-      content: "index, follow",
-    },
-    {
-      property: "og:type",
-      content: "website",
-    },
-    {
-      property: "og:locale",
-      content: "fr_FR",
-    },
-  ],
-  script: [
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        name: "Restaurants disponibles",
-        description: "Découvrez notre sélection de restaurants partenaires",
-        mainEntity: {
-          "@type": "ItemList",
-          numberOfItems: restaurants.value.length,
-          itemListElement: restaurants.value.map(
-            (restaurant: Restaurant, index: number) => ({
-              "@type": "Restaurant",
-              position: index + 1,
-              name: restaurant.name,
-              servesCuisine: restaurant.cuisineType,
-              address: restaurant.address,
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: restaurant.averageRating,
-                bestRating: "5",
-              },
-            })
-          ),
-        },
-      }),
-    },
-  ],
+// Configuration SEO dynamique basée sur les données réelles
+watchEffect(() => {
+  if (restaurants.value.length > 0) {
+    useRestaurantListSEO(restaurants.value);
+  }
 });
 
 // Configuration ISR
@@ -155,83 +100,174 @@ async function handleRefresh() {
 }
 
 // Mise à jour du titre si aucun restaurant
-if (!restaurants.value || restaurants.value.length === 0) {
-  useSeoMeta({
-    title: "Aucun restaurant disponible - FoodDelivery",
-    description:
-      "Nos restaurants sont temporairement indisponibles. Revenez bientôt pour découvrir notre sélection.",
-  });
-}
+watchEffect(() => {
+  if (!restaurants.value || restaurants.value.length === 0) {
+    useSeoMeta({
+      title: t("pages.restaurant.list.seo.noRestaurantsTitle"),
+      description: t("pages.restaurant.list.seo.noRestaurantsDescription"),
+    });
+  }
+});
 </script>
 
 <template>
-  <div class="restaurants-page">
-    <div class="page-header">
-      <h1>Restaurants disponibles</h1>
-      <p>Où voulez-vous commander aujourd'hui ?</p>
+  <!-- Skip links pour navigation clavier -->
+  <div class="skip-links">
+    <a href="#main-content" class="skip-link">{{
+      t("accessibility.skipToMainContent")
+    }}</a>
+    <a href="#restaurant-list" class="skip-link">{{
+      t("accessibility.skipToRestaurantList")
+    }}</a>
+  </div>
+
+  <main class="restaurants-page container-accessible" id="main-content">
+    <!-- En-tête de page accessible -->
+    <header class="page-header">
+      <h1 id="page-title">{{ t("pages.restaurant.list.title") }}</h1>
+      <p class="page-description">
+        {{
+          t("pages.restaurant.list.description", { count: restaurants.length })
+        }}
+      </p>
+    </header>
+
+    <!-- État de chargement accessible -->
+    <div v-if="loading" class="loading-state" role="status" aria-live="polite">
+      <div class="loading-spinner-accessible" aria-hidden="true"></div>
+      <p>{{ t("common.loading.restaurants") }}</p>
+      <span class="sr-only">{{ t("accessibility.pleaseWait") }}</span>
     </div>
 
-    <!-- État de chargement -->
-    <div v-if="loading" class="loading-state">
-      <div class="loading-spinner"></div>
-      <p>Chargement des restaurants...</p>
-    </div>
-
-    <!-- Gestion des erreurs réseau -->
-    <div v-else-if="fetchError" class="error-state">
+    <!-- Gestion des erreurs réseau accessible -->
+    <div
+      v-else-if="fetchError"
+      class="error-state status-error"
+      role="alert"
+      aria-live="assertive"
+    >
       <div class="error-content">
-        <h3>❌ Erreur de chargement</h3>
+        <h2>{{ t("errors.loading.title") }}</h2>
         <p>
-          {{ fetchError.message || "Impossible de charger les restaurants" }}
+          {{ fetchError.message || t("errors.loading.restaurantsGeneral") }}
         </p>
         <div class="error-actions">
           <button
             @click="retryFetch"
-            class="retry-btn"
+            class="btn-accessible retry-btn"
             :disabled="retryCount >= maxRetries"
+            :aria-label="
+              retryCount > 0
+                ? t('common.buttons.retryAttempt', {
+                    current: retryCount,
+                    max: maxRetries,
+                  })
+                : t('common.buttons.retryLoading')
+            "
           >
-            <span v-if="retryCount > 0"
-              >Tentative {{ retryCount }}/{{ maxRetries }}</span
-            >
-            <span v-else>Réessayer</span>
+            <span v-if="retryCount > 0">{{
+              t("common.buttons.attempt", {
+                current: retryCount,
+                max: maxRetries,
+              })
+            }}</span>
+            <span v-else>{{ t("common.buttons.retry") }}</span>
           </button>
-          <button @click="handleRefresh" class="refresh-btn">
-            ↻ Actualiser
+          <button
+            @click="handleRefresh"
+            class="btn-accessible btn-secondary refresh-btn"
+            :aria-label="t('common.buttons.refreshList')"
+          >
+            <span aria-hidden="true">↻</span> {{ t("common.buttons.refresh") }}
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Liste des restaurants -->
+    <!-- Liste des restaurants accessible -->
     <div
       v-else-if="restaurants && restaurants.length > 0"
       class="restaurants-container"
     >
+      <!-- Actions de la liste -->
       <div class="restaurants-actions">
-        <button @click="handleRefresh" class="refresh-data-btn">
-          ↻ Actualiser la liste
+        <button
+          @click="handleRefresh"
+          class="btn-accessible btn-secondary refresh-data-btn"
+          :aria-label="t('common.buttons.refreshList')"
+        >
+          <span aria-hidden="true">↻</span>
+          {{ t("common.buttons.refreshList") }}
         </button>
       </div>
 
-      <div class="restaurants-grid">
+      <!-- Annonce pour les lecteurs d'écran -->
+      <div class="sr-only" aria-live="polite" aria-atomic="true">
+        {{
+          t("pages.restaurant.list.screenReader.available", {
+            count: restaurants.length,
+          })
+        }}
+      </div>
+
+      <!-- Grille de restaurants accessible -->
+      <section
+        class="restaurants-grid"
+        id="restaurant-list"
+        role="region"
+        :aria-label="
+          t('pages.restaurant.list.screenReader.listOf', {
+            count: restaurants.length,
+          })
+        "
+      >
         <router-link
-          v-for="restaurant in restaurants"
+          v-for="(restaurant, index) in restaurants"
           :key="restaurant.id"
           :to="`/utilisateur/restaurant/${restaurant.id}`"
-          class="restaurant-link"
+          class="restaurant-link link-accessible"
+          :aria-label="
+            t('pages.restaurant.list.screenReader.viewRestaurant', {
+              name: restaurant.name,
+              cuisine: restaurant.cuisineType,
+              rating: restaurant.averageRating,
+            })
+          "
+          :aria-posinset="index + 1"
+          :aria-setsize="restaurants.length"
         >
           <RestaurantCard :restaurant="restaurant" />
         </router-link>
+      </section>
+
+      <!-- Statistiques pour les lecteurs d'écran -->
+      <div class="sr-only">
+        {{
+          t("pages.restaurant.list.screenReader.listEnd", {
+            count: restaurants.length,
+          })
+        }}
       </div>
     </div>
 
-    <!-- Aucun restaurant -->
-    <div v-else class="no-restaurants">
-      <h3>Aucun restaurant disponible</h3>
-      <p>Veuillez réessayer plus tard.</p>
-      <button @click="handleRefresh" class="retry-btn">Actualiser</button>
+    <!-- Aucun restaurant accessible -->
+    <div
+      v-else
+      class="no-restaurants status-info"
+      role="status"
+      aria-live="polite"
+    >
+      <h2>{{ t("pages.restaurant.list.noRestaurants.title") }}</h2>
+      <p>{{ t("pages.restaurant.list.noRestaurants.description") }}</p>
+      <button
+        @click="handleRefresh"
+        class="btn-accessible retry-btn"
+        :aria-label="t('pages.restaurant.list.noRestaurants.refreshAriaLabel')"
+      >
+        {{ t("common.buttons.refresh") }}
+      </button>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
