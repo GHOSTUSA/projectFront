@@ -3,10 +3,21 @@ import { useCartStore } from "~/stores/panier/cardStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { Dish } from "~/types/Dish";
+import type { Restaurant } from "~/types/Restaurant";
 
-// Appliquer le middleware d'authentification
+// Configuration pour page protégée en CSR
 definePageMeta({
-  middleware: "auth",
+  middleware: "auth", // Middleware d'authentification
+  ssr: false, // Rendu côté client uniquement
+  requiresAuth: true, // Page nécessitant une authentification
+});
+
+// Configuration SEO pour page privée
+useSeoMeta({
+  title: "Mon Panier - FoodDelivery",
+  description:
+    "Gérez votre panier et finalisez votre commande sur FoodDelivery.",
+  robots: "noindex, nofollow", // Pas d'indexation pour les pages privées
 });
 
 const cartStore = useCartStore();
@@ -18,7 +29,11 @@ const isOrderProcessing = ref(false);
 const orderSuccess = ref(false);
 const orderError = ref("");
 
-const getRestaurantId = async () => {
+/**
+ * Récupère l'ID du restaurant des articles du panier (CSR)
+ * @returns ID du restaurant ou 1 par défaut
+ */
+const getRestaurantId = async (): Promise<number> => {
   if (cartStore.cartItems.length === 0) return 1;
 
   try {
@@ -26,9 +41,8 @@ const getRestaurantId = async () => {
 
     for (const restaurant of data.restaurants) {
       if (restaurant.dishes && cartStore.cartItems[0]) {
-        const dish = restaurant.dishes.find(
-          (d: Dish) => d.id === cartStore.cartItems[0].id
-        );
+        const firstItem = cartStore.cartItems[0];
+        const dish = restaurant.dishes.find((d: Dish) => d.id === firstItem.id);
         if (dish) {
           return restaurant.id;
         }

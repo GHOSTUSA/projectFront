@@ -1,15 +1,74 @@
 <script lang="ts" setup>
 import type { Restaurant } from "~/types/Restaurant";
 
-async function fetchRestaurants() {
-  const data: any = await $fetch("/api/data.json");
+// Configuration SEO pour la page liste des restaurants
+useSeoMeta({
+  title: "Restaurants disponibles - FoodDelivery",
+  ogTitle: "Découvrez nos restaurants partenaires",
+  description:
+    "Découvrez notre sélection de restaurants partenaires et commandez vos plats préférés en ligne. Livraison rapide et sécurisée.",
+  ogDescription:
+    "Large choix de restaurants : cuisine française, italienne, asiatique et plus encore. Commandez maintenant !",
+  keywords: "restaurant, livraison, commande en ligne, food delivery, cuisine",
+  ogImage: "/images/restaurants-hero.jpg",
+  twitterCard: "summary_large_image",
+});
 
-  const fetchedRestaurants: Restaurant[] = data.restaurants;
-  console.log("Restaurants récupérés:", fetchedRestaurants);
-  return fetchedRestaurants;
+// Configuration de la balise canonique
+useHead({
+  link: [
+    {
+      rel: "canonical",
+      href: "https://fooddelivery.com/utilisateur/restaurant",
+    },
+  ],
+  meta: [
+    {
+      name: "robots",
+      content: "index, follow",
+    },
+    {
+      property: "og:type",
+      content: "website",
+    },
+    {
+      property: "og:locale",
+      content: "fr_FR",
+    },
+  ],
+});
+
+/**
+ * Récupère la liste des restaurants côté serveur (SSR)
+ * Optimisé pour le SEO et les performances
+ */
+async function fetchRestaurants(): Promise<Restaurant[]> {
+  try {
+    const data: any = await $fetch("/api/data.json");
+    const fetchedRestaurants: Restaurant[] = data.restaurants;
+
+    console.log(
+      "Restaurants récupérés côté serveur:",
+      fetchedRestaurants.length
+    );
+    return fetchedRestaurants;
+  } catch (error) {
+    console.error("Erreur lors du chargement des restaurants:", error);
+    return [];
+  }
 }
 
+// Données récupérées côté serveur pour le SSR
 const restaurants = await fetchRestaurants();
+
+// Mise à jour du titre si aucun restaurant
+if (!restaurants || restaurants.length === 0) {
+  useSeoMeta({
+    title: "Aucun restaurant disponible - FoodDelivery",
+    description:
+      "Nos restaurants sont temporairement indisponibles. Revenez bientôt pour découvrir notre sélection.",
+  });
+}
 </script>
 
 <template>

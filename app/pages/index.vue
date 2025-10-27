@@ -3,31 +3,72 @@ import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { User } from "~/types/User";
 
-let userName = ref<string>("");
-let passWord = ref<string>("");
+// Configuration pour le rendu côté client uniquement (CSR)
+definePageMeta({
+  ssr: false, // Force le rendu côté client
+  auth: false, // Page publique, pas besoin d'authentification
+});
 
+// Configuration SEO pour la page de connexion
+useSeoMeta({
+  title: "Connexion - FoodDelivery",
+  description:
+    "Connectez-vous à votre compte FoodDelivery pour commander vos plats préférés en ligne.",
+  robots: "noindex, nofollow", // Pas d'indexation pour les pages de connexion
+});
+
+// État réactif du formulaire
+const userName = ref<string>("");
+const passWord = ref<string>("");
+const isLoading = ref<boolean>(false);
+const errorMessage = ref<string>("");
+
+/**
+ * Vérification de l'authentification au montage du composant (CSR)
+ */
 onMounted(() => {
   try {
     const authStore = useAuthStore();
     if (authStore.isAuthenticated) {
-      if (authStore.user?.role === "admin") {
-        navigateTo("/Admin/backOffice");
-      } else if (authStore.user?.role === "restaurateur") {
-        navigateTo("/Admin/restaurateur");
-      } else {
-        navigateTo("/utilisateur/restaurant");
-      }
+      // Redirection selon le rôle utilisateur
+      redirectUserByRole(authStore.user);
     }
   } catch (error) {
     console.error("Erreur lors de la vérification d'authentification:", error);
   }
 });
 
+/**
+ * Redirige l'utilisateur selon son rôle
+ * @param user - Utilisateur connecté
+ */
+function redirectUserByRole(user: any) {
+  if (user?.role === "admin") {
+    navigateTo("/Admin/backOffice");
+  } else if (user?.role === "restaurateur") {
+    navigateTo("/Admin/restaurateur");
+  } else {
+    navigateTo("/utilisateur/restaurant");
+  }
+}
+
+/**
+ * Soumission du formulaire de connexion (CSR)
+ * Utilise uniquement des requêtes côté client
+ */
 async function submitForm() {
-  console.log("Nom d'utilisateur:", userName.value);
-  console.log("Mot de passe:", passWord.value);
+  if (!userName.value || !passWord.value) {
+    errorMessage.value = "Veuillez remplir tous les champs";
+    return;
+  }
+
+  isLoading.value = true;
+  errorMessage.value = "";
 
   try {
+    console.log("Tentative de connexion côté client...");
+
+    // Utilisation de $fetch côté client uniquement
     const data: any = await $fetch("/api/data.json");
 
     const user: User | undefined = data.users.find(
@@ -35,27 +76,29 @@ async function submitForm() {
     );
 
     if (user) {
-      console.log("Connexion réussie !");
-      console.log("Utilisateur connecté:", user);
+      console.log("Connexion réussie !", user.email);
 
       const authStore = useAuthStore();
-      authStore.login(user);
+      authStore.loginUser(user);
 
-      if (user.role === "admin") {
-        navigateTo("/Admin/backOffice");
-      } else if (user.role === "restaurateur") {
-        navigateTo("/Admin/restaurateur");
-      } else {
-        navigateTo("/utilisateur/restaurant");
-      }
+      // Redirection selon le rôle
+      redirectUserByRole(user);
     } else {
-      console.log("Identifiants incorrects");
-      alert("Nom d'utilisateur ou mot de passe incorrect");
+      errorMessage.value = "Email ou mot de passe incorrect";
     }
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);
-    alert("Erreur lors de la connexion");
+    errorMessage.value = "Erreur de connexion. Veuillez réessayer.";
+  } finally {
+    isLoading.value = false;
   }
+}
+
+/**
+ * Efface le message d'erreur
+ */
+function clearError() {
+  errorMessage.value = "";
 }
 </script>
 <template>
@@ -68,15 +111,24 @@ async function submitForm() {
         </div>
 
         <form @submit.prevent="submitForm" class="login-form">
+          <!-- Message d'erreur -->
+          <div v-if="errorMessage" class="error-message">
+            <span>{{ errorMessage }}</span>
+            <button type="button" @click="clearError" class="close-error">
+              ×
+            </button>
+          </div>
+
           <div class="form-group">
-            <label for="username">Nom d'utilisateur</label>
+            <label for="username">Email</label>
             <input
-              type="text"
               v-model="userName"
               id="username"
               name="username"
-              placeholder="Entrez votre nom d'utilisateur"
+              placeholder="Entrez votre email"
+              :disabled="isLoading"
               required
+              autocomplete="email"
             />
           </div>
 
@@ -88,11 +140,21 @@ async function submitForm() {
               id="password"
               name="password"
               placeholder="Entrez votre mot de passe"
+              :disabled="isLoading"
               required
+              autocomplete="current-password"
             />
           </div>
 
-          <button type="submit" class="login-btn">Se connecter</button>
+          <button
+            type="submit"
+            class="login-btn"
+            :disabled="isLoading"
+            :aria-label="isLoading ? 'Connexion en cours...' : 'Se connecter'"
+          >
+            <span v-if="isLoading" class="loading-spinner">⟳</span>
+            {{ isLoading ? "Connexion..." : "Se connecter" }}
+          </button>
         </form>
       </div>
 
@@ -217,6 +279,91 @@ async function submitForm() {
 .login-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.close-error {
+  background: none;
+  border: none;
+  color: #c33;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.5rem;
+}
+
+.demo-section {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-top: 3px solid #27ae60;
+}
+
+.demo-section h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.demo-account {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.demo-account h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.demo-account p {
+  margin: 0.25rem 0;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #7f8c8d;
 }
 
 .role-badge {

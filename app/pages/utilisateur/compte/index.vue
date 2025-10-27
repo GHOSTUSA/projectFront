@@ -1,26 +1,48 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
-import type { User } from "~/types/User";
+import type { User, PublicUser } from "~/types/User";
 
-// Appliquer le middleware d'authentification
+// Configuration pour page protégée en CSR
 definePageMeta({
-  middleware: "auth",
+  middleware: "auth", // Middleware d'authentification
+  ssr: false, // Rendu côté client uniquement
+  requiresAuth: true, // Page nécessitant une authentification
+});
+
+// Configuration SEO pour page privée
+useSeoMeta({
+  title: "Mon Compte - FoodDelivery",
+  description:
+    "Gérez votre profil et consultez vos commandes sur FoodDelivery.",
+  robots: "noindex, nofollow", // Pas d'indexation pour les pages privées
 });
 
 const authStore = useAuthStore();
 const commandStore = useCommandStore();
 
-const user = ref<User | null>(null);
+const user = ref<PublicUser | null>(null);
+const isUpdating = ref<boolean>(false);
+const updateMessage = ref<string>("");
 
-// Charger les commandes au montage du composant
+/**
+ * Chargement des données utilisateur (CSR)
+ */
 onMounted(async () => {
-  await commandStore.loadCommands();
+  try {
+    await commandStore.loadCommands();
+    console.log("Commandes chargées côté client");
+  } catch (error) {
+    console.error("Erreur lors du chargement des commandes:", error);
+  }
 });
 
 // Commandes de l'utilisateur via le getter du store
 const userCommands = computed(() => commandStore.userCommands);
 
+/**
+ * Surveillance des changements d'utilisateur
+ */
 watch(
   () => authStore.user,
   (newUser) => {
@@ -31,13 +53,46 @@ watch(
   { immediate: true }
 );
 
-function updateProfile() {
-  if (user.value && authStore.user) {
-    authStore.user.email = user.value.email;
-    authStore.user.lastName = user.value.lastName;
-    authStore.user.firstName = user.value.firstName;
+/**
+ * Mise à jour du profil utilisateur (CSR)
+ */
+async function updateProfile() {
+  if (!user.value || !authStore.user) return;
 
-    console.log("Profil mis à jour:", user.value);
+  isUpdating.value = true;
+  updateMessage.value = "";
+
+  try {
+    // Validation côté client
+    if (!user.value.email || !user.value.firstName || !user.value.lastName) {
+      updateMessage.value = "Tous les champs sont obligatoires";
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(user.value.email)) {
+      updateMessage.value = "Format d'email invalide";
+      return;
+    }
+
+    // Mise à jour via le store
+    authStore.updateUser({
+      email: user.value.email,
+      lastName: user.value.lastName,
+      firstName: user.value.firstName,
+    });
+
+    updateMessage.value = "Profil mis à jour avec succès !";
+    console.log("Profil mis à jour côté client:", user.value);
+
+    // Effacer le message après 3 secondes
+    setTimeout(() => {
+      updateMessage.value = "";
+    }, 3000);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+    updateMessage.value = "Erreur lors de la mise à jour";
+  } finally {
+    isUpdating.value = false;
   }
 }
 </script>
@@ -53,6 +108,18 @@ function updateProfile() {
       <div class="profile-section">
         <h2>Informations personnelles</h2>
         <div class="profile-form">
+          <!-- Message de mise à jour -->
+          <div
+            v-if="updateMessage"
+            class="update-message"
+            :class="{
+              success: updateMessage.includes('succès'),
+              error: !updateMessage.includes('succès'),
+            }"
+          >
+            {{ updateMessage }}
+          </div>
+
           <div class="form-group">
             <label for="email">Email :</label>
             <input
@@ -60,6 +127,8 @@ function updateProfile() {
               id="email"
               v-model="user.email"
               placeholder="Votre email"
+              :disabled="isUpdating"
+              required
             />
           </div>
 
@@ -70,6 +139,8 @@ function updateProfile() {
               id="lastName"
               v-model="user.lastName"
               placeholder="Votre nom"
+              :disabled="isUpdating"
+              required
             />
           </div>
 
@@ -80,11 +151,18 @@ function updateProfile() {
               id="firstName"
               v-model="user.firstName"
               placeholder="Votre prénom"
+              :disabled="isUpdating"
+              required
             />
           </div>
 
-          <button @click="updateProfile" class="update-btn">
-            Mettre à jour le profil
+          <button
+            @click="updateProfile"
+            class="update-btn"
+            :disabled="isUpdating"
+          >
+            <span v-if="isUpdating" class="loading-spinner">⟳</span>
+            {{ isUpdating ? "Mise à jour..." : "Mettre à jour le profil" }}
           </button>
         </div>
       </div>
@@ -207,6 +285,48 @@ function updateProfile() {
   background: linear-gradient(135deg, #229954, #27ae60);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+}
+
+.update-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.update-message {
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.update-message.success {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.update-message.error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
 }
 
 .commands-section {
