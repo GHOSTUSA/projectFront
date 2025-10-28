@@ -1,4 +1,4 @@
-<!-- Page Vue - Connexion et authentification utilisateur -->
+<!-- Page de connexion -->
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";

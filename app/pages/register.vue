@@ -1,4 +1,4 @@
-<!-- Page Vue - Inscription et création de compte -->
+<!-- Page d'inscription -->
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
@@ -21,17 +21,12 @@ const formData = ref({
   lastName: "",
   email: "",
   password: "",
-  confirmPassword: "",
-  role: "user" as User["role"],
 });
 
 const isLoading = ref<boolean>(false);
 const errorMessage = ref<string>("");
 const successMessage = ref<string>("");
 
-/**
- * Vérification si déjà connecté au montage (CSR)
- */
 onMounted(() => {
   const authStore = useAuthStore();
   if (authStore.isAuthenticated) {
@@ -39,9 +34,6 @@ onMounted(() => {
   }
 });
 
-/**
- * Validation du formulaire côté client
- */
 function validateForm(): boolean {
   if (!formData.value.firstName.trim()) {
     errorMessage.value = "Le prénom est requis";
@@ -58,27 +50,13 @@ function validateForm(): boolean {
     return false;
   }
 
-  if (!/\S+@\S+\.\S+/.test(formData.value.email)) {
-    errorMessage.value = "Format d'email invalide";
-    return false;
-  }
-
-  if (formData.value.password.length < 6) {
-    errorMessage.value = "Le mot de passe doit contenir au moins 6 caractères";
-    return false;
-  }
-
-  if (formData.value.password !== formData.value.confirmPassword) {
-    errorMessage.value = "Les mots de passe ne correspondent pas";
+  if (!formData.value.password.trim()) {
+    errorMessage.value = "Le mot de passe est requis";
     return false;
   }
 
   return true;
 }
-
-/**
- * Soumission du formulaire de création de compte (CSR)
- */
 async function submitForm() {
   errorMessage.value = "";
   successMessage.value = "";
@@ -90,18 +68,6 @@ async function submitForm() {
   isLoading.value = true;
 
   try {
-    // Vérifier si l'email existe déjà
-    const data: any = await $fetch("/api/data.json");
-
-    const existingUser = data.users.find(
-      (u: User) => u.email === formData.value.email
-    );
-
-    if (existingUser) {
-      errorMessage.value = "Un compte existe déjà avec cet email";
-      return;
-    }
-
     // Simuler la création du compte
     const newUser: User = {
       id: Date.now(), // ID temporaire
@@ -109,7 +75,7 @@ async function submitForm() {
       lastName: formData.value.lastName,
       email: formData.value.email,
       password: formData.value.password,
-      role: formData.value.role,
+      role: "user", // Tous les utilisateurs sont des clients classiques
       createdAt: new Date().toISOString(),
     };
 
@@ -125,9 +91,8 @@ async function submitForm() {
       const authStore = useAuthStore();
       authStore.loginUser(newUser);
 
-      if (newUser.role === "user") {
-        navigateTo("/utilisateur/restaurant");
-      }
+      // Tous les utilisateurs vont sur la page restaurant
+      navigateTo("/utilisateur/restaurant");
     }, 1500);
   } catch (error) {
     console.error("Erreur lors de la création du compte:", error);
@@ -137,10 +102,6 @@ async function submitForm() {
     isLoading.value = false;
   }
 }
-
-/**
- * Efface les messages
- */
 function clearMessages() {
   errorMessage.value = "";
   successMessage.value = "";
@@ -215,23 +176,6 @@ function clearMessages() {
             />
           </div>
 
-          <!-- Type de compte -->
-          <div class="form-group">
-            <label for="role">Type de compte</label>
-            <select
-              v-model="formData.role"
-              id="role"
-              name="role"
-              :disabled="isLoading"
-              class="role-select"
-            >
-              <option value="user">👤 Client (commander des plats)</option>
-              <option value="restaurateur">
-                🍳 Restaurateur (gérer un restaurant)
-              </option>
-            </select>
-          </div>
-
           <!-- Mots de passe -->
           <div class="form-row">
             <div class="form-group">
@@ -241,21 +185,7 @@ function clearMessages() {
                 v-model="formData.password"
                 id="password"
                 name="password"
-                placeholder="Au moins 6 caractères"
-                :disabled="isLoading"
-                required
-                autocomplete="new-password"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="confirmPassword">Confirmer *</label>
-              <input
-                type="password"
-                v-model="formData.confirmPassword"
-                id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Répétez le mot de passe"
+                placeholder="Votre mot de passe"
                 :disabled="isLoading"
                 required
                 autocomplete="new-password"
@@ -281,19 +211,15 @@ function clearMessages() {
           <p>Découvrez des centaines de restaurants</p>
           <div class="benefits">
             <div class="benefit">
-              <span class="benefit-icon">🚚</span>
               <span>Livraison gratuite dès 25€</span>
             </div>
             <div class="benefit">
-              <span class="benefit-icon">⭐</span>
               <span>Restaurants sélectionnés</span>
             </div>
             <div class="benefit">
-              <span class="benefit-icon">💳</span>
               <span>Paiement 100% sécurisé</span>
             </div>
             <div class="benefit">
-              <span class="benefit-icon">📱</span>
               <span>Suivi en temps réel</span>
             </div>
           </div>
@@ -374,8 +300,7 @@ function clearMessages() {
   font-size: 0.9rem;
 }
 
-.form-group input,
-.role-select {
+.form-group input {
   padding: 0.875rem;
   border: 2px solid #e9ecef;
   border-radius: 8px;
@@ -384,16 +309,11 @@ function clearMessages() {
   background: #f8f9fa;
 }
 
-.form-group input:focus,
-.role-select:focus {
+.form-group input:focus {
   outline: none;
   border-color: #27ae60;
   background: white;
   box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-}
-
-.role-select {
-  cursor: pointer;
 }
 
 .register-btn {

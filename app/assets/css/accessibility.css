@@ -1,11 +1,5 @@
-/**
- * Styles CSS pour améliorer l'accessibilité
- * Optimise le score Lighthouse Accessibility
- */
+/* Styles d'accessibilité */
 
-/* Classes utilitaires pour l'accessibilité */
-
-/* Masquer visuellement mais garder pour les lecteurs d'écran */
 .sr-only {
   position: absolute;
   width: 1px;

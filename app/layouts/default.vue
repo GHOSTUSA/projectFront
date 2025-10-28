@@ -1,4 +1,4 @@
-<!-- Layout Vue - Template principal avec navigation et footer -->
+<!-- Layout principal avec navigation -->
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCartStore } from "~/stores/panier/cardStore";
@@ -27,15 +27,22 @@ const isAuthenticated = computed(() => authStore.isAuthenticated);
 const isAdmin = computed(() => authStore.user?.role === "admin");
 const isRestaurateur = computed(() => authStore.user?.role === "restaurateur");
 
-// Rediriger selon le rôle de l'utilisateur
+const isMobileMenuOpen = ref(false);
+
+function toggleMobileMenu() {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+}
+
+function closeMobileMenu() {
+  isMobileMenuOpen.value = false;
+}
+
 watch(
   [isAuthenticated, isAdmin, isRestaurateur],
   ([auth, admin, resto]) => {
     if (auth && admin && !route.path.startsWith("/Admin/backOffice")) {
-      // Administrateur connecté et pas déjà dans l'interface admin
       navigateTo("/Admin/backOffice");
     } else if (auth && resto && !route.path.startsWith("/Admin/restaurateur")) {
-      // Restaurateur connecté et pas déjà dans l'interface restaurateur
       navigateTo("/Admin/restaurateur");
     }
   },
@@ -53,6 +60,7 @@ watch(
 function logout() {
   authStore.logout();
   navigateTo("/");
+  closeMobileMenu();
 }
 </script>
 
@@ -64,26 +72,49 @@ function logout() {
           <h2>FoodDelivery</h2>
         </div>
 
-        <!-- Sélecteur de langue accessible -->
-        <LanguageSelector />
+        <div class="nav-controls">
+          <LanguageSelector />
 
-        <!-- Menu pour utilisateurs connectés -->
+          <button
+            class="mobile-menu-toggle"
+            @click="toggleMobileMenu"
+            :aria-expanded="isMobileMenuOpen"
+            aria-label="Toggle navigation menu"
+          >
+            <span
+              class="hamburger-line"
+              :class="{ open: isMobileMenuOpen }"
+            ></span>
+            <span
+              class="hamburger-line"
+              :class="{ open: isMobileMenuOpen }"
+            ></span>
+            <span
+              class="hamburger-line"
+              :class="{ open: isMobileMenuOpen }"
+            ></span>
+          </button>
+        </div>
+
         <ul
           v-if="isAuthenticated && !isAdmin && !isRestaurateur"
           class="nav-menu"
+          :class="{ 'mobile-open': isMobileMenuOpen }"
         >
           <li>
-            <NuxtLink to="/utilisateur/restaurant">{{
+            <NuxtLink to="/utilisateur/restaurant" @click="closeMobileMenu">{{
               t("nav.restaurants")
             }}</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/utilisateur/panier">
+            <NuxtLink to="/utilisateur/panier" @click="closeMobileMenu">
               {{ t("nav.cart", { count: cartStore.cartItemCount }) }}
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/utilisateur/compte">{{ t("nav.account") }}</NuxtLink>
+            <NuxtLink to="/utilisateur/compte" @click="closeMobileMenu">{{
+              t("nav.account")
+            }}</NuxtLink>
           </li>
           <li class="user-info">
             <span
@@ -98,15 +129,23 @@ function logout() {
           </li>
         </ul>
 
-        <!-- Menu pour utilisateurs non connectés -->
-        <ul v-else-if="!isAuthenticated" class="nav-menu guest-menu">
+        <ul
+          v-else-if="!isAuthenticated"
+          class="nav-menu guest-menu"
+          :class="{ 'mobile-open': isMobileMenuOpen }"
+        >
           <li>
-            <NuxtLink to="/" class="nav-link">{{ t("nav.login") }}</NuxtLink>
+            <NuxtLink to="/" class="nav-link" @click="closeMobileMenu">{{
+              t("nav.login")
+            }}</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/register" class="nav-link">{{
-              t("nav.register")
-            }}</NuxtLink>
+            <NuxtLink
+              to="/register"
+              class="nav-link"
+              @click="closeMobileMenu"
+              >{{ t("nav.register") }}</NuxtLink
+            >
           </li>
         </ul>
       </nav>
@@ -114,9 +153,6 @@ function logout() {
     <main class="user-main">
       <slot />
     </main>
-
-    <!-- Gestionnaire PWA temporairement désactivé -->
-    <!-- <PWAManager /> -->
   </div>
 </template>
 
@@ -130,6 +166,7 @@ function logout() {
   background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-bottom: 3px solid #229954;
+  position: relative;
 }
 
 .user-nav {
@@ -139,12 +176,7 @@ function logout() {
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 2rem;
-}
-
-.user-nav > :nth-child(2) {
-  margin-left: auto;
-  margin-right: 1rem;
+  position: relative;
 }
 
 .nav-brand h2 {
@@ -152,6 +184,47 @@ function logout() {
   margin: 0;
   font-weight: 600;
   font-size: 1.5rem;
+  white-space: nowrap;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+
+.hamburger-line {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger-line.open:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
 }
 
 .nav-menu {
@@ -159,7 +232,7 @@ function logout() {
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
 }
 
@@ -170,7 +243,8 @@ function logout() {
   padding: 0.5rem 1rem;
   border-radius: 6px;
   transition: all 0.3s ease;
-  position: relative;
+  white-space: nowrap;
+  display: block;
 }
 
 .nav-menu li a:hover {
@@ -190,6 +264,7 @@ function logout() {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
 }
 
 .logout-btn {
@@ -201,6 +276,7 @@ function logout() {
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .logout-btn:hover {
@@ -220,6 +296,7 @@ function logout() {
   border-radius: 6px;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
 }
 
 .guest-menu .nav-link:hover {
@@ -237,33 +314,97 @@ function logout() {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .user-nav {
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.5rem;
   }
 
   .nav-menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    width: 100%;
+    gap: 1rem;
   }
 
-  .nav-menu li:last-child {
-    grid-column: 1 / -1;
+  .nav-brand h2 {
+    font-size: 1.3rem;
   }
+}
 
-  .guest-menu {
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
     display: flex;
+  }
+
+  .user-nav {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    flex-direction: column;
+    padding: 1rem;
     gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 9;
+  }
+
+  .nav-menu.mobile-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav-menu li {
     width: 100%;
-    justify-content: center;
+  }
+
+  .nav-menu li a,
+  .logout-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .user-info {
+    text-align: center;
+    margin: 0.5rem 0;
   }
 
   .nav-brand h2 {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-nav {
+    padding: 0.75rem;
+  }
+
+  .nav-brand h2 {
+    font-size: 1.1rem;
+  }
+
+  .nav-controls {
+    gap: 0.5rem;
+  }
+
+  .nav-menu li a,
+  .logout-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .user-info span {
+    font-size: 0.85rem;
   }
 }
 
@@ -321,48 +462,6 @@ function logout() {
   }
   100% {
     opacity: 0.7;
-  }
-}
-
-@media (max-width: 480px) {
-  .user-nav {
-    padding: 0.5rem;
-  }
-
-  .nav-brand {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 0.75rem;
-  }
-
-  .nav-brand h2 {
-    font-size: 1.1rem;
-    margin: 0;
-  }
-
-  .nav-menu {
-    flex-direction: column;
-    width: 100%;
-    gap: 0.25rem;
-  }
-
-  .nav-menu li a,
-  .logout-btn {
-    /* width: 100%; */
-    text-align: center;
-    display: block;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .user-info {
-    margin: 0;
-    text-align: center;
-  }
-
-  .user-info span {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.8rem;
   }
 }
 </style>
