@@ -218,7 +218,7 @@ function addToCart(dish: any) {
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 8px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #60db34ff;
 }
 
 .contact-info h3 {
