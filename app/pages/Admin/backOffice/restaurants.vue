@@ -208,22 +208,15 @@ const cuisineTypes = [
           </div>
           <div class="restaurant-info">
             <h3>{{ restaurant.name }}</h3>
-            <p class="restaurant-address">📍 {{ restaurant.address }}</p>
-            <p class="restaurant-phone">📞 {{ restaurant.phone }}</p>
-            <p class="restaurant-cuisine">🍽️ {{ restaurant.cuisineType }}</p>
+            <p class="restaurant-address"> {{ restaurant.address }}</p>
+            <p class="restaurant-phone"> {{ restaurant.phone }}</p>
+            <p class="restaurant-cuisine"> {{ restaurant.cuisineType }}</p>
             <div class="restaurant-rating">
               ⭐ {{ restaurant.averageRating }}/5
             </div>
             <div class="restaurant-dishes">
               {{ restaurant.dishes?.length || 0 }} plats disponibles
             </div>
-          </div>
-          <div class="restaurant-info-note">
-            <p>
-              <em
-                >ℹ️ Seuls les restaurateurs peuvent modifier leur restaurant</em
-              >
-            </p>
           </div>
         </div>
       </div>
