@@ -1,3 +1,4 @@
+<!-- Page Vue - Gestion des informations du restaurant -->
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 

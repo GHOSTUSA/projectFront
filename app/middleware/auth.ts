@@ -1,3 +1,4 @@
+/** Middleware - Gestion de l'authentification et redirections */
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
 export default defineNuxtRouteMiddleware((to, from) => {
@@ -19,7 +20,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (authStore.isAuthenticated && to.path === "/") {
     console.log("Utilisateur déjà connecté, redirection selon le rôle");
 
-    // Redirection selon le rôle
     if (authStore.user?.role === "admin") {
       return navigateTo("/Admin/backOffice");
     } else if (authStore.user?.role === "restaurateur") {

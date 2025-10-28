@@ -1,3 +1,4 @@
+<!-- Page Vue - Gestion des commandes pour administrateurs -->
 <script setup lang="ts">
 definePageMeta({
   layout: "admin",

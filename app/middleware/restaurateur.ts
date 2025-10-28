@@ -1,3 +1,4 @@
+/** Middleware - Contrôle d'accès restaurateur */
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
 export default defineNuxtRouteMiddleware((to, from) => {

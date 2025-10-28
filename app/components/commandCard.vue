@@ -1,3 +1,4 @@
+<!-- Composant Vue - Carte d'affichage d'une commande -->
 <template>
   <div class="command-card">
     <div class="command-header">

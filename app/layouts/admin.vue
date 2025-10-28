@@ -1,3 +1,4 @@
+<!-- Layout Vue - Template administration avec menu admin -->
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 

@@ -1,3 +1,4 @@
+<!-- Page Vue - Détail d'un restaurant et menu des plats -->
 <script lang="ts" setup>
 import DishCard from "~/components/DishCard.vue";
 import type { Restaurant } from "~/types/Restaurant";
@@ -7,7 +8,6 @@ const cartStore = useCartStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
-// Validation de l'ID du restaurant
 if (!restaurantId || Array.isArray(restaurantId)) {
   throw createError({
     statusCode: 400,
@@ -15,9 +15,6 @@ if (!restaurantId || Array.isArray(restaurantId)) {
   });
 }
 
-/**
- * Récupère un restaurant par son ID avec optimisation useFetch
- */
 const {
   data: restaurantData,
   error,
@@ -25,8 +22,8 @@ const {
   refresh,
 } = await useFetch(`/api/data.json`, {
   key: `restaurant-${restaurantId}`,
-  server: true, // SSR pour le SEO
-  lazy: false, // Bloque le rendu jusqu'au chargement
+  server: true,
+  lazy: false,
   transform: (data: any) => {
     const restaurant: Restaurant | undefined = data.restaurants?.find(
       (r: Restaurant) => String(r.id) === restaurantId
@@ -58,7 +55,6 @@ const {
   },
 });
 
-// Gestion d'erreur si pas de données
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode || 500,
@@ -69,26 +65,16 @@ if (error.value) {
 
 const restaurant = restaurantData.value!;
 
-// Configuration SEO dynamique optimisée
 useRestaurantSEO(restaurant);
 
-// Configuration ISR (Incremental Static Regeneration)
 definePageMeta({
-  // Mise en cache pour 1 heure, puis régénération en arrière-plan
   prerender: true,
   experimentalNoScripts: false,
 });
 
-/**
- * Ajoute un plat au panier avec feedback utilisateur
- * @param dish - Plat à ajouter
- */
 function addToCart(dish: any) {
   cartStore.addToCart(dish);
   console.log("Plat ajouté au panier:", dish.name);
-
-  // Feedback visuel possible (toast, notification)
-  // useNuxtApp().$toast?.success(`${dish.name} ajouté au panier !`)
 }
 </script>
 

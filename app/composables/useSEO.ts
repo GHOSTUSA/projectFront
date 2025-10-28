@@ -1,7 +1,4 @@
-/**
- * Composable pour la gestion SEO dynamique
- * Génère automatiquement les métadonnées basées sur les données réelles
- */
+/** Composable - Gestion SEO dynamique avec métadonnées */
 
 import type { Restaurant } from "~/types/Restaurant";
 import type { Dish } from "~/types/Dish";
@@ -15,14 +12,10 @@ export interface SEOConfig {
   type?: "website" | "restaurant" | "product" | "article";
 }
 
-/**
- * Génère les balises SEO dynamiques pour une liste de restaurants
- */
 export function useRestaurantListSEO(restaurants: Restaurant[]) {
   const route = useRoute();
   const totalRestaurants = restaurants.length;
 
-  // Statistiques pour SEO dynamique
   const cuisineTypes = [...new Set(restaurants.map((r) => r.cuisineType))];
   const avgRating =
     restaurants.length > 0
@@ -159,9 +152,6 @@ export function useRestaurantListSEO(restaurants: Restaurant[]) {
   });
 }
 
-/**
- * Génère les balises SEO dynamiques pour un restaurant spécifique
- */
 export function useRestaurantSEO(restaurant: Restaurant) {
   const route = useRoute();
   const dishCount = restaurant.dishes?.length || 0;
@@ -299,9 +289,6 @@ export function useRestaurantSEO(restaurant: Restaurant) {
   });
 }
 
-/**
- * Génère les balises SEO dynamiques pour un plat spécifique
- */
 export function useDishSEO(dish: Dish, restaurant: Restaurant) {
   const route = useRoute();
 

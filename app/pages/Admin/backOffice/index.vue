@@ -1,3 +1,4 @@
+<!-- Page Vue - Dashboard administrateur avec statistiques -->
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 

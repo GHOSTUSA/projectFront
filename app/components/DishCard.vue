@@ -1,3 +1,4 @@
+<!-- Composant Vue - Carte d'affichage d'un plat -->
 <script lang="ts" setup>
 import { defineProps, defineEmits } from "vue";
 import type { Dish } from "~/types/Dish";
@@ -14,7 +15,6 @@ const emit = defineEmits<{
   dishSelected: [dish: Dish];
 }>();
 
-// Gestion accessibilité focus
 const { setupAccessibleComponent } = useAccessibility();
 const cardRef = ref<HTMLElement | null>(null);
 

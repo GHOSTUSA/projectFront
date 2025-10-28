@@ -1,3 +1,4 @@
+/** Middleware - Contrôle d'accès administrateur */
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
 export default defineNuxtRouteMiddleware((to, from) => {

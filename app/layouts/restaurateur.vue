@@ -1,3 +1,4 @@
+<!-- Layout Vue - Template restaurateur avec gestion du restaurant -->
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 

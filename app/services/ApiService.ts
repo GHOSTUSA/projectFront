@@ -1,7 +1,4 @@
-/**
- * Service de gestion des API avec typage strict
- * Centralise toutes les requêtes vers les APIs et assure un typage robuste
- */
+﻿/** Service - Gestion des API avec typage strict et centralisation */
 
 import type {
   ApiResponse,
@@ -16,9 +13,6 @@ import type { User, PublicUser } from "@/types/User";
 import type { Command } from "@/types/Command";
 import type { Dish } from "@/types/Dish";
 
-/**
- * Configuration de base pour les requêtes API
- */
 const API_CONFIG = {
   baseUrl: process.env.API_BASE_URL || "/api",
   timeout: 10000,
@@ -27,20 +21,17 @@ const API_CONFIG = {
   },
 } as const;
 
-/**
- * Type générique pour les fonctions de requête
- */
 type ApiFunction<TRequest = any, TResponse = any> = (
   data?: TRequest
 ) => Promise<TResponse>;
 
 /**
- * Service principal pour les requêtes API
- * Utilise le système de fetch de Nuxt avec typage strict
+ * Service principal pour les requÃªtes API
+ * Utilise le systÃ¨me de fetch de Nuxt avec typage strict
  */
 export class ApiService {
   /**
-   * Récupère les données statiques depuis data.json
+   * RÃ©cupÃ¨re les donnÃ©es statiques depuis data.json
    * @returns Promise contenant restaurants, users et commands
    */
   static async getStaticData(): Promise<DataApiResponse> {
@@ -48,13 +39,13 @@ export class ApiService {
       const data = await $fetch<DataApiResponse>("/api/data.json");
       return data;
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
-      throw new Error("Impossible de charger les données");
+      console.error("Erreur lors de la rÃ©cupÃ©ration des donnÃ©es:", error);
+      throw new Error("Impossible de charger les donnÃ©es");
     }
   }
 
   /**
-   * Récupère la liste de tous les restaurants
+   * RÃ©cupÃ¨re la liste de tous les restaurants
    * @returns Promise<Restaurant[]>
    */
   static async getRestaurants(): Promise<Restaurant[]> {
@@ -63,7 +54,7 @@ export class ApiService {
   }
 
   /**
-   * Récupère un restaurant par son ID
+   * RÃ©cupÃ¨re un restaurant par son ID
    * @param id - ID du restaurant
    * @returns Promise<Restaurant | null>
    */
@@ -73,7 +64,7 @@ export class ApiService {
   }
 
   /**
-   * Récupère les plats d'un restaurant
+   * RÃ©cupÃ¨re les plats d'un restaurant
    * @param restaurantId - ID du restaurant
    * @returns Promise<Dish[]>
    */
@@ -109,7 +100,7 @@ export class ApiService {
   }
 
   /**
-   * Récupère les commandes d'un utilisateur
+   * RÃ©cupÃ¨re les commandes d'un utilisateur
    * @param userId - ID de l'utilisateur
    * @returns Promise<Command[]>
    */
@@ -119,7 +110,7 @@ export class ApiService {
   }
 
   /**
-   * Récupère toutes les commandes (admin uniquement)
+   * RÃ©cupÃ¨re toutes les commandes (admin uniquement)
    * @returns Promise<Command[]>
    */
   static async getAllCommands(): Promise<Command[]> {
@@ -128,7 +119,7 @@ export class ApiService {
   }
 
   /**
-   * Recherche des restaurants par critères
+   * Recherche des restaurants par critÃ¨res
    * @param query - Terme de recherche
    * @param cuisineType - Type de cuisine (optionnel)
    * @returns Promise<Restaurant[]>
@@ -155,11 +146,11 @@ export class ApiService {
 }
 
 /**
- * Hooks personnalisés pour utiliser les services avec la réactivité Vue
+ * Hooks personnalisÃ©s pour utiliser les services avec la rÃ©activitÃ© Vue
  */
 
 /**
- * Hook pour récupérer les restaurants avec état de chargement
+ * Hook pour rÃ©cupÃ©rer les restaurants avec Ã©tat de chargement
  */
 export function useRestaurants() {
   const restaurants = ref<Restaurant[]>([]);
@@ -188,7 +179,7 @@ export function useRestaurants() {
 }
 
 /**
- * Hook pour récupérer un restaurant spécifique
+ * Hook pour rÃ©cupÃ©rer un restaurant spÃ©cifique
  */
 export function useRestaurant(id: Ref<number> | number) {
   const restaurant = ref<Restaurant | null>(null);

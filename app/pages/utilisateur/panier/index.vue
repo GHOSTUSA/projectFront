@@ -1,3 +1,4 @@
+<!-- Page Vue - Panier utilisateur et finalisation de commande -->
 <script lang="ts" setup>
 import { useCartStore } from "~/stores/panier/cardStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
@@ -5,34 +6,27 @@ import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { Dish } from "~/types/Dish";
 import type { Restaurant } from "~/types/Restaurant";
 
-// Configuration pour page protégée en CSR
 definePageMeta({
-  middleware: "auth", // Middleware d'authentification
-  ssr: false, // Rendu côté client uniquement
-  requiresAuth: true, // Page nécessitant une authentification
+  middleware: "auth",
+  ssr: false,
+  requiresAuth: true,
 });
 
-// Configuration SEO pour page privée
 useSeoMeta({
   title: "Mon Panier - FoodDelivery",
   description:
     "Gérez votre panier et finalisez votre commande sur FoodDelivery.",
-  robots: "noindex, nofollow", // Pas d'indexation pour les pages privées
+  robots: "noindex, nofollow",
 });
 
 const cartStore = useCartStore();
 const commandStore = useCommandStore();
 const authStore = useAuthStore();
 
-// État pour gérer le processus de commande
 const isOrderProcessing = ref(false);
 const orderSuccess = ref(false);
 const orderError = ref("");
 
-/**
- * Récupère l'ID du restaurant des articles du panier (CSR)
- * @returns ID du restaurant ou 1 par défaut
- */
 const getRestaurantId = async (): Promise<number> => {
   if (cartStore.cartItems.length === 0) return 1;
 

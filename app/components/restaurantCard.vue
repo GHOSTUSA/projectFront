@@ -1,3 +1,4 @@
+<!-- Composant Vue - Carte d'affichage d'un restaurant -->
 <script setup lang="ts">
 import type { Restaurant } from "~/types/Restaurant";
 

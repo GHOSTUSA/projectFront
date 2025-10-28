@@ -1,38 +1,31 @@
+<!-- Page Vue - Connexion et authentification utilisateur -->
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { User } from "~/types/User";
 
-// Internationalisation
 const { t } = useI18n();
 
-// Configuration pour le rendu côté client uniquement (CSR)
 definePageMeta({
-  ssr: false, // Force le rendu côté client
-  auth: false, // Page publique, pas besoin d'authentification
+  ssr: false,
+  auth: false,
 });
 
-// Configuration SEO pour la page de connexion avec i18n
 useSeoMeta({
   title: t("pages.home.seo.title"),
   description: t("pages.home.seo.description"),
-  robots: "noindex, nofollow", // Pas d'indexation pour les pages de connexion
+  robots: "noindex, nofollow",
 });
 
-// État réactif du formulaire
 const userName = ref<string>("");
 const passWord = ref<string>("");
 const isLoading = ref<boolean>(false);
 const errorMessage = ref<string>("");
 
-/**
- * Vérification de l'authentification au montage du composant (CSR)
- */
 onMounted(() => {
   try {
     const authStore = useAuthStore();
     if (authStore.isAuthenticated) {
-      // Redirection selon le rôle utilisateur
       redirectUserByRole(authStore.user);
     }
   } catch (error) {
@@ -40,10 +33,6 @@ onMounted(() => {
   }
 });
 
-/**
- * Redirige l'utilisateur selon son rôle
- * @param user - Utilisateur connecté
- */
 function redirectUserByRole(user: any) {
   if (user?.role === "admin") {
     navigateTo("/Admin/backOffice");
@@ -54,10 +43,6 @@ function redirectUserByRole(user: any) {
   }
 }
 
-/**
- * Soumission du formulaire de connexion (CSR)
- * Utilise uniquement des requêtes côté client
- */
 async function submitForm() {
   if (!userName.value || !passWord.value) {
     errorMessage.value = t("errors.form.allFieldsRequired");
@@ -70,7 +55,6 @@ async function submitForm() {
   try {
     console.log("Tentative de connexion côté client...");
 
-    // Utilisation de $fetch côté client uniquement
     const data: any = await $fetch("/api/data.json");
 
     const user: User | undefined = data.users.find(
@@ -83,7 +67,6 @@ async function submitForm() {
       const authStore = useAuthStore();
       authStore.loginUser(user);
 
-      // Redirection selon le rôle
       redirectUserByRole(user);
     } else {
       errorMessage.value = t("errors.auth.invalidCredentials");
@@ -96,9 +79,6 @@ async function submitForm() {
   }
 }
 
-/**
- * Efface le message d'erreur
- */
 function clearError() {
   errorMessage.value = "";
 }
@@ -113,7 +93,6 @@ function clearError() {
         </div>
 
         <form @submit.prevent="submitForm" class="login-form">
-          <!-- Message d'erreur -->
           <div v-if="errorMessage" class="error-message">
             <span>{{ errorMessage }}</span>
             <button type="button" @click="clearError" class="close-error">
@@ -402,11 +381,10 @@ function clearError() {
 
 .login-image {
   background: linear-gradient(
-      135deg,
-      rgba(39, 174, 96, 0.9),
-      rgba(46, 204, 113, 0.9)
-    ),
-    url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80");
+    135deg,
+    rgba(39, 174, 96, 0.9),
+    rgba(46, 204, 113, 0.9)
+  );
   background-size: cover;
   background-position: center;
   display: flex;

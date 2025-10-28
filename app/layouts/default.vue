@@ -1,11 +1,10 @@
+<!-- Layout Vue - Template principal avec navigation et footer -->
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCartStore } from "~/stores/panier/cardStore";
 
-// Internationalisation
 const { t } = useI18n();
 
-// Lazy loading du LanguageSelector pour optimiser les performances
 const LanguageSelector = defineAsyncComponent({
   loader: () => import("~/components/LanguageSelector.vue"),
   loadingComponent: defineComponent({

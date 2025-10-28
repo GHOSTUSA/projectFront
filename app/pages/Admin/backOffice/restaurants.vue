@@ -1,3 +1,4 @@
+<!-- Page Vue - Gestion des restaurants pour administrateurs -->
 <script setup lang="ts">
 definePageMeta({
   layout: "admin",
@@ -56,35 +57,6 @@ const addRestaurant = () => {
 
   console.log("Nouveau restaurant ajouté:", restaurant);
 };
-
-// Supprimer les fonctions d'édition et de suppression - admins peuvent seulement créer et voir
-// const editRestaurant = (restaurant: any) => {
-//   editingRestaurant.value = { ...restaurant };
-// };
-
-// const saveRestaurant = () => {
-//   if (editingRestaurant.value) {
-//     const index = restaurants.value.findIndex(
-//       (r) => r.id === editingRestaurant.value.id
-//     );
-//     if (index !== -1) {
-//       restaurants.value[index] = { ...editingRestaurant.value };
-//     }
-//     editingRestaurant.value = null;
-//     console.log("Restaurant modifié");
-//   }
-// };
-
-// const deleteRestaurant = (restaurantId: number) => {
-//   if (confirm("Êtes-vous sûr de vouloir supprimer ce restaurant ?")) {
-//     restaurants.value = restaurants.value.filter((r) => r.id !== restaurantId);
-//     console.log("Restaurant supprimé:", restaurantId);
-//   }
-// };
-
-// const cancelEdit = () => {
-//   editingRestaurant.value = null;
-// };
 
 const cuisineTypes = [
   "Français",

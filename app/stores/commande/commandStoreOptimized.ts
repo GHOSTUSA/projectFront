@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+﻿import { defineStore } from "pinia";
 import type { Command, CommandStatus } from "~/types/Command";
 import type { Restaurant } from "~/types/Restaurant";
 import type { Dish } from "~/types/Dish";
@@ -21,37 +21,37 @@ interface CommandStats {
 
 /**
  * Store global pour la gestion des commandes
- * Fonctionnalités: cache intelligent, filtres avancés, statistiques temps réel
+ * FonctionnalitÃ©s: cache intelligent, filtres avancÃ©s, statistiques temps rÃ©el
  */
 export const useCommandStore = defineStore("command", {
   state: () => ({
-    /** Cache des commandes */
+    
     commands: [] as Command[],
 
-    /** Commande actuellement sélectionnée */
+    
     currentCommand: null as Command | null,
 
-    /** États de chargement */
+    
     loading: {
       commands: false,
       currentCommand: false,
       updating: false,
     },
 
-    /** Gestion des erreurs */
+    
     errors: {
       commands: null as string | null,
       currentCommand: null as string | null,
       updating: null as string | null,
     },
 
-    /** Métadonnées de cache */
+    
     cache: {
       commandsLastFetch: null as Date | null,
-      commandsTtl: 2 * 60 * 1000, // 2 minutes TTL pour les commandes (données plus volatiles)
+      commandsTtl: 2 * 60 * 1000, // 2 minutes TTL pour les commandes (donnÃ©es plus volatiles)
     },
 
-    /** Filtres et recherche */
+    
     filters: {
       searchQuery: "",
       status: "" as CommandStatus | "",
@@ -68,7 +68,7 @@ export const useCommandStore = defineStore("command", {
 
   getters: {
     /**
-     * Commandes filtrées selon les critères actuels
+     * Commandes filtrÃ©es selon les critÃ¨res actuels
      */
     filteredCommands: (state): Command[] => {
       let filtered = [...state.commands];
@@ -127,7 +127,7 @@ export const useCommandStore = defineStore("command", {
       }
       if (state.filters.dateTo) {
         const toDate = new Date(state.filters.dateTo);
-        toDate.setHours(23, 59, 59, 999); // Fin de journée
+        toDate.setHours(23, 59, 59, 999); // Fin de journÃ©e
         filtered = filtered.filter(
           (command) => new Date(command.orderDate) <= toDate
         );
@@ -169,7 +169,7 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Statistiques complètes des commandes
+     * Statistiques complÃ¨tes des commandes
      */
     commandStats: (state): CommandStats => {
       const commands = state.commands;
@@ -209,7 +209,7 @@ export const useCommandStore = defineStore("command", {
         .sort((a, b) => b.orderCount - a.orderCount)
         .slice(0, 10);
 
-      // Commandes récentes (7 derniers jours)
+      // Commandes rÃ©centes (7 derniers jours)
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
       const recentOrders = commands
@@ -280,7 +280,7 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Vérifie si le cache est valide
+     * VÃ©rifie si le cache est valide
      */
     isCacheValid: (state): boolean => {
       if (!state.cache.commandsLastFetch) return false;
@@ -291,7 +291,7 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * État de chargement global
+     * Ã‰tat de chargement global
      */
     isLoading: (state): boolean => {
       return Object.values(state.loading).some(Boolean);
@@ -325,9 +325,9 @@ export const useCommandStore = defineStore("command", {
      * Charge toutes les commandes avec cache intelligent
      */
     async fetchCommands(forceRefresh = false): Promise<Command[]> {
-      // Vérification du cache si pas de rafraîchissement forcé
+      // VÃ©rification du cache si pas de rafraÃ®chissement forcÃ©
       if (!forceRefresh && this.isCacheValid && this.commands.length > 0) {
-        console.log("🎯 Commandes chargées depuis le cache");
+        console.log("ðŸŽ¯ Commandes chargÃ©es depuis le cache");
         return this.commands;
       }
 
@@ -341,13 +341,13 @@ export const useCommandStore = defineStore("command", {
         this.cache.commandsLastFetch = new Date();
 
         console.log(
-          `✅ ${this.commands.length} commandes chargées et mises en cache`
+          `âœ… ${this.commands.length} commandes chargÃ©es et mises en cache`
         );
         return this.commands;
       } catch (error) {
         const errorMessage = "Erreur lors du chargement des commandes";
         this.errors.commands = errorMessage;
-        console.error("❌", errorMessage, error);
+        console.error("âŒ", errorMessage, error);
         throw error;
       } finally {
         this.loading.commands = false;
@@ -355,14 +355,14 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Charge une commande spécifique par ID
+     * Charge une commande spÃ©cifique par ID
      */
     async fetchCommandById(id: string | number): Promise<Command> {
-      // Vérification dans le cache local d'abord
+      // VÃ©rification dans le cache local d'abord
       const cachedCommand = this.getCommandById(id);
       if (cachedCommand) {
         this.currentCommand = cachedCommand;
-        console.log(`🎯 Commande ${id} chargée depuis le cache`);
+        console.log(`ðŸŽ¯ Commande ${id} chargÃ©e depuis le cache`);
         return cachedCommand;
       }
 
@@ -379,12 +379,12 @@ export const useCommandStore = defineStore("command", {
         }
 
         this.currentCommand = command;
-        console.log(`✅ Commande ${id} chargée`);
+        console.log(`âœ… Commande ${id} chargÃ©e`);
         return command;
       } catch (error) {
         const errorMessage = `Erreur lors du chargement de la commande ${id}`;
         this.errors.currentCommand = errorMessage;
-        console.error("❌", errorMessage, error);
+        console.error("âŒ", errorMessage, error);
         throw error;
       } finally {
         this.loading.currentCommand = false;
@@ -392,7 +392,7 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Met à jour le statut d'une commande
+     * Met Ã  jour le statut d'une commande
      */
     async updateCommandStatus(
       commandId: string | number,
@@ -402,19 +402,19 @@ export const useCommandStore = defineStore("command", {
       this.errors.updating = null;
 
       try {
-        // Simulation d'appel API - à remplacer par vraie API
+        // Simulation d'appel API - Ã  remplacer par vraie API
         console.log(
-          `🔄 Mise à jour commande ${commandId} vers statut ${newStatus}`
+          `ðŸ”„ Mise Ã  jour commande ${commandId} vers statut ${newStatus}`
         );
 
-        // Mise à jour locale immédiate (optimistic update)
+        // Mise Ã  jour locale immÃ©diate (optimistic update)
         const commandIndex = this.commands.findIndex(
           (c) => String(c.id) === String(commandId)
         );
         if (commandIndex !== -1) {
           this.commands[commandIndex].status = newStatus;
 
-          // Mise à jour de la commande courante si c'est la même
+          // Mise Ã  jour de la commande courante si c'est la mÃªme
           if (
             this.currentCommand &&
             String(this.currentCommand.id) === String(commandId)
@@ -423,20 +423,20 @@ export const useCommandStore = defineStore("command", {
           }
         }
 
-        // Ici, on ferait l'appel API réel
+        // Ici, on ferait l'appel API rÃ©el
         // await $fetch(`/api/commands/${commandId}/status`, {
         //   method: 'PUT',
         //   body: { status: newStatus }
         // });
 
         console.log(
-          `✅ Statut de la commande ${commandId} mis à jour: ${newStatus}`
+          `âœ… Statut de la commande ${commandId} mis Ã  jour: ${newStatus}`
         );
         return this.commands[commandIndex];
       } catch (error) {
-        const errorMessage = `Erreur lors de la mise à jour de la commande ${commandId}`;
+        const errorMessage = `Erreur lors de la mise Ã  jour de la commande ${commandId}`;
         this.errors.updating = errorMessage;
-        console.error("❌", errorMessage, error);
+        console.error("âŒ", errorMessage, error);
         throw error;
       } finally {
         this.loading.updating = false;
@@ -444,14 +444,14 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Crée une nouvelle commande
+     * CrÃ©e une nouvelle commande
      */
     async createCommand(commandData: Partial<Command>): Promise<Command> {
       this.loading.updating = true;
       this.errors.updating = null;
 
       try {
-        // Simulation de création - à remplacer par vraie API
+        // Simulation de crÃ©ation - Ã  remplacer par vraie API
         const newCommand: Command = {
           id: Date.now(), // ID temporaire
           orderDate: new Date().toISOString(),
@@ -477,12 +477,12 @@ export const useCommandStore = defineStore("command", {
         this.commands.unshift(newCommand);
         this.invalidateCache(); // Force rechargement au prochain fetch
 
-        console.log(`✅ Nouvelle commande créée: ${newCommand.id}`);
+        console.log(`âœ… Nouvelle commande crÃ©Ã©e: ${newCommand.id}`);
         return newCommand;
       } catch (error) {
-        const errorMessage = "Erreur lors de la création de la commande";
+        const errorMessage = "Erreur lors de la crÃ©ation de la commande";
         this.errors.updating = errorMessage;
-        console.error("❌", errorMessage, error);
+        console.error("âŒ", errorMessage, error);
         throw error;
       } finally {
         this.loading.updating = false;
@@ -490,15 +490,15 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Met à jour les filtres
+     * Met Ã  jour les filtres
      */
     updateFilters(filters: Partial<typeof this.filters>) {
       this.filters = { ...this.filters, ...filters };
-      console.log("🔍 Filtres commandes mis à jour:", this.filters);
+      console.log("ðŸ” Filtres commandes mis Ã  jour:", this.filters);
     },
 
     /**
-     * Réinitialise les filtres
+     * RÃ©initialise les filtres
      */
     resetFilters() {
       this.filters = {
@@ -513,7 +513,7 @@ export const useCommandStore = defineStore("command", {
         sortBy: "orderDate",
         sortOrder: "desc",
       };
-      console.log("🔄 Filtres commandes réinitialisés");
+      console.log("ðŸ”„ Filtres commandes rÃ©initialisÃ©s");
     },
 
     /**
@@ -521,7 +521,7 @@ export const useCommandStore = defineStore("command", {
      */
     invalidateCache() {
       this.cache.commandsLastFetch = null;
-      console.log("🧹 Cache commandes invalidé");
+      console.log("ðŸ§¹ Cache commandes invalidÃ©");
     },
 
     /**
@@ -536,7 +536,7 @@ export const useCommandStore = defineStore("command", {
     },
 
     /**
-     * Réinitialise complètement le store
+     * RÃ©initialise complÃ¨tement le store
      */
     $reset() {
       this.commands = [];
@@ -553,7 +553,7 @@ export const useCommandStore = defineStore("command", {
       };
       this.cache.commandsLastFetch = null;
       this.resetFilters();
-      console.log("🔄 Store commandes réinitialisé");
+      console.log("ðŸ”„ Store commandes rÃ©initialisÃ©");
     },
   },
 });

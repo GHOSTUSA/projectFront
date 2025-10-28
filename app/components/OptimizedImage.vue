@@ -1,6 +1,4 @@
-<!--
-  Composant d'image optimisée simplifié avec lazy loading et fallbacks
--->
+<!-- Composant Vue - Image optimisée avec lazy loading -->
 <script lang="ts" setup>
 interface OptimizedImageProps {
   src: string;
@@ -22,7 +20,6 @@ const props = withDefaults(defineProps<OptimizedImageProps>(), {
 const isLoaded = ref(false);
 const hasError = ref(false);
 
-// Gestion du chargement et des erreurs
 const handleLoad = () => {
   isLoaded.value = true;
 };
@@ -32,7 +29,6 @@ const handleError = () => {
   isLoaded.value = true;
 };
 
-// Placeholder pendant le chargement
 const placeholderStyle = computed(() => ({
   width: `${props.width}px`,
   height: `${props.height}px`,
@@ -47,7 +43,6 @@ const placeholderStyle = computed(() => ({
 
 <template>
   <div class="optimized-image-container" :class="class" :style="style">
-    <!-- Placeholder pendant le chargement -->
     <div
       v-if="!isLoaded"
       class="image-placeholder"
@@ -58,7 +53,6 @@ const placeholderStyle = computed(() => ({
       <div class="loading-spinner"></div>
     </div>
 
-    <!-- Image standard avec lazy loading -->
     <img
       :src="src"
       :alt="alt"
@@ -74,7 +68,6 @@ const placeholderStyle = computed(() => ({
       @error="handleError"
     />
 
-    <!-- Fallback en cas d'erreur -->
     <div
       v-if="hasError"
       class="image-error"

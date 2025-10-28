@@ -1,28 +1,24 @@
+<!-- Composant Vue - Sélecteur de langue avec i18n -->
 <script lang="ts" setup>
 const { locale, locales, setLocale } = useI18n();
 const { t } = useI18n();
 
-// Liste des langues disponibles
 const availableLocales = computed(() => {
   return locales.value.filter((l) => l.code !== locale.value);
 });
 
-// Langue actuelle
 const currentLocale = computed(() => {
   return locales.value.find((l) => l.code === locale.value);
 });
 
-// Changement de langue
 async function switchLanguage(code: string) {
   await setLocale(code);
 
-  // Annonce pour les lecteurs d'écran
   const { announceSuccess } = useScreenReaderAnnouncements();
   const newLanguage = locales.value.find((l) => l.code === code)?.name;
   announceSuccess(t("messages.languageChanged", { language: newLanguage }));
 }
 
-// Gestion du clavier
 function handleKeydown(event: KeyboardEvent, code: string) {
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();

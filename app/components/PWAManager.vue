@@ -1,9 +1,5 @@
-<!--
-  Composant de gestion PWA : installation, mises à jour, mode offline
-  Fournit une interface utilisateur pour les fonctionnalités PWA
--->
+<!-- Composant Vue - Gestionnaire PWA (installation, mises à jour) -->
 <script lang="ts" setup>
-// Gestion PWA avec détection d'installation et mises à jour
 const isInstallable = ref(false);
 const isInstalled = ref(false);
 const isOffline = ref(false);
@@ -12,18 +8,14 @@ const showInstallPrompt = ref(false);
 
 let deferredPrompt: any = null;
 
-// Détection de l'état de la connexion
 const updateOnlineStatus = () => {
   isOffline.value = !navigator.onLine;
 };
 
-// Gestion de l'événement d'installation PWA
 const handleBeforeInstallPrompt = (e: Event) => {
   e.preventDefault();
   deferredPrompt = e;
   isInstallable.value = true;
-
-  // Afficher le prompt d'installation après quelques secondes
   setTimeout(() => {
     showInstallPrompt.value = true;
   }, 3000);

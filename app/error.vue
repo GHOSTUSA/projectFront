@@ -1,3 +1,4 @@
+<!-- Page Vue - Gestion des erreurs et codes de statut -->
 <script setup lang="ts">
 interface ErrorProps {
   error: {
@@ -111,7 +112,7 @@ const goHome = () => {
 }
 
 .error-message {
-  font-size: 16px; 
+  font-size: 16px;
   color: #6c757d;
   line-height: 1.6;
   margin: 0 0 32px 0;

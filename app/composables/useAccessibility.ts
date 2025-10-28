@@ -1,18 +1,9 @@
-/**
- * Composable pour l'amélioration de l'accessibilité
- * Optimise le score Lighthouse Accessibility ≥ 90
- */
+﻿/** Composable - Gestion de l'accessibilité et navigation clavier */
 
-/**
- * Gestion du focus et navigation clavier
- */
 export function useKeyboardNavigation() {
   const focusedElementIndex = ref(-1);
   const focusableElements = ref<HTMLElement[]>([]);
 
-  /**
-   * Trouve tous les éléments focusables dans un conteneur
-   */
   function getFocusableElements(container: HTMLElement): HTMLElement[] {
     const focusableSelectors = [
       "button:not([disabled])",
@@ -30,9 +21,6 @@ export function useKeyboardNavigation() {
     ) as HTMLElement[];
   }
 
-  /**
-   * Navigation clavier pour listes (flèches haut/bas)
-   */
   function handleKeyboardNavigation(
     event: KeyboardEvent,
     container: HTMLElement
@@ -70,7 +58,6 @@ export function useKeyboardNavigation() {
         break;
 
       case "Escape":
-        // Fermer les modales ou revenir à l'élément parent
         (document.activeElement as HTMLElement)?.blur();
         break;
     }
@@ -83,21 +70,15 @@ export function useKeyboardNavigation() {
   };
 }
 
-/**
- * Gestion des annonces pour les lecteurs d'écran
- */
 export function useScreenReaderAnnouncements() {
   const announceElement = ref<HTMLElement | null>(null);
 
-  /**
-   * Annonce un message aux lecteurs d'écran
-   */
   function announce(
     message: string,
     priority: "polite" | "assertive" = "polite"
   ) {
     if (!announceElement.value) {
-      // Créer l'élément d'annonce s'il n'existe pas
+      // CrÃ©er l'Ã©lÃ©ment d'annonce s'il n'existe pas
       announceElement.value = document.createElement("div");
       announceElement.value.setAttribute("aria-live", priority);
       announceElement.value.setAttribute("aria-atomic", "true");
@@ -115,10 +96,10 @@ export function useScreenReaderAnnouncements() {
   }
 
   /**
-   * Annonce les changements de page/état
+   * Annonce les changements de page/Ã©tat
    */
   function announcePageChange(title: string) {
-    announce(`Page changée: ${title}`, "assertive");
+    announce(`Page changÃ©e: ${title}`, "assertive");
   }
 
   /**
@@ -129,10 +110,10 @@ export function useScreenReaderAnnouncements() {
   }
 
   /**
-   * Annonce les succès
+   * Annonce les succÃ¨s
    */
   function announceSuccess(message: string) {
-    announce(`Succès: ${message}`, "polite");
+    announce(`SuccÃ¨s: ${message}`, "polite");
   }
 
   return {
@@ -148,11 +129,11 @@ export function useScreenReaderAnnouncements() {
  */
 export function useAccessibleColors() {
   /**
-   * Vérifie si le contraste entre deux couleurs est suffisant
-   * Basé sur les directives WCAG 2.1
+   * VÃ©rifie si le contraste entre deux couleurs est suffisant
+   * BasÃ© sur les directives WCAG 2.1
    */
   function calculateContrast(color1: string, color2: string): number {
-    // Conversion couleur vers luminosité relative
+    // Conversion couleur vers luminositÃ© relative
     function getLuminance(color: string): number {
       // Simplification - dans un vrai projet, utiliser une lib comme chroma.js
       const rgb = hexToRgb(color);
@@ -205,18 +186,18 @@ export function useAccessibleColors() {
 }
 
 /**
- * Gestion des rôles ARIA et labels
+ * Gestion des rÃ´les ARIA et labels
  */
 export function useARIALabels() {
   /**
-   * Génère un ID unique pour aria-describedby
+   * GÃ©nÃ¨re un ID unique pour aria-describedby
    */
   function generateId(prefix = "aria"): string {
     return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
-   * Créer les attributs ARIA pour un élément interactif
+   * CrÃ©er les attributs ARIA pour un Ã©lÃ©ment interactif
    */
   function createInteractiveARIA(options: {
     label: string;
@@ -233,7 +214,7 @@ export function useARIALabels() {
     if (options.description) {
       const descId = generateId("desc");
       attrs["aria-describedby"] = descId;
-      // Le description ID sera utilisé pour créer un élément caché avec cette description
+      // Le description ID sera utilisÃ© pour crÃ©er un Ã©lÃ©ment cachÃ© avec cette description
     }
 
     if (options.expanded !== undefined) {
@@ -256,7 +237,7 @@ export function useARIALabels() {
   }
 
   /**
-   * Créer les attributs pour une liste navigable au clavier
+   * CrÃ©er les attributs pour une liste navigable au clavier
    */
   function createListARIA(options: {
     listLabel: string;
@@ -286,7 +267,7 @@ export function useARIALabels() {
 }
 
 /**
- * Hook principal pour l'accessibilité des composants
+ * Hook principal pour l'accessibilitÃ© des composants
  */
 export function useAccessibility() {
   const keyboard = useKeyboardNavigation();
@@ -295,7 +276,7 @@ export function useAccessibility() {
   const aria = useARIALabels();
 
   /**
-   * Configuration complète pour un composant accessible
+   * Configuration complÃ¨te pour un composant accessible
    */
   function setupAccessibleComponent(container: Ref<HTMLElement | null>) {
     onMounted(() => {
@@ -306,7 +287,7 @@ export function useAccessibility() {
         keyboard.handleKeyboardNavigation(event, container.value!);
       });
 
-      // Améliorer le focus visible
+      // AmÃ©liorer le focus visible
       const focusableElements = container.value.querySelectorAll(
         "button, a, input, select, textarea, [tabindex]"
       );
@@ -360,8 +341,8 @@ export const commonARIAPatterns = {
   productCard: (name: string, price?: number, rating?: number) => ({
     role: "article",
     tabindex: "0",
-    "aria-label": `${name}${price ? `, ${price}€` : ""}${
-      rating ? `, noté ${rating}/5` : ""
+    "aria-label": `${name}${price ? `, ${price}â‚¬` : ""}${
+      rating ? `, notÃ© ${rating}/5` : ""
     }`,
   }),
 

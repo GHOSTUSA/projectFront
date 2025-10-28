@@ -1,3 +1,4 @@
+<!-- Page Vue - Gestion du menu et des plats pour restaurateur -->
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 

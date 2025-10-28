@@ -1,11 +1,10 @@
+<!-- Page Vue - Liste des restaurants utilisateur -->
 <script lang="ts" setup>
 import type { Restaurant } from "~/types/Restaurant";
 import { useRestaurantStore } from "~/stores/restaurant/restaurantStore";
 
-// Internationalisation
 const { t } = useI18n();
 
-// Lazy loading des composants lourds pour optimiser les performances
 const RestaurantCard = defineAsyncComponent({
   loader: () => import("~/components/restaurantCard.vue"),
   loadingComponent: defineComponent({
@@ -31,12 +30,8 @@ const RestaurantCard = defineAsyncComponent({
   timeout: 3000,
 });
 
-// Store pour la gestion optimisée des restaurants
 const restaurantStore = useRestaurantStore();
 
-/**
- * Data fetching optimisé avec useFetch + intégration store
- */
 const {
   data: restaurantsData,
   pending: loading,
@@ -53,7 +48,6 @@ const {
       `${restaurants.length} restaurants chargés avec useFetch + store`
     );
 
-    // Mise en cache dans le store
     restaurantStore.restaurants = restaurants;
     restaurantStore.cache.restaurantsLastFetch = new Date();
 
@@ -61,7 +55,6 @@ const {
   },
   getCachedData(key) {
     const nuxtApp = useNuxtApp();
-    // Vérification du cache store d'abord
     if (
       restaurantStore.isCacheValid &&
       restaurantStore.restaurants.length > 0
@@ -69,7 +62,6 @@ const {
       console.log("🎯 Utilisation du cache store");
       return restaurantStore.restaurants;
     }
-    // Sinon cache Nuxt standard
     return (
       (nuxtApp.ssrContext?.cache as any)?.[key] ??
       (nuxtApp.payload.data as any)[key]
@@ -86,7 +78,6 @@ const {
   },
 });
 
-// Utilisation des données via le store avec filtres/tri
 const restaurants = computed(() =>
   restaurantStore.restaurants.length > 0
     ? restaurantStore.filteredRestaurants
@@ -95,7 +86,6 @@ const restaurants = computed(() =>
 
 const restaurantStats = computed(() => restaurantStore.restaurantStats);
 
-// Composable personnalisé pour retry
 const retryCount = ref(0);
 const maxRetries = 3;
 
@@ -107,25 +97,21 @@ async function retryFetch() {
   }
 }
 
-// Configuration SEO dynamique basée sur les données réelles
 watchEffect(() => {
   if (restaurants.value.length > 0) {
     useRestaurantListSEO(restaurants.value);
   }
 });
 
-// Configuration ISR
 definePageMeta({
   prerender: true,
   experimentalNoScripts: false,
 });
 
-// Wrapper pour le refresh
 async function handleRefresh() {
   await refreshRestaurants();
 }
 
-// Mise à jour du titre si aucun restaurant
 watchEffect(() => {
   if (!restaurants.value || restaurants.value.length === 0) {
     useSeoMeta({
@@ -137,7 +123,6 @@ watchEffect(() => {
 </script>
 
 <template>
-  <!-- Skip links pour navigation clavier -->
   <div class="skip-links">
     <a href="#main-content" class="skip-link">{{
       t("accessibility.skipToMainContent")
@@ -148,7 +133,6 @@ watchEffect(() => {
   </div>
 
   <main class="restaurants-page container-accessible" id="main-content">
-    <!-- En-tête de page accessible -->
     <header class="page-header">
       <h1 id="page-title">{{ t("pages.restaurant.list.title") }}</h1>
       <p class="page-description">
@@ -158,14 +142,12 @@ watchEffect(() => {
       </p>
     </header>
 
-    <!-- État de chargement accessible -->
     <div v-if="loading" class="loading-state" role="status" aria-live="polite">
       <div class="loading-spinner-accessible" aria-hidden="true"></div>
       <p>{{ t("common.loading.restaurants") }}</p>
       <span class="sr-only">{{ t("accessibility.pleaseWait") }}</span>
     </div>
 
-    <!-- Gestion des erreurs réseau accessible -->
     <div
       v-else-if="fetchError"
       class="error-state status-error"
@@ -210,12 +192,10 @@ watchEffect(() => {
       </div>
     </div>
 
-    <!-- Liste des restaurants accessible -->
     <div
       v-else-if="restaurants && restaurants.length > 0"
       class="restaurants-container"
     >
-      <!-- Actions de la liste -->
       <div class="restaurants-actions">
         <button
           @click="handleRefresh"
@@ -227,7 +207,6 @@ watchEffect(() => {
         </button>
       </div>
 
-      <!-- Annonce pour les lecteurs d'écran -->
       <div class="sr-only" aria-live="polite" aria-atomic="true">
         {{
           t("pages.restaurant.list.screenReader.available", {
@@ -236,7 +215,6 @@ watchEffect(() => {
         }}
       </div>
 
-      <!-- Grille de restaurants accessible avec Suspense pour lazy loading -->
       <Suspense>
         <template #default>
           <section
@@ -271,7 +249,6 @@ watchEffect(() => {
 
         <template #fallback>
           <div class="restaurants-grid" role="status" aria-live="polite">
-            <!-- Skeletons de chargement pendant le lazy loading -->
             <div
               v-for="i in Math.min(6, restaurants.length || 6)"
               :key="`skeleton-${i}`"
@@ -289,7 +266,6 @@ watchEffect(() => {
         </template>
       </Suspense>
 
-      <!-- Statistiques pour les lecteurs d'écran -->
       <div class="sr-only">
         {{
           t("pages.restaurant.list.screenReader.listEnd", {
@@ -299,7 +275,6 @@ watchEffect(() => {
       </div>
     </div>
 
-    <!-- Aucun restaurant accessible -->
     <div
       v-else
       class="no-restaurants status-info"

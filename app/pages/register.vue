@@ -1,23 +1,21 @@
+<!-- Page Vue - Inscription et création de compte -->
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { User } from "~/types/User";
 
-// Configuration pour le rendu côté client uniquement (CSR)
 definePageMeta({
-  ssr: false, // Force le rendu côté client
-  auth: false, // Page publique
+  ssr: false,
+  auth: false,
 });
 
-// Configuration SEO
 useSeoMeta({
   title: "Créer un compte - FoodDelivery",
   description:
     "Créez votre compte FoodDelivery et commandez vos plats préférés en ligne.",
-  robots: "noindex, nofollow", // Pas d'indexation pour les pages d'inscription
+  robots: "noindex, nofollow",
 });
 
-// État du formulaire
 const formData = ref({
   firstName: "",
   lastName: "",

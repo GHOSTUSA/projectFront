@@ -1,3 +1,4 @@
+<!-- Page Vue - Détail d'un plat spécifique avec ajout au panier -->
 <script lang="ts" setup>
 import type { Dish } from "~/types/Dish";
 import type { Restaurant } from "~/types/Restaurant";
@@ -8,7 +9,6 @@ const route = useRoute();
 const dishId = route.params.dishId;
 const restaurantId = route.params.restaurantId;
 
-// Validation des paramètres de route
 if (
   !dishId ||
   Array.isArray(dishId) ||
@@ -21,9 +21,6 @@ if (
   });
 }
 
-/**
- * Récupère un plat spécifique avec son restaurant via useFetch optimisé
- */
 const {
   data: dishData,
   error,
@@ -31,10 +28,9 @@ const {
   refresh,
 } = await useFetch(`/api/data.json`, {
   key: `dish-${restaurantId}-${dishId}`,
-  server: true, // SSR pour le SEO
-  lazy: false, // Bloque le rendu
+  server: true,
+  lazy: false,
   transform: (data: any) => {
-    // Trouver le restaurant
     const restaurant: Restaurant | undefined = data.restaurants?.find(
       (r: Restaurant) => String(r.id) === restaurantId
     );
@@ -46,7 +42,6 @@ const {
       });
     }
 
-    // Trouver le plat dans ce restaurant
     const dish: Dish | undefined = restaurant.dishes?.find(
       (d: Dish) => String(d.id) === dishId
     );
@@ -79,7 +74,6 @@ const {
   },
 });
 
-// Gestion d'erreur si pas de données
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode || 500,
@@ -90,25 +84,17 @@ if (error.value) {
 
 const { dish, restaurant } = dishData.value!;
 
-// Configuration SEO dynamique optimisée pour le plat
 useDishSEO(dish, restaurant);
 
-// Configuration pour le rendu SSR
 definePageMeta({
   prerender: true,
 });
 
-/**
- * Ajoute le plat au panier
- */
 function addToCart() {
   cartStore.addToCart(dish);
   console.log(`${dish.name} ajouté au panier`);
 }
 
-/**
- * Navigue vers le restaurant parent
- */
 function goToRestaurant() {
   navigateTo(`/utilisateur/restaurant/${restaurant.id}`);
 }
@@ -116,7 +102,6 @@ function goToRestaurant() {
 
 <template>
   <div class="dish-detail">
-    <!-- Breadcrumb pour la navigation -->
     <nav class="breadcrumb" aria-label="Fil d'Ariane">
       <ol>
         <li><NuxtLink to="/utilisateur/restaurant">Restaurants</NuxtLink></li>
@@ -127,7 +112,6 @@ function goToRestaurant() {
       </ol>
     </nav>
 
-    <!-- Header du plat -->
     <header class="dish-header">
       <div class="dish-image-container">
         <img
@@ -168,14 +152,12 @@ function goToRestaurant() {
       </div>
     </header>
 
-    <!-- Description et détails -->
     <section class="dish-details">
       <div class="description-section">
         <h2>Description</h2>
         <p class="description">{{ dish.description }}</p>
       </div>
 
-      <!-- Informations allergènes -->
       <div
         v-if="dish.allergens && dish.allergens.length > 0"
         class="allergens-section"
@@ -192,7 +174,6 @@ function goToRestaurant() {
         </div>
       </div>
 
-      <!-- Informations restaurant -->
       <div class="restaurant-info">
         <h3>Proposé par {{ restaurant.name }}</h3>
         <p class="cuisine-type">{{ restaurant.cuisineType }}</p>

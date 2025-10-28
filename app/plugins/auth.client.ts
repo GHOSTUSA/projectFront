@@ -1,7 +1,7 @@
+/** Plugin Nuxt - Initialisation du store d'authentification côté client */
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
 export default defineNuxtPlugin(() => {
-  // Initialiser le store d'authentification côté client
   if (process.client) {
     nextTick(() => {
       try {

@@ -1,21 +1,20 @@
+<!-- Page Vue - Compte utilisateur et historique des commandes -->
 <script lang="ts" setup>
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
 import type { User, PublicUser } from "~/types/User";
 
-// Configuration pour page protégée en CSR
 definePageMeta({
-  middleware: "auth", // Middleware d'authentification
-  ssr: false, // Rendu côté client uniquement
-  requiresAuth: true, // Page nécessitant une authentification
+  middleware: "auth",
+  ssr: false,
+  requiresAuth: true,
 });
 
-// Configuration SEO pour page privée
 useSeoMeta({
   title: "Mon Compte - FoodDelivery",
   description:
     "Gérez votre profil et consultez vos commandes sur FoodDelivery.",
-  robots: "noindex, nofollow", // Pas d'indexation pour les pages privées
+  robots: "noindex, nofollow",
 });
 
 const authStore = useAuthStore();
@@ -25,9 +24,6 @@ const user = ref<PublicUser | null>(null);
 const isUpdating = ref<boolean>(false);
 const updateMessage = ref<string>("");
 
-/**
- * Chargement des données utilisateur (CSR)
- */
 onMounted(async () => {
   try {
     await commandStore.loadCommands();
@@ -37,7 +33,6 @@ onMounted(async () => {
   }
 });
 
-// Commandes de l'utilisateur via le getter du store
 const userCommands = computed(() => commandStore.userCommands);
 
 /**

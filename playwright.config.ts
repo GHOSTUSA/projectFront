@@ -1,25 +1,12 @@
+/** Configuration Playwright - Tests E2E avec navigateurs multiples */
 import { defineConfig, devices } from "@playwright/test";
 
-/**
- * Configuration Playwright pour les tests E2E
- * Voir https://playwright.dev/docs/test-configuration
- */
 export default defineConfig({
   testDir: "./tests/e2e",
-
-  /* Exécuter les tests en parallèle */
   fullyParallel: true,
-
-  /* Reporter les échecs dans le CI */
   forbidOnly: !!process.env.CI,
-
-  /* Réessayer en cas d'échec dans le CI */
   retries: process.env.CI ? 2 : 0,
-
-  /* Nombre de workers en parallèle */
   workers: process.env.CI ? 1 : undefined,
-
-  /* Reporter à utiliser */
   reporter: [
     ["html", { outputFolder: "playwright-report" }],
     ["junit", { outputFile: "test-results/junit.xml" }],

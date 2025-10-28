@@ -1,3 +1,4 @@
+<!-- Application Vue - Configuration principale avec Pinia et layouts -->
 <script lang="ts" setup>
 import { createPinia } from "pinia";
 import { createApp } from "vue";
