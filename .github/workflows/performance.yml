@@ -1,0 +1,52 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [master, main]
+  schedule:
+    # Exécuter tous les jours à 6h du matin
+    - cron: "0 6 * * *"
+
+jobs:
+  performance-audit:
+    name: Performance Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+      - name: 🚀 Start application
+        run: npm run preview &
+
+      - name: ⏳ Wait for application
+        run: sleep 10
+
+      - name: 🔍 Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: "./lighthouse.json"
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: 📊 Bundle Analysis
+        run: |
+          npm run analyze || echo "Bundle analysis not available"
+
+      - name: 📈 Performance Report
+        run: |
+          echo "## Performance Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "- Build completed successfully ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Lighthouse audit executed ✅" >> $GITHUB_STEP_SUMMARY

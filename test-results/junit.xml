@@ -1,0 +1,378 @@
+<testsuites id="" name="" tests="88" failures="0" skipped="88" errors="0" time="0.5067699999999999">
+<testsuite name="auth.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="chromium" tests="6" failures="0" skipped="6" time="0" errors="0">
+<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit afficher une erreur pour des identifiants incorrects" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la connexion avec des identifiants valides" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la déconnexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la navigation entre connexion et inscription" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit gérer les états de chargement" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="cart-management.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="chromium" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Gestion Panier › Doit afficher un panier vide initialement" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre d&apos;ajouter des articles au panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de modifier les quantités dans le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de supprimer des articles du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit calculer correctement le total du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de vider complètement le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit valider la cohérence du restaurant" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de procéder à la commande" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="restaurant-order.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="chromium" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Commande Restaurant › Doit afficher la liste des restaurants" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de naviguer vers un restaurant spécifique" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de voir les détails d&apos;un plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre d&apos;ajouter un plat au panier" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de gérer les quantités depuis la page plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit afficher les informations nutritionnelles et allergènes" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre la navigation entre plats du même restaurant" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit gérer les plats indisponibles" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="firefox" tests="6" failures="0" skipped="6" time="0" errors="0">
+<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit afficher une erreur pour des identifiants incorrects" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la connexion avec des identifiants valides" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la déconnexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la navigation entre connexion et inscription" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit gérer les états de chargement" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="cart-management.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="firefox" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Gestion Panier › Doit afficher un panier vide initialement" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre d&apos;ajouter des articles au panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de modifier les quantités dans le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de supprimer des articles du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit calculer correctement le total du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de vider complètement le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit valider la cohérence du restaurant" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de procéder à la commande" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="restaurant-order.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="firefox" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Commande Restaurant › Doit afficher la liste des restaurants" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de naviguer vers un restaurant spécifique" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de voir les détails d&apos;un plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre d&apos;ajouter un plat au panier" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de gérer les quantités depuis la page plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit afficher les informations nutritionnelles et allergènes" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre la navigation entre plats du même restaurant" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit gérer les plats indisponibles" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="webkit" tests="6" failures="0" skipped="6" time="0" errors="0">
+<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit afficher une erreur pour des identifiants incorrects" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la connexion avec des identifiants valides" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la déconnexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la navigation entre connexion et inscription" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit gérer les états de chargement" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="cart-management.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="webkit" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Gestion Panier › Doit afficher un panier vide initialement" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre d&apos;ajouter des articles au panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de modifier les quantités dans le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de supprimer des articles du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit calculer correctement le total du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de vider complètement le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit valider la cohérence du restaurant" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de procéder à la commande" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="restaurant-order.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="webkit" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Commande Restaurant › Doit afficher la liste des restaurants" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de naviguer vers un restaurant spécifique" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de voir les détails d&apos;un plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre d&apos;ajouter un plat au panier" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de gérer les quantités depuis la page plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit afficher les informations nutritionnelles et allergènes" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre la navigation entre plats du même restaurant" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit gérer les plats indisponibles" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="Mobile Chrome" tests="6" failures="0" skipped="6" time="0" errors="0">
+<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit afficher une erreur pour des identifiants incorrects" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la connexion avec des identifiants valides" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la déconnexion" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la navigation entre connexion et inscription" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Authentification › Doit gérer les états de chargement" classname="auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="cart-management.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="Mobile Chrome" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Gestion Panier › Doit afficher un panier vide initialement" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre d&apos;ajouter des articles au panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de modifier les quantités dans le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de supprimer des articles du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit calculer correctement le total du panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de vider complètement le panier" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit valider la cohérence du restaurant" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de procéder à la commande" classname="cart-management.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="restaurant-order.spec.ts" timestamp="2025-10-28T07:49:29.929Z" hostname="Mobile Chrome" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Parcours Commande Restaurant › Doit afficher la liste des restaurants" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de naviguer vers un restaurant spécifique" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de voir les détails d&apos;un plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre d&apos;ajouter un plat au panier" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de gérer les quantités depuis la page plat" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit afficher les informations nutritionnelles et allergènes" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre la navigation entre plats du même restaurant" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit gérer les plats indisponibles" classname="restaurant-order.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>
