@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const authStore = useAuthStore();
 
-  const publicPages = ["/"];
+  const publicPages = ["/", "/restaurant/", "/restaurant/[id]"];
 
   if (!authStore.isAuthenticated && !publicPages.includes(to.path)) {
     console.log(
