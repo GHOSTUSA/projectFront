@@ -145,6 +145,15 @@ function clearError() {
             }}
           </button>
         </form>
+
+        <div class="auth-links">
+          <p class="register-link">
+            {{ t("pages.home.auth.noAccount") }}
+            <NuxtLink to="/register" class="link-accessible">
+              {{ t("pages.home.auth.createAccount") }}
+            </NuxtLink>
+          </p>
+        </div>
       </div>
 
       <div class="login-image">
@@ -312,6 +321,29 @@ function clearError() {
   cursor: pointer;
   padding: 0;
   margin-left: 0.5rem;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.register-link {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.register-link .link-accessible {
+  color: #27ae60;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.register-link .link-accessible:hover {
+  color: #2ecc71;
+  text-decoration: underline;
 }
 
 .demo-section {

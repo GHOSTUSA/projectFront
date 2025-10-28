@@ -11,10 +11,35 @@
   },
   "pages": {
     "home": {
+      "seo": {
+        "title": "FoodDelivery - Connexion",
+        "description": "Connectez-vous à votre compte FoodDelivery pour commander vos plats préférés en ligne."
+      },
+      "login": {
+        "title": "Connexion",
+        "welcome": "Connectez-vous pour accéder à vos restaurants favoris"
+      },
+      "form": {
+        "email": "Adresse e-mail",
+        "emailPlaceholder": "votre@email.com",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "Votre mot de passe",
+        "signIn": "Se connecter",
+        "signingIn": "Connexion en cours..."
+      },
+      "auth": {
+        "noAccount": "Pas encore de compte ?",
+        "createAccount": "Créer un compte"
+      },
       "title": "Bienvenue sur FoodDelivery",
       "subtitle": "Commandez vos plats préférés en quelques clics",
       "cta": "Découvrir nos restaurants",
       "features": {
+        "title": "Découvrez nos services",
+        "subtitle": "Une expérience de livraison exceptionnelle",
+        "wideSelection": "Large sélection de restaurants",
+        "fastDelivery": "Livraison rapide et fiable",
+        "securePayment": "Paiement sécurisé et simple",
         "fast": {
           "title": "Livraison rapide",
           "description": "En 30 minutes maximum"
@@ -123,13 +148,21 @@
     "or": "ou"
   },
   "errors": {
-    "network": "Erreur de connexion réseau",
+    "network": {
+      "connectionError": "Erreur de connexion réseau"
+    },
     "server": "Erreur serveur",
     "notFound": "Page non trouvée",
     "unauthorized": "Accès non autorisé",
     "forbidden": "Accès interdit",
     "validation": "Erreur de validation",
-    "generic": "Une erreur s'est produite"
+    "generic": "Une erreur s'est produite",
+    "form": {
+      "allFieldsRequired": "Tous les champs sont obligatoires"
+    },
+    "auth": {
+      "invalidCredentials": "Identifiants invalides"
+    }
   },
   "messages": {
     "itemAdded": "Élément ajouté au panier",
@@ -142,6 +175,8 @@
   },
   "accessibility": {
     "skipToMain": "Aller au contenu principal",
+    "skipToMainContent": "Aller au contenu principal",
+    "skipToRestaurantList": "Aller à la liste des restaurants",
     "skipToNav": "Aller à la navigation",
     "menu": "Menu",
     "search": "Recherche",
@@ -151,6 +186,7 @@
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "loading": "Chargement en cours",
+    "pleaseWait": "Veuillez patienter",
     "error": "Erreur",
     "pagination": "Pagination",
     "sortBy": "Trier par",

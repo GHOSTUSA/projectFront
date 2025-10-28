@@ -11,10 +11,35 @@
   },
   "pages": {
     "home": {
+      "seo": {
+        "title": "FoodDelivery - Login",
+        "description": "Log in to your FoodDelivery account to order your favorite dishes online."
+      },
+      "login": {
+        "title": "Login",
+        "welcome": "Log in to access your favorite restaurants"
+      },
+      "form": {
+        "email": "Email address",
+        "emailPlaceholder": "your@email.com",
+        "password": "Password",
+        "passwordPlaceholder": "Your password",
+        "signIn": "Sign In",
+        "signingIn": "Signing in..."
+      },
+      "auth": {
+        "noAccount": "Don't have an account yet?",
+        "createAccount": "Create an account"
+      },
       "title": "Welcome to FoodDelivery",
       "subtitle": "Order your favorite dishes in just a few clicks",
       "cta": "Discover our restaurants",
       "features": {
+        "title": "Discover our services",
+        "subtitle": "An exceptional delivery experience",
+        "wideSelection": "Wide selection of restaurants",
+        "fastDelivery": "Fast and reliable delivery",
+        "securePayment": "Secure and simple payment",
         "fast": {
           "title": "Fast delivery",
           "description": "Within 30 minutes maximum"
@@ -123,13 +148,21 @@
     "or": "or"
   },
   "errors": {
-    "network": "Network connection error",
+    "network": {
+      "connectionError": "Network connection error"
+    },
     "server": "Server error",
     "notFound": "Page not found",
     "unauthorized": "Unauthorized access",
     "forbidden": "Access forbidden",
     "validation": "Validation error",
-    "generic": "An error occurred"
+    "generic": "An error occurred",
+    "form": {
+      "allFieldsRequired": "All fields are required"
+    },
+    "auth": {
+      "invalidCredentials": "Invalid credentials"
+    }
   },
   "messages": {
     "itemAdded": "Item added to cart",
@@ -142,6 +175,8 @@
   },
   "accessibility": {
     "skipToMain": "Skip to main content",
+    "skipToMainContent": "Skip to main content",
+    "skipToRestaurantList": "Skip to restaurant list",
     "skipToNav": "Skip to navigation",
     "menu": "Menu",
     "search": "Search",
@@ -151,6 +186,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "loading": "Loading",
+    "pleaseWait": "Please wait",
     "error": "Error",
     "pagination": "Pagination",
     "sortBy": "Sort by",

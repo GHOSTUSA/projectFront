@@ -58,10 +58,7 @@ function logout() {
 
 <template>
   <div class="user-layout">
-    <header
-      v-if="isAuthenticated && !isAdmin && !isRestaurateur"
-      class="user-header"
-    >
+    <header class="user-header">
       <nav class="user-nav">
         <div class="nav-brand">
           <h2>FoodDelivery</h2>
@@ -70,7 +67,11 @@ function logout() {
         <!-- Sélecteur de langue accessible -->
         <LanguageSelector />
 
-        <ul class="nav-menu">
+        <!-- Menu pour utilisateurs connectés -->
+        <ul
+          v-if="isAuthenticated && !isAdmin && !isRestaurateur"
+          class="nav-menu"
+        >
           <li>
             <NuxtLink to="/utilisateur/restaurant">{{
               t("nav.restaurants")
@@ -94,6 +95,18 @@ function logout() {
             <button @click="logout" class="logout-btn">
               {{ t("nav.logout") }}
             </button>
+          </li>
+        </ul>
+
+        <!-- Menu pour utilisateurs non connectés -->
+        <ul v-else-if="!isAuthenticated" class="nav-menu guest-menu">
+          <li>
+            <NuxtLink to="/" class="nav-link">{{ t("nav.login") }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/register" class="nav-link">{{
+              t("nav.register")
+            }}</NuxtLink>
           </li>
         </ul>
       </nav>
@@ -195,6 +208,30 @@ function logout() {
   transform: translateY(-2px);
 }
 
+.guest-menu {
+  gap: 1rem;
+}
+
+.guest-menu .nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.guest-menu .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.guest-menu .nav-link.router-link-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .user-main {
   min-height: calc(100vh - 80px);
 }
@@ -216,6 +253,13 @@ function logout() {
 
   .nav-menu li:last-child {
     grid-column: 1 / -1;
+  }
+
+  .guest-menu {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
   }
 
   .nav-brand h2 {

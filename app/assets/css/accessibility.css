@@ -42,8 +42,9 @@
   color: #fff;
   padding: 8px 16px;
   text-decoration: none;
+  display: none;
   border-radius: 0 0 4px 4px;
-  z-index: 1000;
+  z-index: 9999; /* Z-index très élevé pour être au-dessus de la nav */
   font-weight: bold;
   transition: top 0.3s;
 }

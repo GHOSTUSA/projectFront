@@ -70,6 +70,24 @@ img {
   z-index: 1000;
 }
 
+.skip-links .skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 9999;
+  font-weight: bold;
+  transition: top 0.3s;
+}
+
+.skip-links .skip-link:focus {
+  top: 0;
+}
+
 /* Conteneur principal accessible */
 .container-accessible {
   max-width: 1200px;
