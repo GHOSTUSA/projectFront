@@ -1,0 +1,16 @@
+{
+  "name": "fooddelivery",
+  "script": ".output/server/index.mjs",
+  "cwd": "/root/foodDeliver/projectFront",
+  "instances": 1,
+  "exec_mode": "cluster",
+  "env": {
+    "HOST": "127.0.0.1",
+    "PORT": "3000",
+    "NODE_ENV": "production"
+  },
+  "log_file": "/var/log/pm2/fooddelivery.log",
+  "out_file": "/var/log/pm2/fooddelivery-out.log",
+  "error_file": "/var/log/pm2/fooddelivery-error.log",
+  "time": true
+}
