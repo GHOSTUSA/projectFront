@@ -20,7 +20,6 @@ jobs:
           chmod 644 ~/.ssh/known_hosts
         env:
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        if: ${{ secrets.SSH_KNOWN_HOSTS != '' }}
 
       - name: Deploy on remote server
         uses: appleboy/ssh-action@v0.1.8
