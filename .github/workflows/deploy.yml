@@ -28,7 +28,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
-          # SSH connection options for better security
           timeout: 30s
           command_timeout: 10m
           script: |
