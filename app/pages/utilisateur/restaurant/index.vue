@@ -39,7 +39,7 @@ const {
   refresh: refreshRestaurants,
 } = await useFetch("/api/data.json", {
   key: "restaurants-list",
-  server: true,
+  server: false, // Force côté client
   lazy: false,
   default: () => ({ restaurants: [] }),
   transform: (data: any) => {

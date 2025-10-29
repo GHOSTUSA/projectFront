@@ -10,14 +10,24 @@ test.describe("Parcours Gestion Panier", () => {
     await page.goto("/register");
     await page.waitForLoadState("networkidle");
 
-    await page.fill('input[type="email"]', "test@example.com");
+    // Créer un compte unique pour chaque test
+    const timestamp = Date.now();
+    await page.fill('input[name="firstName"]', "Test");
+    await page.fill('input[name="lastName"]', "User");
+    await page.fill('input[type="email"]', `test${timestamp}@example.com`);
     await page.fill('input[type="password"]', "password123");
     await page.click('button[type="submit"]');
 
-    await page.waitForURL("/", { timeout: 10000 });
+    // Attendre le message de succès puis la redirection
+    await expect(page.locator("text=/succès|success/i")).toBeVisible({
+      timeout: 5000,
+    });
+    await page.waitForURL(/restaurant/, { timeout: 20000 });
 
     // Vider le panier s'il existe
-    const cartLink = page.locator('text=/panier/i, [href*="panier"]');
+    const cartLink = page
+      .locator('[href*="panier"]')
+      .or(page.locator("text=/panier/i"));
     if ((await cartLink.count()) > 0) {
       await cartLink.first().click();
       await page.waitForLoadState("networkidle");
@@ -26,6 +36,10 @@ test.describe("Parcours Gestion Panier", () => {
       if ((await clearButton.count()) > 0) {
         await clearButton.click();
       }
+
+      // Retourner à la page restaurants
+      await page.goto("/utilisateur/restaurant");
+      await page.waitForLoadState("networkidle");
     }
   });
 

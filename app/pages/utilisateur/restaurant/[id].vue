@@ -8,64 +8,49 @@ const cartStore = useCartStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
-if (!restaurantId || Array.isArray(restaurantId)) {
-  throw createError({
-    statusCode: 400,
-    statusMessage: "Invalid restaurant ID",
-  });
-}
+// Validation simple sans throw immédiat
+const isValidId = !(!restaurantId || Array.isArray(restaurantId));
 
-const {
-  data: restaurantData,
-  error,
-  pending,
-  refresh,
-} = await useFetch(`/api/data.json`, {
-  key: `restaurant-${restaurantId}`,
-  server: true,
-  lazy: false,
-  transform: (data: any) => {
-    const restaurant: Restaurant | undefined = data.restaurants?.find(
-      (r: Restaurant) => String(r.id) === restaurantId
-    );
+// Récupération des données seulement si l'ID est valide
+const { data: restaurantData, error, pending } = await useLazyFetch(
+  "/api/data.json",
+  {
+    key: `restaurant-${restaurantId}`,
+    server: false,
+    transform: (data: any) => {
+      console.log("Transform - ID recherché:", restaurantId);
+      
+      if (!data?.restaurants) {
+        console.log("Transform - Pas de restaurants dans la réponse");
+        return null;
+      }
 
-    if (!restaurant) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: `Restaurant avec l'ID ${restaurantId} introuvable`,
-      });
-    }
+      const restaurant = data.restaurants.find(
+        (r: any) => String(r.id) === String(restaurantId)
+      );
 
-    console.log(`Restaurant ${restaurant.name} chargé côté serveur (SSR)`);
-    return restaurant;
-  },
-  onResponseError({ error }) {
-    console.error("Erreur de réponse:", error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Erreur lors du chargement du restaurant",
-    });
-  },
-  onRequestError({ error }) {
-    console.error("Erreur de requête:", error);
-    throw createError({
-      statusCode: 503,
-      statusMessage: "Service temporairement indisponible",
-    });
-  },
+      console.log("Transform - Restaurant trouvé:", restaurant ? restaurant.name : "Non trouvé");
+      return restaurant || null;
+    },
+  }
+);
+
+// État calculé pour la gestion d'erreurs
+const restaurant = computed(() => restaurantData.value);
+const hasError = computed(() => !isValidId || !!error.value);
+const errorMessage = computed(() => {
+  if (!isValidId) return "ID de restaurant invalide";
+  if (error.value) return "Erreur lors du chargement";
+  if (!pending.value && !restaurant.value && isValidId) return `Restaurant avec l'ID ${restaurantId} introuvable`;
+  return null;
 });
 
-if (error.value) {
-  throw createError({
-    statusCode: error.value.statusCode || 500,
-    statusMessage:
-      error.value.statusMessage || "Erreur lors du chargement du restaurant",
-  });
-}
-
-const restaurant = restaurantData.value!;
-
-useRestaurantSEO(restaurant);
+// SEO conditionnel
+watchEffect(() => {
+  if (restaurant.value) {
+    useRestaurantSEO(restaurant.value);
+  }
+});
 
 definePageMeta({
   prerender: true,
@@ -79,7 +64,23 @@ function addToCart(dish: any) {
 </script>
 
 <template>
-  <div class="restaurant-detail">
+  <!-- État de chargement -->
+  <div v-if="pending" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Chargement du restaurant...</p>
+  </div>
+  
+  <!-- État d'erreur -->
+  <div v-else-if="hasError || errorMessage" class="error-state">
+    <h1>Erreur</h1>
+    <p>{{ errorMessage }}</p>
+    <NuxtLink to="/utilisateur/restaurant" class="back-link">
+      ← Retour à la liste des restaurants
+    </NuxtLink>
+  </div>
+  
+  <!-- Restaurant trouvé -->
+  <div v-else-if="restaurant" class="restaurant-detail">
     <div class="restaurant-header">
       <img
         :src="restaurant.image"
@@ -132,6 +133,67 @@ function addToCart(dish: any) {
 </template>
 
 <style scoped>
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #27ae60;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-state h1 {
+  color: #e74c3c;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.error-state p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.back-link {
+  color: #27ae60;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #27ae60;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-link:hover {
+  background: #27ae60;
+  color: white;
+}
+
 .restaurant-detail {
   max-width: 1200px;
   margin: 0 auto;

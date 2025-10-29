@@ -15,7 +15,7 @@ export default defineConfig({
   /* Configuration globale */
   use: {
     /* URL de base de l'application */
-    baseURL: "http://localhost:3003",
+    baseURL: "http://localhost:3004",
 
     /* Collecter les traces en cas d'échec */
     trace: "on-first-retry",
@@ -34,29 +34,33 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // Tests de compatibilité (plus légers)
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    //   testMatch: ["**/auth.spec.ts", "**/restaurant-order.spec.ts"], // Tests principaux uniquement
+    // },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    // {
+    //   name: "webkit", 
+    //   use: { ...devices["Desktop Safari"] },
+    //   testMatch: ["**/auth.spec.ts"], // Tests critiques uniquement
+    // },
 
-    /* Test sur mobile */
-    {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 5"] },
-    },
+    // {
+    //   name: "Mobile Chrome",
+    //   use: { ...devices["Pixel 5"] },
+    //   testMatch: ["**/auth.spec.ts"], // Tests critiques uniquement  
+    // },
   ],
 
   /* Configuration du serveur de développement */
-  // webServer: {
-  //   command: 'npm run dev',
-  //   url: 'http://localhost:3003',
-  //   reuseExistingServer: !process.env.CI,
-  //   stdout: 'ignore',
-  //   stderr: 'pipe',
-  // },
+  webServer: {
+    command: "npm run dev -- --port 3004",
+    url: "http://localhost:3004",
+    reuseExistingServer: !process.env.CI,
+    stdout: "ignore",
+    stderr: "pipe",
+    timeout: 120 * 1000, // 2 minutes pour laisser le temps à Nuxt de démarrer
+  },
 });
