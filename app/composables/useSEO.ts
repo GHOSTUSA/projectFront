@@ -157,7 +157,6 @@ export function useRestaurantSEO(restaurant: Restaurant) {
   const dishCount = restaurant.dishes?.length || 0;
   const avgRating = restaurant.averageRating;
 
-  // Catégories de plats disponibles
   const dishCategories = restaurant.dishes
     ? [...new Set(restaurant.dishes.map((d) => d.category))]
     : [];
@@ -174,7 +173,7 @@ export function useRestaurantSEO(restaurant: Restaurant) {
       "livraison",
       "commande",
       ...dishCategories,
-      restaurant.address.split(",")[0], // Ville
+      restaurant.address.split(",")[0],
     ].join(", "),
     ogImage: restaurant.image,
     ogImageWidth: 1200,
@@ -205,7 +204,7 @@ export function useRestaurantSEO(restaurant: Restaurant) {
       { name: "robots", content: "index, follow" },
       { property: "og:type", content: "restaurant" },
       { property: "og:locale", content: "fr_FR" },
-      { property: "place:location:latitude", content: "48.8566" }, // À remplacer par vraies coordonnées
+      { property: "place:location:latitude", content: "48.8566" },
       { property: "place:location:longitude", content: "2.3522" },
       { name: "geo.region", content: "FR" },
       { name: "geo.placename", content: restaurant.address.split(",")[0] },
@@ -239,7 +238,7 @@ export function useRestaurantSEO(restaurant: Restaurant) {
               hasMenuItem:
                 restaurant.dishes
                   ?.filter((dish) => dish.category === category)
-                  .slice(0, 10) // Limite pour éviter trop de données
+                  .slice(0, 10)
                   .map((dish) => ({
                     "@type": "MenuItem",
                     name: dish.name,

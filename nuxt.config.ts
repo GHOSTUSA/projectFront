@@ -5,7 +5,6 @@ export default defineNuxtConfig({
   srcDir: "app/",
   css: ["~/assets/css/main.css"],
 
-  // Configuration du serveur de développement
   devServer: {
     port: 3003,
   },
@@ -43,20 +42,6 @@ export default defineNuxtConfig({
       },
     ],
   ],
-
-  // vite: {
-  //   build: {
-  //     rollupOptions: {
-  //       output: {
-  //         manualChunks: {
-  //           "vue-vendor": ["vue", "vue-router"],
-  //           "pinia-vendor": ["pinia", "@pinia/nuxt"],
-  //           "i18n-vendor": ["@nuxtjs/i18n"],
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
 
   build: {
     analyze: process.env.ANALYZE === "true",

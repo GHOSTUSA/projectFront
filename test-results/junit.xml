@@ -1,6 +1,0 @@
-<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="22.513517">
-<testsuite name="auth-cart.spec.ts" timestamp="2025-10-29T13:25:22.185Z" hostname="chromium" tests="1" failures="0" skipped="0" time="7.702" errors="0">
-<testcase name="Authentification Panier › Doit rediriger vers login quand on tente d&apos;ajouter au panier sans être connecté" classname="auth-cart.spec.ts" time="7.702">
-</testcase>
-</testsuite>
-</testsuites>
