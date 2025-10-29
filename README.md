@@ -1,4 +1,4 @@
-# 🍽️ ProjectFront - Plateforme de Commande de Restaurants
+# ProjectFront - Plateforme de Commande de Restaurants
 
 ![Nuxt](https://img.shields.io/badge/Nuxt-4.1.3-00DC82?style=for-the-badge&logo=nuxt.js&logoColor=white)
 ![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
@@ -112,7 +112,7 @@ tests/
     └── auth-cart.spec.ts # Tests sécurité panier
 ```
 
-## 🔒 Sécurité
+## Sécurité
 
 - ✅ **Authentification obligatoire** pour le panier
 - ✅ **Validation côté client et store**
@@ -120,7 +120,7 @@ tests/
 - ✅ **Protection CSRF** et validation d'entrées
 - ✅ **Rôles et permissions** utilisateurs
 
-## 🎯 Pages Principales
+## Pages Principales
 
 | Route                          | Description        | Accès        |
 | ------------------------------ | ------------------ | ------------ |
@@ -132,18 +132,18 @@ tests/
 | `/Admin/backOffice`            | Administration     | Admin        |
 | `/Admin/restaurateur`          | Gestion restaurant | Restaurateur |
 
-## 📊 Statut du Projet
+## Statut du Projet
 
-| Composant           | Statut         | Tests               |
-| ------------------- | -------------- | ------------------- |
-| 🔐 Authentification | ✅ Fonctionnel | ✅ 6/6              |
-| 🛒 Panier Sécurisé  | ✅ Fonctionnel | ✅ 4/4              |
-| 🏪 Restaurants      | ✅ Fonctionnel | ✅ Validé           |
-| 🌍 I18n             | ✅ Fonctionnel | ⚠️ Warnings mineurs |
-| 📱 Responsive       | ✅ Fonctionnel | ✅ Validé           |
-| ♿ Accessibilité    | ✅ Fonctionnel | ✅ WCAG AA          |
+| Composant        | Statut         | Tests               |
+| ---------------- | -------------- | ------------------- |
+| Authentification | ✅ Fonctionnel | ✅ 6/6              |
+| Panier Sécurisé  | ✅ Fonctionnel | ✅ 4/4              |
+| Restaurants      | ✅ Fonctionnel | ✅ Validé           |
+| I18n             | ✅ Fonctionnel | ⚠️ Warnings mineurs |
+| Responsive       | ✅ Fonctionnel | ✅ Validé           |
+| Accessibilité    | ✅ Fonctionnel | ✅ WCAG AA          |
 
-## 🔧 Scripts Disponibles
+## Scripts Disponibles
 
 ```bash
 npm run dev          # Démarrage développement
@@ -155,7 +155,7 @@ npm run lint         # Vérification code
 npm run type-check   # Vérification TypeScript
 ```
 
-## 🚀 Déploiement
+## Déploiement
 
 ```bash
 # Build pour production
@@ -168,14 +168,14 @@ npm run start:pm2
 npm run monitor
 ```
 
-## 🐛 Debugging
+## Debugging
 
 - **Port par défaut** : 3004
 - **API mock** : `/api/data.json`
 - **Logs** : Console navigateur + terminal
 - **Tests** : `npm run test:e2e -- --headed` pour mode visuel
 
-## 📄 Licence
+## Licence
 
 MIT © [GHOSTUSA](https://github.com/GHOSTUSA)
 s !\*\*
