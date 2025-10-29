@@ -12,28 +12,32 @@ const restaurantId = route.params.id;
 const isValidId = !(!restaurantId || Array.isArray(restaurantId));
 
 // Récupération des données seulement si l'ID est valide
-const { data: restaurantData, error, pending } = await useLazyFetch(
-  "/api/data.json",
-  {
-    key: `restaurant-${restaurantId}`,
-    server: false,
-    transform: (data: any) => {
-      console.log("Transform - ID recherché:", restaurantId);
-      
-      if (!data?.restaurants) {
-        console.log("Transform - Pas de restaurants dans la réponse");
-        return null;
-      }
+const {
+  data: restaurantData,
+  error,
+  pending,
+} = await useLazyFetch("/api/data.json", {
+  key: `restaurant-${restaurantId}`,
+  server: false,
+  transform: (data: any) => {
+    console.log("Transform - ID recherché:", restaurantId);
 
-      const restaurant = data.restaurants.find(
-        (r: any) => String(r.id) === String(restaurantId)
-      );
+    if (!data?.restaurants) {
+      console.log("Transform - Pas de restaurants dans la réponse");
+      return null;
+    }
 
-      console.log("Transform - Restaurant trouvé:", restaurant ? restaurant.name : "Non trouvé");
-      return restaurant || null;
-    },
-  }
-);
+    const restaurant = data.restaurants.find(
+      (r: any) => String(r.id) === String(restaurantId)
+    );
+
+    console.log(
+      "Transform - Restaurant trouvé:",
+      restaurant ? restaurant.name : "Non trouvé"
+    );
+    return restaurant || null;
+  },
+});
 
 // État calculé pour la gestion d'erreurs
 const restaurant = computed(() => restaurantData.value);
@@ -41,7 +45,8 @@ const hasError = computed(() => !isValidId || !!error.value);
 const errorMessage = computed(() => {
   if (!isValidId) return "ID de restaurant invalide";
   if (error.value) return "Erreur lors du chargement";
-  if (!pending.value && !restaurant.value && isValidId) return `Restaurant avec l'ID ${restaurantId} introuvable`;
+  if (!pending.value && !restaurant.value && isValidId)
+    return `Restaurant avec l'ID ${restaurantId} introuvable`;
   return null;
 });
 
@@ -69,7 +74,7 @@ function addToCart(dish: any) {
     <div class="loading-spinner"></div>
     <p>Chargement du restaurant...</p>
   </div>
-  
+
   <!-- État d'erreur -->
   <div v-else-if="hasError || errorMessage" class="error-state">
     <h1>Erreur</h1>
@@ -78,7 +83,7 @@ function addToCart(dish: any) {
       ← Retour à la liste des restaurants
     </NuxtLink>
   </div>
-  
+
   <!-- Restaurant trouvé -->
   <div v-else-if="restaurant" class="restaurant-detail">
     <div class="restaurant-header">
@@ -153,8 +158,12 @@ function addToCart(dish: any) {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-state {

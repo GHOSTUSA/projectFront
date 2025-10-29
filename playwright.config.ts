@@ -42,7 +42,7 @@ export default defineConfig({
     // },
 
     // {
-    //   name: "webkit", 
+    //   name: "webkit",
     //   use: { ...devices["Desktop Safari"] },
     //   testMatch: ["**/auth.spec.ts"], // Tests critiques uniquement
     // },
@@ -50,7 +50,7 @@ export default defineConfig({
     // {
     //   name: "Mobile Chrome",
     //   use: { ...devices["Pixel 5"] },
-    //   testMatch: ["**/auth.spec.ts"], // Tests critiques uniquement  
+    //   testMatch: ["**/auth.spec.ts"], // Tests critiques uniquement
     // },
   ],
 

@@ -6,13 +6,16 @@ export default defineEventHandler(async (event) => {
     // Lire le fichier data.json depuis le dossier public
     const filePath = join(process.cwd(), "public", "api", "data.json");
     console.log("API: Tentative de lecture du fichier:", filePath);
-    
+
     const data = readFileSync(filePath, "utf-8");
     console.log("API: Fichier lu avec succès, taille:", data.length);
 
     // Parse et retourne les données JSON
     const jsonData = JSON.parse(data);
-    console.log("API: Données parsées, restaurants trouvés:", jsonData.restaurants?.length || 0);
+    console.log(
+      "API: Données parsées, restaurants trouvés:",
+      jsonData.restaurants?.length || 0
+    );
 
     // Ajouter les headers appropriés
     setHeader(event, "Content-Type", "application/json");

@@ -31,12 +31,14 @@ test.describe("Parcours Commande Restaurant", () => {
     await page.waitForSelector(".restaurant-card", { timeout: 15000 });
 
     // Obtenir l'URL du premier lien et naviguer directement
-    const firstRestaurantLink = page.locator("a[href*='/utilisateur/restaurant/']").first();
+    const firstRestaurantLink = page
+      .locator("a[href*='/utilisateur/restaurant/']")
+      .first();
     await expect(firstRestaurantLink).toBeVisible({ timeout: 10000 });
-    
+
     const linkHref = await firstRestaurantLink.getAttribute("href");
     console.log("Navigant vers:", linkHref);
-    
+
     // Navigation directe au lieu du clic
     await page.goto(linkHref!);
     await page.waitForLoadState("networkidle");
@@ -45,7 +47,9 @@ test.describe("Parcours Commande Restaurant", () => {
     await expect(page.url()).toMatch(/\/utilisateur\/restaurant\/\d+/);
 
     // Vérifier que la page contient le nom du restaurant
-    await expect(page.locator(".restaurant-detail h1")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator(".restaurant-detail h1")).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test("Doit permettre de voir les détails d'un plat", async ({ page }) => {
