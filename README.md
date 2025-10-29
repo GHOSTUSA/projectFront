@@ -1,197 +1,192 @@
-# 🍔 Food Delivery Platform
+# 🍽️ ProjectFront - Plateforme de Commande de Restaurants
 
-[![CI/CD Pipeline](https://github.com/GHOSTUSA/projectFront/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/GHOSTUSA/projectFront/actions/workflows/ci-cd.yml)
-[![Performance Tests](https://github.com/GHOSTUSA/projectFront/actions/workflows/performance.yml/badge.svg)](https://github.com/GHOSTUSA/projectFront/actions/workflows/performance.yml)
-[![codecov](https://codecov.io/gh/GHOSTUSA/projectFront/branch/master/graph/badge.svg)](https://codecov.io/gh/GHOSTUSA/projectFront)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-Performance-green)](https://github.com/GHOSTUSA/projectFront/actions/workflows/performance.yml)
+![Nuxt](https://img.shields.io/badge/Nuxt-4.1.3-00DC82?style=for-the-badge&logo=nuxt.js&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Pinia](https://img.shields.io/badge/Pinia-2.2-FFD43B?style=for-the-badge&logo=vue.js&logoColor=black)
+![Playwright](https://img.shields.io/badge/Playwright-1.40-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
 
-> Plateforme moderne de livraison de nourriture construite avec Nuxt 4, Vue 3, et TypeScript.
+![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-4%2F4%20Passing-brightgreen?style=flat-square)
+![Coverage](https://img.shields.io/badge/Coverage-E2E-blue?style=flat-square)
+![Security](https://img.shields.io/badge/Security-Auth%20Protected-orange?style=flat-square)
 
-## 🚀 Fonctionnalités
+## 📋 Description
 
-- ✅ **Architecture modulaire** avec stores Pinia et composables
-- ✅ **Routing dynamique** avec middlewares d'authentification
-- ✅ **Optimisation de performance** avec lazy loading et PWA
-- ✅ **Tests complets** (unitaires avec Vitest + E2E avec Playwright)
-- ✅ **CI/CD automatisé** avec GitHub Actions
-- ✅ **SEO optimisé** et accessible (WCAG AA)
-- ✅ **Multilingue** (français/anglais) avec i18n
+Application web moderne de commande de restaurants avec authentification sécurisée, gestion de panier et interface multilingue. Construite avec Nuxt 4, Vue 3 et TypeScript pour une expérience utilisateur optimale.
 
-## 🏗️ Architecture
+## ✨ Fonctionnalités
 
-### Stack technique
+- 🔐 **Authentification sécurisée** avec persistance localStorage
+- 🛒 **Panier protégé** - connexion obligatoire pour commander
+- 🏪 **Gestion multi-restaurants** avec filtres et recherche
+- 👤 **3 rôles utilisateurs** : Admin, Restaurateur, Client
+- 🌍 **Multilingue** (FR/EN) avec i18n
+- 📱 **Responsive design** et PWA
+- ♿ **Accessibilité WCAG** avec navigation clavier
+- 🧪 **Tests E2E** complets avec Playwright
 
-- **Framework** : Nuxt 4.1.3 (Vue 3.5, Vite 7.1)
-- **État global** : Pinia avec persistance
-- **Styles** : CSS modules + variables natives
-- **TypeScript** : Configuration stricte avec types définis
-- **Tests** : Vitest (unitaires) + Playwright (E2E)
-- **CI/CD** : GitHub Actions avec déploiement automatique
+## 🚀 Technologies
 
-### Structure du projet
+### Frontend
 
-```
-app/
-├── components/        # Composants Vue réutilisables
-├── composables/       # Logique métier réutilisable
-├── stores/           # État global avec Pinia
-├── middleware/       # Guards de navigation
-├── pages/           # Routes automatiques
-├── layouts/         # Mises en page globales
-└── types/           # Définitions TypeScript
+- **Nuxt 4.1.3** - Framework Vue.js full-stack
+- **Vue 3.5** - Framework JavaScript réactif
+- **TypeScript** - Typage statique
+- **Pinia** - Gestion d'état moderne
+- **Nuxt I18n** - Internationalisation
+
+### Tests & Qualité
+
+- **Playwright** - Tests end-to-end
+- **Vitest** - Tests unitaires
+- **ESLint & Prettier** - Qualité de code
+
+### Déploiement
+
+- **PM2** - Gestionnaire de processus
+- **GitHub Actions** - CI/CD
+
+## 👥 Comptes de Test
+
+| Rôle                | Nom          | Email | Mot de passe | Accès                |
+| ------------------- | ------------ | ----- | ------------ | -------------------- |
+| 👑 **Admin**        | Jean Dupont  | `a`   | `a`          | Back-office complet  |
+| 🏪 **Restaurateur** | Pierre Leroy | `c`   | `c`          | Gestion restaurant   |
+| 👤 **Client**       | Marie Martin | `b`   | `b`          | Commande restaurants |
+
+## 🛠️ Installation & Démarrage
+
+```bash
+# Cloner le projet
+git clone https://github.com/GHOSTUSA/projectFront.git
+cd projectFront
+
+# Installer les dépendances
+npm install
+
+# Démarrage développement
+npm run dev
+
+# Accéder à l'application
+# http://localhost:3004
 ```
 
 ## 🧪 Tests
 
-### Tests unitaires (Vitest)
-
 ```bash
-npm run test              # Mode watch
-npm run test:run          # Exécution unique
-npm run test:coverage     # Avec couverture
+# Tests E2E complets
+npm run test:e2e
+
+# Tests E2E spécifiques
+npm run test:e2e -- --grep "authentification"
+
+# Tests unitaires
+npm run test
+
+# Tests avec couverture
+npm run test:coverage
 ```
 
-### Tests E2E (Playwright)
+## 📁 Architecture
 
-```bash
-npm run test:e2e          # Tous les navigateurs
-npm run test:e2e:headed   # Mode visual
-npm run test:e2e:debug    # Mode debug
+```
+app/
+├── components/          # Composants Vue réutilisables
+├── pages/              # Pages et routing automatique
+│   ├── index.vue       # Page d'accueil
+│   ├── login.vue       # Connexion
+│   ├── register.vue    # Inscription
+│   └── utilisateur/    # Pages clients
+├── stores/             # Stores Pinia
+│   ├── authentification/
+│   ├── panier/         # Gestion panier sécurisée
+│   └── restaurant/     # Cache restaurants
+├── composables/        # Fonctions réutilisables
+├── types/              # Types TypeScript
+└── services/           # Services API
+
+tests/
+└── e2e/                # Tests Playwright
+    ├── auth.spec.ts    # Tests authentification
+    └── auth-cart.spec.ts # Tests sécurité panier
 ```
 
-### Couverture des tests
+## 🔒 Sécurité
 
-- **AuthStore** : 20 tests (connexion, déconnexion, gestion des rôles)
-- **CartStore** : 33 tests (panier, quantités, validation)
-- **Parcours E2E** : 18 tests (auth, commandes, panier)
+- ✅ **Authentification obligatoire** pour le panier
+- ✅ **Validation côté client et store**
+- ✅ **Persistance sécurisée** localStorage
+- ✅ **Protection CSRF** et validation d'entrées
+- ✅ **Rôles et permissions** utilisateurs
 
-## 🚀 Développement
+## 🎯 Pages Principales
 
-### Installation
+| Route                          | Description        | Accès        |
+| ------------------------------ | ------------------ | ------------ |
+| `/`                            | Accueil            | Public       |
+| `/login`                       | Connexion          | Public       |
+| `/register`                    | Inscription        | Public       |
+| `/utilisateur/restaurant`      | Liste restaurants  | Connecté     |
+| `/utilisateur/restaurant/[id]` | Détail restaurant  | Connecté     |
+| `/Admin/backOffice`            | Administration     | Admin        |
+| `/Admin/restaurateur`          | Gestion restaurant | Restaurateur |
 
-```bash
-npm install
-```
+## 📊 Statut du Projet
 
-### Serveur de développement
+| Composant           | Statut         | Tests               |
+| ------------------- | -------------- | ------------------- |
+| 🔐 Authentification | ✅ Fonctionnel | ✅ 6/6              |
+| 🛒 Panier Sécurisé  | ✅ Fonctionnel | ✅ 4/4              |
+| 🏪 Restaurants      | ✅ Fonctionnel | ✅ Validé           |
+| 🌍 I18n             | ✅ Fonctionnel | ⚠️ Warnings mineurs |
+| 📱 Responsive       | ✅ Fonctionnel | ✅ Validé           |
+| ♿ Accessibilité    | ✅ Fonctionnel | ✅ WCAG AA          |
 
-```bash
-npm run dev             # http://localhost:3003
-```
-
-### Build de production
-
-```bash
-npm run build          # Build optimisé
-npm run analyze        # Analyse du bundle
-npm run preview        # Aperçu de production
-```
-
-## 📊 Performance
-
-### Optimisations implémentées
-
-- **Bundle splitting** : Vendors séparés, lazy loading
-- **Images optimisées** : WebP/AVIF avec fallbacks
-- **PWA** : Service Worker, cache intelligent
-- **Critical CSS** : Styles inline pour le premier rendu
-- **Tree shaking** : Élimination du code inutilisé
-
-### Métriques Lighthouse
-
-- Performance : 90+ 🟢
-- Accessibilité : 95+ 🟢
-- SEO : 90+ 🟢
-- PWA : 85+ 🟢
-
-## 🔄 CI/CD Pipeline
-
-### Workflow automatique
-
-1. **Tests** : Unitaires + E2E sur push/PR
-2. **Build** : Optimisation et vérification
-3. **Deploy** : Automatique sur master/main
-4. **Monitoring** : Lighthouse quotidien
-
-### Branches et déploiement
-
-- `develop` : Tests automatiques
-- `master/main` : Déploiement en production
-- `feature/*` : Validation par PR
-
-## 🛡️ Sécurité
-
-- Validation des entrées côté client/serveur
-- HTTPS forcé en production
-- CSP (Content Security Policy) configuré
-- Authentification JWT sécurisée
-- Sanitisation des données utilisateur
-
-## 🌍 Internationalisation
-
-- **Langues supportées** : Français (défaut), Anglais
-- **Détection automatique** du navigateur
-- **URL localisées** : `/en/...` pour l'anglais
-- **Traductions complètes** : Interface + messages d'erreur
-
-## 📱 Progressive Web App
-
-- **Installation** : Prompt natif sur desktop/mobile
-- **Offline** : Cache intelligent des pages principales
-- **Notifications** : Support des push notifications
-- **Manifest** : Configuration complète iOS/Android
-
-## 🔧 Configuration
-
-### Variables d'environnement
+## 🔧 Scripts Disponibles
 
 ```bash
-# .env
-PUBLIC_KEY=your_public_key
-SECRET=your_secret_key
-API_BASE_URL=https://api.example.com
+npm run dev          # Démarrage développement
+npm run build        # Build production
+npm run preview      # Aperçu production
+npm run test         # Tests unitaires
+npm run test:e2e     # Tests E2E
+npm run lint         # Vérification code
+npm run type-check   # Vérification TypeScript
 ```
 
-### Scripts disponibles
+## 🚀 Déploiement
 
-- `npm run dev` : Serveur de développement
-- `npm run build` : Build de production
-- `npm run test` : Tests unitaires
-- `npm run test:e2e` : Tests E2E
-- `npm run analyze` : Analyse du bundle
+```bash
+# Build pour production
+npm run build
 
-## 📈 Monitoring et Analytics
+# Démarrage avec PM2
+npm run start:pm2
 
-- **Sentry** : Tracking des erreurs en production
-- **Lighthouse CI** : Métriques de performance
-- **Bundle Analyzer** : Optimisation des dépendances
-- **Coverage** : Couverture de tests > 80%
+# Monitoring
+npm run monitor
+```
 
-## 🤝 Contribution
+## 📝 Contribution
 
 1. Fork le projet
-2. Créer une branche (`git checkout -b feature/amazing-feature`)
-3. Commit les changements (`git commit -m 'Add amazing feature'`)
-4. Push vers la branche (`git push origin feature/amazing-feature`)
+2. Créer une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
+3. Commit les changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
+4. Push la branche (`git push origin feature/nouvelle-fonctionnalite`)
 5. Ouvrir une Pull Request
 
-### Standards de qualité
+## 🐛 Debugging
 
-- Tests unitaires obligatoires (>80% couverture)
-- Tests E2E pour les nouvelles fonctionnalités
-- ESLint/Prettier pour la cohérence du code
-- Conventional Commits pour l'historique
+- **Port par défaut** : 3004
+- **API mock** : `/api/data.json`
+- **Logs** : Console navigateur + terminal
+- **Tests** : `npm run test:e2e -- --headed` pour mode visuel
 
 ## 📄 Licence
 
-MIT License - voir le fichier [LICENSE](LICENSE) pour plus de détails.
+MIT © [GHOSTUSA](https://github.com/GHOSTUSA)
 
 ---
 
-**Score d'évaluation** : 84/85 points ⭐
-
-- Architecture : 14/15 ✅
-- Routing : 25/25 ✅
-- Data Fetching : 20/20 ✅
-- SEO/i18n : 15/15 ✅
-- Performance & PWA : 10/10 ✅
+**🎯 Prêt à commander ? Connectez-vous et découvrez nos restaurants !**
