@@ -1,6 +1,7 @@
 /** Store Pinia - Gestion du panier d'achat */
 import { defineStore } from "pinia";
 import type { Dish, CartItem } from "@/types/Dish";
+import { useAuthStore } from "@/stores/authentification/AuthStore";
 
 interface CartState {
   items: CartItem[];
@@ -49,6 +50,15 @@ export const useCartStore = defineStore("cart", {
 
   actions: {
     addToCart(dish: Dish, quantity: number = 1): void {
+      // Vérifier l'authentification
+      const authStore = useAuthStore();
+      if (!authStore.isAuth) {
+        this.error =
+          "Vous devez être connecté pour ajouter des articles au panier";
+        console.warn("Tentative d'ajout au panier sans authentification");
+        return;
+      }
+
       this.error = null;
       const existingItemIndex = this.items.findIndex(
         (item) => item.id === dish.id
@@ -69,6 +79,11 @@ export const useCartStore = defineStore("cart", {
     },
     removeFromCart(dish: Dish): void {
       this.error = null;
+      const authStore = useAuthStore();
+      if (!authStore.isAuth) {
+        this.error = "Vous devez être connecté pour modifier votre panier";
+        return;
+      }
       const index = this.items.findIndex((item) => item.id === dish.id);
       if (index !== -1) {
         this.items.splice(index, 1);
@@ -76,6 +91,11 @@ export const useCartStore = defineStore("cart", {
     },
     updateItemQuantity(dishId: number, quantity: number): void {
       this.error = null;
+      const authStore = useAuthStore();
+      if (!authStore.isAuth) {
+        this.error = "Vous devez être connecté pour modifier votre panier";
+        return;
+      }
       if (quantity <= 0) {
         const index = this.items.findIndex((item) => item.id === dishId);
         if (index !== -1) {
@@ -96,18 +116,33 @@ export const useCartStore = defineStore("cart", {
       }
     },
     decrementItem(dishId: number): void {
+      const authStore = useAuthStore();
+      if (!authStore.isAuth) {
+        this.error = "Vous devez être connecté pour modifier votre panier";
+        return;
+      }
       const item = this.items.find((item) => item.id === dishId);
       if (item) {
         this.updateItemQuantity(dishId, item.quantity - 1);
       }
     },
     incrementItem(dishId: number): void {
+      const authStore = useAuthStore();
+      if (!authStore.isAuth) {
+        this.error = "Vous devez être connecté pour modifier votre panier";
+        return;
+      }
       const item = this.items.find((item) => item.id === dishId);
       if (item) {
         this.updateItemQuantity(dishId, item.quantity + 1);
       }
     },
     clearCart(): void {
+      const authStore = useAuthStore();
+      if (!authStore.isAuth) {
+        this.error = "Vous devez être connecté pour modifier votre panier";
+        return;
+      }
       this.items = [];
       this.error = null;
     },

@@ -3,8 +3,10 @@
 import DishCard from "~/components/DishCard.vue";
 import type { Restaurant } from "~/types/Restaurant";
 import { useCartStore } from "~/stores/panier/cardStore";
+import { useAuthStore } from "~/stores/authentification/AuthStore";
 
 const cartStore = useCartStore();
+const authStore = useAuthStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
@@ -63,6 +65,13 @@ definePageMeta({
 });
 
 function addToCart(dish: any) {
+  // Vérifier si l'utilisateur est connecté
+  if (!authStore.isAuth) {
+    // Rediriger vers la page de connexion
+    navigateTo("/login");
+    return;
+  }
+
   cartStore.addToCart(dish);
   console.log("Plat ajouté au panier:", dish.name);
 }
@@ -127,8 +136,23 @@ function addToCart(dish: any) {
         <div v-for="dish in restaurant.dishes" :key="dish.id" class="dish-item">
           <DishCard :dish="dish" />
           <div class="dish-actions">
-            <button @click="addToCart(dish)" class="add-to-cart-btn">
-              Ajouter au panier
+            <button
+              @click="addToCart(dish)"
+              :class="[
+                'add-to-cart-btn',
+                { 'auth-required': !authStore.isAuth },
+              ]"
+              :title="
+                !authStore.isAuth
+                  ? 'Vous devez être connecté pour ajouter au panier'
+                  : 'Ajouter ce plat au panier'
+              "
+            >
+              {{
+                authStore.isAuth
+                  ? "Ajouter au panier"
+                  : "Se connecter pour commander"
+              }}
             </button>
           </div>
         </div>
@@ -368,6 +392,16 @@ function addToCart(dish: any) {
   background: linear-gradient(135deg, #229954, #27ae60);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.add-to-cart-btn.auth-required {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  cursor: pointer;
+}
+
+.add-to-cart-btn.auth-required:hover {
+  background: linear-gradient(135deg, #2980b9, #21618c);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
 /* Responsive Design */

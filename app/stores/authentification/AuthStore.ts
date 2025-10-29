@@ -62,13 +62,45 @@ export const useAuthStore = defineStore("auth", {
       this.isAuthenticated = true;
       this.user = publicUser;
       this.error = null;
+
+      // Persister l'état d'authentification
+      if (import.meta.client) {
+        localStorage.setItem("auth-user", JSON.stringify(publicUser));
+        localStorage.setItem("auth-isAuthenticated", "true");
+      }
     },
 
     logout(): void {
       this.isAuthenticated = false;
       this.user = null;
       this.error = null;
-      this.loading = false;
+
+      // Nettoyer la persistance
+      if (import.meta.client) {
+        localStorage.removeItem("auth-user");
+        localStorage.removeItem("auth-isAuthenticated");
+      }
+    },
+
+    // Restaurer l'état depuis localStorage
+    initializeAuth(): void {
+      if (import.meta.client) {
+        const savedUser = localStorage.getItem("auth-user");
+        const savedAuth = localStorage.getItem("auth-isAuthenticated");
+
+        if (savedUser && savedAuth === "true") {
+          try {
+            this.user = JSON.parse(savedUser);
+            this.isAuthenticated = true;
+          } catch (error) {
+            console.error(
+              "Erreur lors de la restauration de l'authentification:",
+              error
+            );
+            this.logout();
+          }
+        }
+      }
     },
 
     updateUser(userData: Partial<PublicUser>): void {
@@ -80,9 +112,5 @@ export const useAuthStore = defineStore("auth", {
     clearError(): void {
       this.error = null;
     },
-  },
-
-  persist: {
-    storage: process.client ? localStorage : undefined,
   },
 });

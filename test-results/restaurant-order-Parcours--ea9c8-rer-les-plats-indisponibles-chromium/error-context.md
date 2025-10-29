@@ -1,5 +1,0 @@
-# Page snapshot
-
-```yaml
-- generic [ref=e2]: "{ \"error\": \"Dev server is unavailable.\", \"hint\": \"Please reload the page and check the console for errors if the issue persists.\" }"
-```
