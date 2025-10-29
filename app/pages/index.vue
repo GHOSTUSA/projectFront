@@ -1,522 +1,76 @@
-<!-- Page de connexion -->
+<!-- Page d'accueil - Redirection intelligente -->
 <script setup lang="ts">
-import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
-import type { User } from "~/types/User";
-
-const { t } = useI18n();
 
 definePageMeta({
   ssr: false,
   auth: false,
 });
 
-useSeoMeta({
-  title: t("pages.home.seo.title"),
-  description: t("pages.home.seo.description"),
-  robots: "noindex, nofollow",
-});
-
-const userName = ref<string>("");
-const passWord = ref<string>("");
-const isLoading = ref<boolean>(false);
-const errorMessage = ref<string>("");
+const authStore = useAuthStore();
 
 onMounted(() => {
-  try {
-    const authStore = useAuthStore();
-    if (authStore.isAuthenticated) {
-      redirectUserByRole(authStore.user);
+  // Redirection basée sur l'état d'authentification
+  if (authStore.isAuthenticated) {
+    const user = authStore.user;
+    if (user?.role === "admin") {
+      navigateTo("/Admin/backOffice");
+    } else if (user?.role === "restaurateur") {
+      navigateTo("/Admin/restaurateur");
+    } else {
+      // Utilisateur normal - aller vers restaurants
+      navigateTo("/utilisateur/restaurant");
     }
-  } catch (error) {
-    console.error("Erreur lors de la vérification d'authentification:", error);
-  }
-});
-
-function redirectUserByRole(user: any) {
-  if (user?.role === "admin") {
-    navigateTo("/Admin/backOffice");
-  } else if (user?.role === "restaurateur") {
-    navigateTo("/Admin/restaurateur");
   } else {
+    // Non connecté - aller vers restaurants (public)
     navigateTo("/utilisateur/restaurant");
   }
-}
-
-async function submitForm() {
-  if (!userName.value || !passWord.value) {
-    errorMessage.value = t("errors.form.allFieldsRequired");
-    return;
-  }
-
-  isLoading.value = true;
-  errorMessage.value = "";
-
-  try {
-    console.log("Tentative de connexion côté client...");
-
-    const data: any = await $fetch("/api/data.json");
-
-    const user: User | undefined = data.users.find(
-      (u: any) => u.email === userName.value && u.password === passWord.value
-    );
-
-    if (user) {
-      console.log("Connexion réussie !", user.email);
-
-      const authStore = useAuthStore();
-      authStore.loginUser(user);
-
-      redirectUserByRole(user);
-    } else {
-      errorMessage.value = t("errors.auth.invalidCredentials");
-    }
-  } catch (error) {
-    console.error("Erreur lors de la connexion:", error);
-    errorMessage.value = t("errors.network.connectionError");
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-function clearError() {
-  errorMessage.value = "";
-}
+});
 </script>
+
 <template>
-  <div class="login-page">
-    <div class="login-container">
-      <div class="login-content">
-        <div class="login-header">
-          <h1>{{ t("pages.home.login.title") }}</h1>
-          <p>{{ t("pages.home.login.welcome") }}</p>
-        </div>
-
-        <form @submit.prevent="submitForm" class="login-form">
-          <div v-if="errorMessage" class="error-message">
-            <span>{{ errorMessage }}</span>
-            <button type="button" @click="clearError" class="close-error">
-              ×
-            </button>
-          </div>
-
-          <div class="form-group">
-            <label for="username">{{ t("pages.home.form.email") }}</label>
-            <input
-              v-model="userName"
-              id="username"
-              name="username"
-              :placeholder="t('pages.home.form.emailPlaceholder')"
-              :disabled="isLoading"
-              required
-              autocomplete="email"
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="password">{{ t("pages.home.form.password") }}</label>
-            <input
-              type="password"
-              v-model="passWord"
-              id="password"
-              name="password"
-              :placeholder="t('pages.home.form.passwordPlaceholder')"
-              :disabled="isLoading"
-              required
-              autocomplete="current-password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            class="login-btn"
-            :disabled="isLoading"
-            :aria-label="
-              isLoading
-                ? t('pages.home.form.signingIn')
-                : t('pages.home.form.signIn')
-            "
-          >
-            <span v-if="isLoading" class="loading-spinner">⟳</span>
-            {{
-              isLoading
-                ? t("pages.home.form.signingIn")
-                : t("pages.home.form.signIn")
-            }}
-          </button>
-        </form>
-
-        <div class="auth-links">
-          <p class="register-link">
-            {{ t("pages.home.auth.noAccount") }}
-            <NuxtLink to="/register" class="link-accessible">
-              {{ t("pages.home.auth.createAccount") }}
-            </NuxtLink>
-          </p>
-        </div>
-      </div>
-
-      <div class="login-image">
-        <div class="image-content">
-          <h2>{{ t("pages.home.features.title") }}</h2>
-          <p>{{ t("pages.home.features.subtitle") }}</p>
-          <div class="features">
-            <div class="feature">
-              <span class="feature-icon">●</span>
-              <span>{{ t("pages.home.features.wideSelection") }}</span>
-            </div>
-            <div class="feature">
-              <span class="feature-icon">●</span>
-              <span>{{ t("pages.home.features.fastDelivery") }}</span>
-            </div>
-            <div class="feature">
-              <span class="feature-icon">●</span>
-              <span>{{ t("pages.home.features.securePayment") }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="loading-page">
+    <div class="loading-content">
+      <h1>FoodDelivery</h1>
+      <div class="loading-spinner">⟳</div>
+      <p>Chargement...</p>
     </div>
   </div>
 </template>
 
 <style scoped>
-.login-page {
+.loading-page {
   min-height: 100vh;
-  background: linear-gradient(-90deg, #66ea7a 0%, #ffffff 80%);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
 }
 
-.login-container {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  max-width: 1000px;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 600px;
-}
-
-.login-content {
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.login-header {
+.loading-content {
   text-align: center;
-  margin-bottom: 3rem;
 }
 
-.login-header h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-}
-
-.login-header p {
-  color: #7f8c8d;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.login-form {
+.loading-content h1 {
+  font-size: 3rem;
   margin-bottom: 2rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #2c3e50;
-  font-size: 0.95rem;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 10px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.login-btn {
-  width: 100%;
-  background: linear-gradient(-90deg, #66ea7a 0%, #ffffff 80%);
-  color: rgb(129, 129, 129);
-  padding: 1rem;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-}
-
-.login-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-}
-
-.login-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
 }
 
 .loading-spinner {
-  display: inline-block;
+  font-size: 2rem;
   animation: spin 1s linear infinite;
-  margin-right: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.error-message {
-  background: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9rem;
-}
-
-.close-error {
-  background: none;
-  border: none;
-  color: #c33;
+.loading-content p {
   font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 0.5rem;
-}
-
-.auth-links {
-  text-align: center;
-  margin-top: 1.5rem;
-}
-
-.register-link {
-  color: #7f8c8d;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.register-link .link-accessible {
-  color: #27ae60;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.register-link .link-accessible:hover {
-  color: #2ecc71;
-  text-decoration: underline;
-}
-
-.demo-section {
-  background: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border-top: 3px solid #27ae60;
-}
-
-.demo-section h3 {
-  margin: 0 0 1rem 0;
-  color: #2c3e50;
-  font-size: 1.1rem;
-  text-align: center;
-}
-
-.demo-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-.demo-account {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.demo-account h4 {
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-  font-size: 1rem;
-}
-
-.demo-account p {
-  margin: 0.25rem 0;
-  font-family: monospace;
-  font-size: 0.85rem;
-  color: #7f8c8d;
-}
-
-.role-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 15px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.role-badge.admin {
-  background: #3498db;
-  color: white;
-}
-
-.role-badge.restaurateur {
-  background: #e67e22;
-  color: white;
-}
-
-.role-badge.user {
-  background: #27ae60;
-  color: white;
-}
-
-.login-image {
-  background: linear-gradient(
-    135deg,
-    rgba(39, 174, 96, 0.9),
-    rgba(46, 204, 113, 0.9)
-  );
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  color: white;
-}
-
-.image-content {
-  text-align: center;
-}
-
-.image-content h2 {
-  font-size: 2rem;
-  margin: 0 0 1rem 0;
-  font-weight: 600;
-}
-
-.image-content > p {
-  font-size: 1.1rem;
-  margin: 0 0 2rem 0;
   opacity: 0.9;
-}
-
-.features {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.feature {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-}
-
-.feature-icon {
-  font-size: 1.5rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .login-container {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-  }
-
-  .login-image {
-    order: -1;
-    min-height: 200px;
-  }
-
-  .login-content {
-    padding: 2rem;
-  }
-
-  .login-header h1 {
-    font-size: 2rem;
-  }
-
-  .image-content h2 {
-    font-size: 1.5rem;
-  }
-
-  .features {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .feature {
-    flex: 1;
-    min-width: 120px;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-page {
-    padding: 1rem 0.5rem;
-  }
-
-  .login-content {
-    padding: 1.5rem;
-  }
-
-  .login-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .demo-grid {
-    gap: 0.75rem;
-  }
-
-  .demo-account {
-    padding: 0.75rem;
-  }
 }
 </style>

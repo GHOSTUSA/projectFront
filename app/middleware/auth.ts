@@ -8,16 +8,16 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const authStore = useAuthStore();
 
-  const publicPages = ["/", "/restaurant/", "/restaurant/[id]"];
+  const publicPages = ["/", "/login", "/register", "/utilisateur/restaurant"];
 
   if (!authStore.isAuthenticated && !publicPages.includes(to.path)) {
     console.log(
       "Utilisateur non connecté, redirection vers la page de connexion"
     );
-    return navigateTo("/");
+    return navigateTo("/login");
   }
 
-  if (authStore.isAuthenticated && to.path === "/") {
+  if (authStore.isAuthenticated && to.path === "/login") {
     console.log("Utilisateur déjà connecté, redirection selon le rôle");
 
     if (authStore.user?.role === "admin") {

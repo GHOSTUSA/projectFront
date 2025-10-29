@@ -10,12 +10,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   if (!authStore.isAuthenticated) {
     console.log("Accès admin refusé: utilisateur non connecté");
-    return navigateTo("/");
+    return navigateTo("/login");
   }
 
   if (authStore.user?.role !== "admin") {
     console.log("Accès admin refusé: rôle insuffisant");
-    return navigateTo("/restaurant");
+    return navigateTo("/utilisateur/restaurant");
   }
 
   console.log("Accès admin autorisé pour:", authStore.user.email);

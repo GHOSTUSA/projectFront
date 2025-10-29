@@ -201,7 +201,7 @@ function clearMessages() {
 
         <div class="login-link">
           <p>Vous avez déjà un compte ?</p>
-          <NuxtLink to="/" class="login-btn-link">Se connecter</NuxtLink>
+          <NuxtLink to="/login" class="login-btn-link">Se connecter</NuxtLink>
         </div>
       </div>
 

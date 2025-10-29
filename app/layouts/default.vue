@@ -59,7 +59,7 @@ watch(
 
 function logout() {
   authStore.logout();
-  navigateTo("/");
+  navigateTo("/login");
   closeMobileMenu();
 }
 </script>
@@ -68,9 +68,11 @@ function logout() {
   <div class="user-layout">
     <header class="user-header">
       <nav class="user-nav">
-        <div class="nav-brand">
-          <h2>FoodDelivery</h2>
-        </div>
+        <NuxtLink to="/" class="nav-link">
+          <div class="nav-brand">
+            <h2>FoodDelivery</h2>
+          </div>
+        </NuxtLink>
 
         <div class="nav-controls">
           <LanguageSelector />
@@ -135,7 +137,7 @@ function logout() {
           :class="{ 'mobile-open': isMobileMenuOpen }"
         >
           <li>
-            <NuxtLink to="/" class="nav-link" @click="closeMobileMenu">{{
+            <NuxtLink to="/login" class="nav-link" @click="closeMobileMenu">{{
               t("nav.login")
             }}</NuxtLink>
           </li>
