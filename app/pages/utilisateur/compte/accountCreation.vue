@@ -3,15 +3,16 @@
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { CreateUserRequest } from "~/types/Api";
 
+const { t } = useI18n();
+
 definePageMeta({
   ssr: false,
   requiresAuth: false,
 });
 
 useSeoMeta({
-  title: "Créer un compte - FoodDelivery",
-  description:
-    "Créez votre compte FoodDelivery pour commander vos plats préférés.",
+  title: t("account.seo.creationTitle"),
+  description: t("account.seo.creationDescription"),
   robots: "index, follow",
 });
 

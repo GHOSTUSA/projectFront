@@ -35,6 +35,47 @@
         "securePayment": "Paiement sécurisé"
       }
     },
+    "auth": {
+      "register": {
+        "title": "Inscription",
+        "seo": {
+          "title": "Créer un compte - FoodDelivery",
+          "description": "Créez votre compte FoodDelivery et commandez vos plats préférés en ligne."
+        },
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "name": "Nom complet",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "submit": "S'inscrire",
+        "hasAccount": "Déjà un compte ?",
+        "login": "Se connecter",
+        "creating": "Création en cours...",
+        "placeholders": {
+          "firstName": "Votre prénom",
+          "lastName": "Votre nom",
+          "email": "votre adresse email",
+          "password": "Votre mot de passe"
+        },
+        "validation": {
+          "firstNameRequired": "Le prénom est requis",
+          "lastNameRequired": "Le nom est requis",
+          "emailRequired": "L'email est requis",
+          "passwordRequired": "Le mot de passe est requis"
+        },
+        "success": "Votre compte a été créé avec succès ! Redirection vers les restaurants...",
+        "welcome": "Créez votre compte pour découvrir nos restaurants",
+        "benefits": {
+          "title": "Bienvenue dans la famille !",
+          "subtitle": "Découvrez des centaines de restaurants",
+          "freeDelivery": "Livraison gratuite dès 25€",
+          "selectedRestaurants": "Restaurants sélectionnés",
+          "securePayment": "Paiement 100% sécurisé",
+          "realTimeTracking": "Suivi en temps réel"
+        }
+      }
+    },
     "restaurant": {
       "list": {
         "title": "Restaurants disponibles",
@@ -80,6 +121,9 @@
     },
     "network": {
       "connectionError": "Erreur de connexion. Veuillez réessayer."
+    },
+    "auth": {
+      "invalidCredentials": "Identifiants invalides"
     }
   },
   "accessibility": {

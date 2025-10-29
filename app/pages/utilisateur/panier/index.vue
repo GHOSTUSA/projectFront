@@ -6,6 +6,8 @@ import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { Dish } from "~/types/Dish";
 import type { Restaurant } from "~/types/Restaurant";
 
+const { t } = useI18n();
+
 definePageMeta({
   middleware: "auth",
   ssr: false,
@@ -13,9 +15,8 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Mon Panier - FoodDelivery",
-  description:
-    "Gérez votre panier et finalisez votre commande sur FoodDelivery.",
+  title: t("pages.cart.seo.title"),
+  description: t("pages.cart.seo.description"),
   robots: "noindex, nofollow",
 });
 
@@ -52,7 +53,7 @@ const getRestaurantId = async (): Promise<number> => {
 
 async function validateOrder() {
   if (cartStore.cartItems.length === 0) {
-    orderError.value = "Votre panier est vide";
+    orderError.value = t("pages.cart.validation.emptyCart");
     return;
   }
 
@@ -76,8 +77,7 @@ async function validateOrder() {
     }, 2000);
   } catch (error) {
     console.error("Erreur lors de la validation de la commande:", error);
-    orderError.value =
-      "Erreur lors de la validation de la commande. Veuillez réessayer.";
+    orderError.value = t("pages.cart.validation.orderError");
   } finally {
     isOrderProcessing.value = false;
   }
@@ -87,27 +87,29 @@ async function validateOrder() {
 <template>
   <div class="cart-page">
     <div class="page-header">
-      <h1>Mon Panier</h1>
+      <h1>{{ t("pages.cart.title") }}</h1>
     </div>
 
     <div v-if="orderSuccess" class="success-message">
-      <h2>Commande validée avec succès !</h2>
-      <p>Vous allez être redirigé vers votre compte...</p>
+      <h2>{{ t("pages.cart.success") }}</h2>
+      <p>{{ t("accessibility.pleaseWait") }}</p>
     </div>
 
     <div v-if="orderError" class="error-message">
       <p>{{ orderError }}</p>
-      <button @click="orderError = ''" class="close-error">Fermer</button>
+      <button @click="orderError = ''" class="close-error">
+        {{ t("pages.cart.close") }}
+      </button>
     </div>
 
     <div
       v-if="cartStore.cartItems.length === 0 && !orderSuccess"
       class="empty-cart"
     >
-      <h3>Votre panier est vide</h3>
-      <p>Découvrez nos restaurants pour ajouter des plats à votre panier.</p>
+      <h3>{{ t("pages.cart.empty") }}</h3>
+      <p>{{ t("pages.restaurants.noResultsMessage") }}</p>
       <NuxtLink to="/utilisateur/restaurant" class="browse-restaurants-btn">
-        Parcourir les restaurants
+        {{ t("nav.restaurants") }}
       </NuxtLink>
     </div>
 

@@ -27,10 +27,6 @@
         "signIn": "Sign In",
         "signingIn": "Signing in..."
       },
-      "auth": {
-        "noAccount": "Don't have an account yet?",
-        "createAccount": "Create an account"
-      },
       "title": "Welcome to FoodDelivery",
       "subtitle": "Order your favorite dishes in just a few clicks",
       "cta": "Discover our restaurants",
@@ -86,12 +82,63 @@
     },
     "cart": {
       "title": "My cart",
+      "seo": {
+        "title": "My Cart - FoodDelivery",
+        "description": "Manage your cart and finalize your order on FoodDelivery."
+      },
       "empty": "Your cart is empty",
       "total": "Total",
       "checkout": "Checkout",
       "remove": "Remove",
       "quantity": "Quantity",
-      "continue": "Continue shopping"
+      "continue": "Continue shopping",
+      "validation": {
+        "emptyCart": "Your cart is empty",
+        "orderError": "Error validating order. Please try again."
+      },
+      "success": "Order validated successfully! You will be redirected to your account.",
+      "close": "Close"
+    },
+    "auth": {
+      "register": {
+        "title": "Sign up",
+        "seo": {
+          "title": "Create account - FoodDelivery",
+          "description": "Create your FoodDelivery account and order your favorite dishes online."
+        },
+        "firstName": "First name",
+        "lastName": "Last name",
+        "name": "Full name",
+        "email": "Email address",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "submit": "Sign up",
+        "hasAccount": "Already have an account?",
+        "login": "Sign in",
+        "creating": "Creating...",
+        "placeholders": {
+          "firstName": "Your first name",
+          "lastName": "Your last name",
+          "email": "your@email.com",
+          "password": "Your password"
+        },
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "passwordRequired": "Password is required"
+        },
+        "success": "Your account has been created successfully! Redirecting to restaurants...",
+        "welcome": "Create your account to discover our restaurants",
+        "benefits": {
+          "title": "Welcome to the family!",
+          "subtitle": "Discover hundreds of restaurants",
+          "freeDelivery": "Free delivery from €25",
+          "selectedRestaurants": "Selected restaurants",
+          "securePayment": "100% secure payment",
+          "realTimeTracking": "Real-time tracking"
+        }
+      }
     },
     "account": {
       "title": "My account",
@@ -99,27 +146,6 @@
       "orders": "My orders",
       "preferences": "Preferences",
       "security": "Security"
-    },
-    "auth": {
-      "login": {
-        "title": "Login",
-        "email": "Email address",
-        "password": "Password",
-        "submit": "Sign in",
-        "forgotPassword": "Forgot password?",
-        "noAccount": "Don't have an account?",
-        "createAccount": "Create account"
-      },
-      "register": {
-        "title": "Sign up",
-        "name": "Full name",
-        "email": "Email address",
-        "password": "Password",
-        "confirmPassword": "Confirm password",
-        "submit": "Sign up",
-        "hasAccount": "Already have an account?",
-        "login": "Sign in"
-      }
     }
   },
   "common": {
@@ -182,6 +208,7 @@
     "search": "Search",
     "languageSelector": "Language selector",
     "currentLanguage": "Current language: English",
+    "switchTo": "Switch to",
     "switchToFrench": "Switch to French",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -196,5 +223,55 @@
     "defaultTitle": "FoodDelivery - Online food delivery",
     "defaultDescription": "Order your favorite meals online and get fast delivery. Wide selection of quality restaurants.",
     "keywords": "delivery, food, restaurant, online order, food delivery"
+  },
+  "admin": {
+    "commands": {
+      "title": "Orders management",
+      "stats": {
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered"
+      },
+      "filters": {
+        "all": "All",
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "status": {
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "unknown": "Unknown"
+      },
+      "table": {
+        "id": "ID",
+        "date": "Date",
+        "customer": "Customer",
+        "restaurant": "Restaurant",
+        "total": "Total",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "unknownRestaurant": "Unknown restaurant",
+      "unknownUser": "Unknown user"
+    },
+    "restaurants": {
+      "title": "Restaurants management"
+    },
+    "dashboard": {
+      "title": "Admin dashboard",
+      "welcome": "Welcome to the admin area"
+    }
+  },
+  "account": {
+    "seo": {
+      "title": "My Account - FoodDelivery",
+      "description": "Manage your profile and view your orders on FoodDelivery.",
+      "creationTitle": "Create account - FoodDelivery",
+      "creationDescription": "Create your FoodDelivery account to order your favorite dishes."
+    }
   }
 }

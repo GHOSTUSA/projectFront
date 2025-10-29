@@ -1,5 +1,7 @@
 <!-- Page Vue - Gestion des commandes pour administrateurs -->
 <script setup lang="ts">
+const { t } = useI18n();
+
 definePageMeta({
   layout: "admin",
   middleware: ["auth", "admin"],
@@ -12,11 +14,11 @@ const loading = ref(true);
 const selectedStatus = ref("all");
 
 const statusOptions = [
-  { value: "all", label: "Tous" },
-  { value: "pending", label: "En attente" },
-  { value: "in-progress", label: "En cours" },
-  { value: "delivered", label: "Livré" },
-  { value: "cancelled", label: "Annulé" },
+  { value: "all", label: t("admin.commands.filters.all") },
+  { value: "pending", label: t("admin.commands.filters.pending") },
+  { value: "in-progress", label: t("admin.commands.filters.inProgress") },
+  { value: "delivered", label: t("admin.commands.filters.delivered") },
+  { value: "cancelled", label: t("admin.commands.filters.cancelled") },
 ];
 
 onMounted(async () => {
@@ -41,12 +43,14 @@ const filteredCommands = computed(() => {
 
 const getRestaurantName = (restaurantId: number) => {
   const restaurant = restaurants.value.find((r) => r.id === restaurantId);
-  return restaurant?.name || "Restaurant inconnu";
+  return restaurant?.name || t("admin.commands.unknownRestaurant");
 };
 
 const getUserName = (userId: number) => {
   const user = users.value.find((u) => u.id === userId);
-  return user ? `${user.firstName} ${user.lastName}` : "Utilisateur inconnu";
+  return user
+    ? `${user.firstName} ${user.lastName}`
+    : t("admin.commands.unknownUser");
 };
 
 const formatDate = (dateString: string) => {
@@ -61,15 +65,27 @@ const formatDate = (dateString: string) => {
 
 const getStatusBadge = (status: string) => {
   const badges = {
-    pending: { class: "badge-warning", text: "En attente" },
-    "in-progress": { class: "badge-info", text: "En cours" },
-    delivered: { class: "badge-success", text: "Livré" },
-    cancelled: { class: "badge-danger", text: "Annulé" },
+    pending: {
+      class: "badge-warning",
+      text: t("admin.commands.status.pending"),
+    },
+    "in-progress": {
+      class: "badge-info",
+      text: t("admin.commands.status.inProgress"),
+    },
+    delivered: {
+      class: "badge-success",
+      text: t("admin.commands.status.delivered"),
+    },
+    cancelled: {
+      class: "badge-danger",
+      text: t("admin.commands.status.cancelled"),
+    },
   };
   return (
     badges[status as keyof typeof badges] || {
       class: "badge-secondary",
-      text: status,
+      text: t("admin.commands.status.unknown"),
     }
   );
 };
@@ -114,26 +130,30 @@ const commandStats = computed(() => {
 <template>
   <div class="commands-management">
     <div class="page-header">
-      <h1>Gestion des Commandes</h1>
-      <p>Suivez et gérez toutes les commandes de la plateforme</p>
+      <h1>{{ t("admin.commands.title") }}</h1>
+      <p>{{ t("admin.dashboard.welcome") }}</p>
     </div>
 
     <div class="stats-row">
       <div class="stat-item">
         <span class="stat-number">{{ commandStats.total }}</span>
-        <span class="stat-label">Total</span>
+        <span class="stat-label">{{ t("pages.cart.total") }}</span>
       </div>
       <div class="stat-item stat-warning">
         <span class="stat-number">{{ commandStats.pending }}</span>
-        <span class="stat-label">En attente</span>
+        <span class="stat-label">{{ t("admin.commands.stats.pending") }}</span>
       </div>
       <div class="stat-item stat-info">
         <span class="stat-number">{{ commandStats.inProgress }}</span>
-        <span class="stat-label">En cours</span>
+        <span class="stat-label">{{
+          t("admin.commands.stats.inProgress")
+        }}</span>
       </div>
       <div class="stat-item stat-success">
         <span class="stat-number">{{ commandStats.delivered }}</span>
-        <span class="stat-label">Livrées</span>
+        <span class="stat-label">{{
+          t("admin.commands.stats.delivered")
+        }}</span>
       </div>
     </div>
 

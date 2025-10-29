@@ -4,15 +4,16 @@ import { ref } from "vue";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { User } from "~/types/User";
 
+const { t } = useI18n();
+
 definePageMeta({
   ssr: false,
   auth: false,
 });
 
 useSeoMeta({
-  title: "Créer un compte - FoodDelivery",
-  description:
-    "Créez votre compte FoodDelivery et commandez vos plats préférés en ligne.",
+  title: t("pages.auth.register.seo.title"),
+  description: t("pages.auth.register.seo.description"),
   robots: "noindex, nofollow",
 });
 
@@ -36,22 +37,22 @@ onMounted(() => {
 
 function validateForm(): boolean {
   if (!formData.value.firstName.trim()) {
-    errorMessage.value = "Le prénom est requis";
+    errorMessage.value = t("pages.auth.register.validation.firstNameRequired");
     return false;
   }
 
   if (!formData.value.lastName.trim()) {
-    errorMessage.value = "Le nom est requis";
+    errorMessage.value = t("pages.auth.register.validation.lastNameRequired");
     return false;
   }
 
   if (!formData.value.email.trim()) {
-    errorMessage.value = "L'email est requis";
+    errorMessage.value = t("pages.auth.register.validation.emailRequired");
     return false;
   }
 
   if (!formData.value.password.trim()) {
-    errorMessage.value = "Le mot de passe est requis";
+    errorMessage.value = t("pages.auth.register.validation.passwordRequired");
     return false;
   }
 
@@ -84,7 +85,7 @@ async function submitForm() {
     // Dans un vrai app, on ferait un POST vers l'API
     // const response = await $fetch('/api/users', { method: 'POST', body: newUser })
 
-    successMessage.value = "Compte créé avec succès ! Connexion automatique...";
+    successMessage.value = t("pages.auth.register.success");
 
     // Connexion automatique
     setTimeout(() => {
@@ -96,8 +97,7 @@ async function submitForm() {
     }, 1500);
   } catch (error) {
     console.error("Erreur lors de la création du compte:", error);
-    errorMessage.value =
-      "Erreur lors de la création du compte. Veuillez réessayer.";
+    errorMessage.value = t("errors.network.connectionError");
   } finally {
     isLoading.value = false;
   }
@@ -113,8 +113,8 @@ function clearMessages() {
     <div class="register-container">
       <div class="register-content">
         <div class="register-header">
-          <h1>Créer un compte</h1>
-          <p>Rejoignez FoodDelivery dès aujourd'hui</p>
+          <h1>{{ t("pages.auth.register.title") }}</h1>
+          <p>{{ t("pages.auth.register.welcome") }}</p>
         </div>
 
         <form @submit.prevent="submitForm" class="register-form">
@@ -133,13 +133,15 @@ function clearMessages() {
           <!-- Nom et prénom -->
           <div class="form-row">
             <div class="form-group">
-              <label for="firstName">Prénom *</label>
+              <label for="firstName"
+                >{{ t("pages.auth.register.firstName") }} *</label
+              >
               <input
                 type="text"
                 v-model="formData.firstName"
                 id="firstName"
                 name="firstName"
-                placeholder="Votre prénom"
+                :placeholder="t('pages.auth.register.placeholders.firstName')"
                 :disabled="isLoading"
                 required
                 autocomplete="given-name"
@@ -147,13 +149,15 @@ function clearMessages() {
             </div>
 
             <div class="form-group">
-              <label for="lastName">Nom *</label>
+              <label for="lastName"
+                >{{ t("pages.auth.register.lastName") }} *</label
+              >
               <input
                 type="text"
                 v-model="formData.lastName"
                 id="lastName"
                 name="lastName"
-                placeholder="Votre nom"
+                :placeholder="t('pages.auth.register.placeholders.lastName')"
                 :disabled="isLoading"
                 required
                 autocomplete="family-name"
@@ -163,13 +167,13 @@ function clearMessages() {
 
           <!-- Email -->
           <div class="form-group">
-            <label for="email">Email *</label>
+            <label for="email">{{ t("pages.auth.register.email") }} *</label>
             <input
               type="email"
               v-model="formData.email"
               id="email"
               name="email"
-              placeholder="votre@email.com"
+              :placeholder="t('pages.auth.register.placeholders.email')"
               :disabled="isLoading"
               required
               autocomplete="email"
@@ -179,13 +183,15 @@ function clearMessages() {
           <!-- Mots de passe -->
           <div class="form-row">
             <div class="form-group">
-              <label for="password">Mot de passe *</label>
+              <label for="password"
+                >{{ t("pages.auth.register.password") }} *</label
+              >
               <input
                 type="password"
                 v-model="formData.password"
                 id="password"
                 name="password"
-                placeholder="Votre mot de passe"
+                :placeholder="t('pages.auth.register.placeholders.password')"
                 :disabled="isLoading"
                 required
                 autocomplete="new-password"
@@ -195,32 +201,42 @@ function clearMessages() {
 
           <button type="submit" class="register-btn" :disabled="isLoading">
             <span v-if="isLoading" class="loading-spinner">⟳</span>
-            {{ isLoading ? "Création..." : "Créer mon compte" }}
+            {{
+              isLoading
+                ? t("pages.auth.register.creating")
+                : t("pages.auth.register.submit")
+            }}
           </button>
         </form>
 
         <div class="login-link">
-          <p>Vous avez déjà un compte ?</p>
-          <NuxtLink to="/login" class="login-btn-link">Se connecter</NuxtLink>
+          <p>{{ t("pages.auth.register.hasAccount") }}</p>
+          <NuxtLink to="/login" class="login-btn-link">{{
+            t("pages.auth.register.login")
+          }}</NuxtLink>
         </div>
       </div>
 
       <div class="register-image">
         <div class="image-content">
-          <h2>Bienvenue dans la famille !</h2>
-          <p>Découvrez des centaines de restaurants</p>
+          <h2>{{ t("pages.auth.register.benefits.title") }}</h2>
+          <p>{{ t("pages.auth.register.benefits.subtitle") }}</p>
           <div class="benefits">
             <div class="benefit">
-              <span>Livraison gratuite dès 25€</span>
+              <span>{{ t("pages.auth.register.benefits.freeDelivery") }}</span>
             </div>
             <div class="benefit">
-              <span>Restaurants sélectionnés</span>
+              <span>{{
+                t("pages.auth.register.benefits.selectedRestaurants")
+              }}</span>
             </div>
             <div class="benefit">
-              <span>Paiement 100% sécurisé</span>
+              <span>{{ t("pages.auth.register.benefits.securePayment") }}</span>
             </div>
             <div class="benefit">
-              <span>Suivi en temps réel</span>
+              <span>{{
+                t("pages.auth.register.benefits.realTimeTracking")
+              }}</span>
             </div>
           </div>
         </div>

@@ -35,6 +35,47 @@
         "securePayment": "Secure payment"
       }
     },
+    "auth": {
+      "register": {
+        "title": "Sign up",
+        "seo": {
+          "title": "Create account - FoodDelivery",
+          "description": "Create your FoodDelivery account and order your favorite dishes online."
+        },
+        "firstName": "First name",
+        "lastName": "Last name",
+        "name": "Full name",
+        "email": "Email address",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "submit": "Sign up",
+        "hasAccount": "Already have an account?",
+        "login": "Sign in",
+        "creating": "Creating...",
+        "placeholders": {
+          "firstName": "Your first name",
+          "lastName": "Your last name",
+          "email": "your email address",
+          "password": "Your password"
+        },
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "passwordRequired": "Password is required"
+        },
+        "success": "Your account has been created successfully! Redirecting to restaurants...",
+        "welcome": "Create your account to discover our restaurants",
+        "benefits": {
+          "title": "Welcome to the family!",
+          "subtitle": "Discover hundreds of restaurants",
+          "freeDelivery": "Free delivery from €25",
+          "selectedRestaurants": "Selected restaurants",
+          "securePayment": "100% secure payment",
+          "realTimeTracking": "Real-time tracking"
+        }
+      }
+    },
     "restaurant": {
       "list": {
         "title": "Available restaurants",
@@ -80,6 +121,9 @@
     },
     "network": {
       "connectionError": "Connection error. Please try again."
+    },
+    "auth": {
+      "invalidCredentials": "Invalid credentials"
     }
   },
   "accessibility": {

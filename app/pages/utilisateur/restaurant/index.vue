@@ -9,7 +9,7 @@ const RestaurantCard = defineAsyncComponent({
   loader: () => import("~/components/restaurantCard.vue"),
   loadingComponent: defineComponent({
     template: `
-      <div class="restaurant-card-skeleton" role="status" aria-label="Chargement de la carte restaurant">
+      <div class="restaurant-card-skeleton" role="status" :aria-label="t('accessibility.loading')">
         <div class="skeleton-image"></div>
         <div class="skeleton-content">
           <div class="skeleton-title"></div>
@@ -22,7 +22,7 @@ const RestaurantCard = defineAsyncComponent({
   errorComponent: defineComponent({
     template: `
       <div class="restaurant-card-error" role="alert">
-        <p>Erreur de chargement de la carte restaurant</p>
+        <p>{{ t('errors.generic') }}</p>
       </div>
     `,
   }),
@@ -69,12 +69,13 @@ const {
   },
   onResponseError({ error }) {
     console.error("Erreur de réponse restaurants:", error);
-    restaurantStore.errors.restaurants =
-      "Erreur lors du chargement des restaurants";
+    restaurantStore.errors.restaurants = restaurantStore.errors.restaurants = t(
+      "errors.network.connectionError"
+    );
   },
   onRequestError({ error }) {
     console.error("Erreur de requête restaurants:", error);
-    restaurantStore.errors.restaurants = "Service temporairement indisponible";
+    restaurantStore.errors.restaurants = t("errors.server");
   },
 });
 

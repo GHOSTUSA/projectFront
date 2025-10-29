@@ -27,10 +27,6 @@
         "signIn": "Se connecter",
         "signingIn": "Connexion en cours..."
       },
-      "auth": {
-        "noAccount": "Pas encore de compte ?",
-        "createAccount": "Créer un compte"
-      },
       "title": "Bienvenue sur FoodDelivery",
       "subtitle": "Commandez vos plats préférés en quelques clics",
       "cta": "Découvrir nos restaurants",
@@ -86,12 +82,63 @@
     },
     "cart": {
       "title": "Mon panier",
+      "seo": {
+        "title": "Mon Panier - FoodDelivery",
+        "description": "Gérez votre panier et finalisez votre commande sur FoodDelivery."
+      },
       "empty": "Votre panier est vide",
       "total": "Total",
       "checkout": "Commander",
       "remove": "Supprimer",
       "quantity": "Quantité",
-      "continue": "Continuer mes achats"
+      "continue": "Continuer mes achats",
+      "validation": {
+        "emptyCart": "Votre panier est vide",
+        "orderError": "Erreur lors de la validation de la commande. Veuillez réessayer."
+      },
+      "success": "Commande validée avec succès ! Vous allez être redirigé vers votre compte.",
+      "close": "Fermer"
+    },
+    "auth": {
+      "register": {
+        "title": "Inscription",
+        "seo": {
+          "title": "Créer un compte - FoodDelivery",
+          "description": "Créez votre compte FoodDelivery et commandez vos plats préférés en ligne."
+        },
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "name": "Nom complet",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "submit": "S'inscrire",
+        "hasAccount": "Déjà un compte ?",
+        "login": "Se connecter",
+        "creating": "Création en cours...",
+        "placeholders": {
+          "firstName": "Votre prénom",
+          "lastName": "Votre nom",
+          "email": "votre@email.com",
+          "password": "Votre mot de passe"
+        },
+        "validation": {
+          "firstNameRequired": "Le prénom est requis",
+          "lastNameRequired": "Le nom est requis",
+          "emailRequired": "L'email est requis",
+          "passwordRequired": "Le mot de passe est requis"
+        },
+        "success": "Votre compte a été créé avec succès ! Redirection vers les restaurants...",
+        "welcome": "Créez votre compte pour découvrir nos restaurants",
+        "benefits": {
+          "title": "Bienvenue dans la famille !",
+          "subtitle": "Découvrez des centaines de restaurants",
+          "freeDelivery": "Livraison gratuite dès 25€",
+          "selectedRestaurants": "Restaurants sélectionnés",
+          "securePayment": "Paiement 100% sécurisé",
+          "realTimeTracking": "Suivi en temps réel"
+        }
+      }
     },
     "account": {
       "title": "Mon compte",
@@ -99,27 +146,6 @@
       "orders": "Mes commandes",
       "preferences": "Préférences",
       "security": "Sécurité"
-    },
-    "auth": {
-      "login": {
-        "title": "Connexion",
-        "email": "Adresse e-mail",
-        "password": "Mot de passe",
-        "submit": "Se connecter",
-        "forgotPassword": "Mot de passe oublié ?",
-        "noAccount": "Pas encore de compte ?",
-        "createAccount": "Créer un compte"
-      },
-      "register": {
-        "title": "Inscription",
-        "name": "Nom complet",
-        "email": "Adresse e-mail",
-        "password": "Mot de passe",
-        "confirmPassword": "Confirmer le mot de passe",
-        "submit": "S'inscrire",
-        "hasAccount": "Déjà un compte ?",
-        "login": "Se connecter"
-      }
     }
   },
   "common": {
@@ -182,6 +208,7 @@
     "search": "Recherche",
     "languageSelector": "Sélecteur de langue",
     "currentLanguage": "Langue actuelle: Français",
+    "switchTo": "Passer en",
     "switchToEnglish": "Passer en anglais",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
@@ -196,5 +223,55 @@
     "defaultTitle": "FoodDelivery - Livraison de repas en ligne",
     "defaultDescription": "Commandez vos repas préférés en ligne et faites-vous livrer rapidement. Large choix de restaurants de qualité.",
     "keywords": "livraison, repas, restaurant, commande en ligne, food delivery"
+  },
+  "admin": {
+    "commands": {
+      "title": "Gestion des commandes",
+      "stats": {
+        "pending": "En attente",
+        "inProgress": "En cours",
+        "delivered": "Livrées"
+      },
+      "filters": {
+        "all": "Tous",
+        "pending": "En attente",
+        "inProgress": "En cours",
+        "delivered": "Livré",
+        "cancelled": "Annulé"
+      },
+      "status": {
+        "pending": "En attente",
+        "inProgress": "En cours",
+        "delivered": "Livré",
+        "cancelled": "Annulé",
+        "unknown": "Inconnu"
+      },
+      "table": {
+        "id": "ID",
+        "date": "Date",
+        "customer": "Client",
+        "restaurant": "Restaurant",
+        "total": "Total",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "unknownRestaurant": "Restaurant inconnu",
+      "unknownUser": "Utilisateur inconnu"
+    },
+    "restaurants": {
+      "title": "Gestion des restaurants"
+    },
+    "dashboard": {
+      "title": "Tableau de bord administrateur",
+      "welcome": "Bienvenue dans l'espace administrateur"
+    }
+  },
+  "account": {
+    "seo": {
+      "title": "Mon Compte - FoodDelivery",
+      "description": "Gérez votre profil et consultez vos commandes sur FoodDelivery.",
+      "creationTitle": "Créer un compte - FoodDelivery",
+      "creationDescription": "Créez votre compte FoodDelivery pour commander vos plats préférés."
+    }
   }
 }

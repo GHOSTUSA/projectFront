@@ -4,6 +4,8 @@ import { useAuthStore } from "~/stores/authentification/AuthStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
 import type { User, PublicUser } from "~/types/User";
 
+const { t } = useI18n();
+
 definePageMeta({
   middleware: "auth",
   ssr: false,
@@ -11,9 +13,8 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Mon Compte - FoodDelivery",
-  description:
-    "Gérez votre profil et consultez vos commandes sur FoodDelivery.",
+  title: t("account.seo.title"),
+  description: t("account.seo.description"),
   robots: "noindex, nofollow",
 });
 

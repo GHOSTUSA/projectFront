@@ -7,6 +7,8 @@ definePageMeta({
   auth: false,
 });
 
+const { t } = useI18n();
+
 const authStore = useAuthStore();
 
 onMounted(() => {
@@ -33,7 +35,7 @@ onMounted(() => {
     <div class="loading-content">
       <h1>FoodDelivery</h1>
       <div class="loading-spinner">⟳</div>
-      <p>Chargement...</p>
+      <p>{{ t("common.loading") }}</p>
     </div>
   </div>
 </template>
@@ -65,8 +67,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-content p {
