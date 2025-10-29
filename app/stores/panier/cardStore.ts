@@ -1,4 +1,4 @@
-/** Store Pinia - Gestion du panier d'achat */
+/* Store Pinia pour la gestion du panier d'achat avec authentification */
 import { defineStore } from "pinia";
 import type { Dish, CartItem } from "@/types/Dish";
 import { useAuthStore } from "@/stores/authentification/AuthStore";
@@ -50,12 +50,10 @@ export const useCartStore = defineStore("cart", {
 
   actions: {
     addToCart(dish: Dish, quantity: number = 1): void {
-      // Vérifier l'authentification
       const authStore = useAuthStore();
       if (!authStore.isAuth) {
         this.error =
           "Vous devez être connecté pour ajouter des articles au panier";
-        console.warn("Tentative d'ajout au panier sans authentification");
         return;
       }
 
@@ -77,6 +75,7 @@ export const useCartStore = defineStore("cart", {
         this.items.push(dishToCartItem(dish, quantity));
       }
     },
+
     removeFromCart(dish: Dish): void {
       this.error = null;
       const authStore = useAuthStore();
@@ -89,6 +88,7 @@ export const useCartStore = defineStore("cart", {
         this.items.splice(index, 1);
       }
     },
+
     updateItemQuantity(dishId: number, quantity: number): void {
       this.error = null;
       const authStore = useAuthStore();
@@ -115,6 +115,7 @@ export const useCartStore = defineStore("cart", {
         }
       }
     },
+
     decrementItem(dishId: number): void {
       const authStore = useAuthStore();
       if (!authStore.isAuth) {
@@ -126,6 +127,7 @@ export const useCartStore = defineStore("cart", {
         this.updateItemQuantity(dishId, item.quantity - 1);
       }
     },
+
     incrementItem(dishId: number): void {
       const authStore = useAuthStore();
       if (!authStore.isAuth) {
@@ -137,6 +139,7 @@ export const useCartStore = defineStore("cart", {
         this.updateItemQuantity(dishId, item.quantity + 1);
       }
     },
+
     clearCart(): void {
       const authStore = useAuthStore();
       if (!authStore.isAuth) {
@@ -146,9 +149,11 @@ export const useCartStore = defineStore("cart", {
       this.items = [];
       this.error = null;
     },
+
     clearError(): void {
       this.error = null;
     },
+
     validateSameRestaurant(): boolean {
       if (this.items.length === 0) return true;
       const firstItem = this.items[0];
@@ -158,6 +163,7 @@ export const useCartStore = defineStore("cart", {
         (item) => item.restaurantId === firstRestaurantId
       );
     },
+
     getCartRestaurantId(): number | null {
       const firstItem = this.items[0];
       return firstItem ? firstItem.restaurantId || null : null;

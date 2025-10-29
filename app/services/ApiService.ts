@@ -1,5 +1,4 @@
-﻿/** Service - Gestion des API avec typage strict et centralisation */
-
+﻿/* Service centralisé pour la gestion des API avec typage strict */
 import type {
   ApiResponse,
   DataApiResponse,
@@ -25,59 +24,31 @@ type ApiFunction<TRequest = any, TResponse = any> = (
   data?: TRequest
 ) => Promise<TResponse>;
 
-/**
- * Service principal pour les requÃªtes API
- * Utilise le systÃ¨me de fetch de Nuxt avec typage strict
- */
 export class ApiService {
-  /**
-   * RÃ©cupÃ¨re les donnÃ©es statiques depuis data.json
-   * @returns Promise contenant restaurants, users et commands
-   */
   static async getStaticData(): Promise<DataApiResponse> {
     try {
       const data = await $fetch<DataApiResponse>("/api/data.json");
       return data;
     } catch (error) {
-      console.error("Erreur lors de la rÃ©cupÃ©ration des donnÃ©es:", error);
-      throw new Error("Impossible de charger les donnÃ©es");
+      throw new Error("Impossible de charger les données");
     }
   }
 
-  /**
-   * RÃ©cupÃ¨re la liste de tous les restaurants
-   * @returns Promise<Restaurant[]>
-   */
   static async getRestaurants(): Promise<Restaurant[]> {
     const data = await this.getStaticData();
     return data.restaurants;
   }
 
-  /**
-   * RÃ©cupÃ¨re un restaurant par son ID
-   * @param id - ID du restaurant
-   * @returns Promise<Restaurant | null>
-   */
   static async getRestaurantById(id: number): Promise<Restaurant | null> {
     const restaurants = await this.getRestaurants();
     return restaurants.find((r) => r.id === id) || null;
   }
 
-  /**
-   * RÃ©cupÃ¨re les plats d'un restaurant
-   * @param restaurantId - ID du restaurant
-   * @returns Promise<Dish[]>
-   */
   static async getDishesByRestaurant(restaurantId: number): Promise<Dish[]> {
     const restaurant = await this.getRestaurantById(restaurantId);
     return restaurant?.dishes || [];
   }
 
-  /**
-   * Authentifie un utilisateur
-   * @param credentials - Email et mot de passe
-   * @returns Promise<PublicUser | null>
-   */
   static async login(credentials: LoginRequest): Promise<PublicUser | null> {
     try {
       const data = await this.getStaticData();
@@ -87,43 +58,26 @@ export class ApiService {
       );
 
       if (user) {
-        // Retourne l'utilisateur sans le mot de passe
         const { password, ...publicUser } = user;
         return publicUser;
       }
 
       return null;
     } catch (error) {
-      console.error("Erreur lors de l'authentification:", error);
       throw new Error("Erreur de connexion");
     }
   }
 
-  /**
-   * RÃ©cupÃ¨re les commandes d'un utilisateur
-   * @param userId - ID de l'utilisateur
-   * @returns Promise<Command[]>
-   */
   static async getUserCommands(userId: number): Promise<Command[]> {
     const data = await this.getStaticData();
     return data.commands.filter((c) => c.userId === userId);
   }
 
-  /**
-   * RÃ©cupÃ¨re toutes les commandes (admin uniquement)
-   * @returns Promise<Command[]>
-   */
   static async getAllCommands(): Promise<Command[]> {
     const data = await this.getStaticData();
     return data.commands;
   }
 
-  /**
-   * Recherche des restaurants par critÃ¨res
-   * @param query - Terme de recherche
-   * @param cuisineType - Type de cuisine (optionnel)
-   * @returns Promise<Restaurant[]>
-   */
   static async searchRestaurants(
     query?: string,
     cuisineType?: string
@@ -145,13 +99,6 @@ export class ApiService {
   }
 }
 
-/**
- * Hooks personnalisÃ©s pour utiliser les services avec la rÃ©activitÃ© Vue
- */
-
-/**
- * Hook pour rÃ©cupÃ©rer les restaurants avec Ã©tat de chargement
- */
 export function useRestaurants() {
   const restaurants = ref<Restaurant[]>([]);
   const loading = ref(false);
@@ -178,9 +125,6 @@ export function useRestaurants() {
   };
 }
 
-/**
- * Hook pour rÃ©cupÃ©rer un restaurant spÃ©cifique
- */
 export function useRestaurant(id: Ref<number> | number) {
   const restaurant = ref<Restaurant | null>(null);
   const loading = ref(false);
@@ -200,7 +144,6 @@ export function useRestaurant(id: Ref<number> | number) {
     }
   };
 
-  // Surveiller les changements d'ID pour recharger automatiquement
   watch(() => unref(id), fetchRestaurant, { immediate: true });
 
   return {

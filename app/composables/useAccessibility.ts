@@ -1,4 +1,4 @@
-﻿/** Composable - Gestion de l'accessibilité et navigation clavier */
+﻿/* Composables pour la gestion de l'accessibilité et navigation clavier */
 
 export function useKeyboardNavigation() {
   const focusedElementIndex = ref(-1);
@@ -78,7 +78,6 @@ export function useScreenReaderAnnouncements() {
     priority: "polite" | "assertive" = "polite"
   ) {
     if (!announceElement.value) {
-      // CrÃ©er l'Ã©lÃ©ment d'annonce s'il n'existe pas
       announceElement.value = document.createElement("div");
       announceElement.value.setAttribute("aria-live", priority);
       announceElement.value.setAttribute("aria-atomic", "true");
@@ -86,7 +85,6 @@ export function useScreenReaderAnnouncements() {
       document.body.appendChild(announceElement.value);
     }
 
-    // Vider puis ajouter le message pour forcer l'annonce
     announceElement.value.textContent = "";
     setTimeout(() => {
       if (announceElement.value) {
@@ -95,25 +93,16 @@ export function useScreenReaderAnnouncements() {
     }, 100);
   }
 
-  /**
-   * Annonce les changements de page/Ã©tat
-   */
   function announcePageChange(title: string) {
-    announce(`Page changÃ©e: ${title}`, "assertive");
+    announce(`Page changée: ${title}`, "assertive");
   }
 
-  /**
-   * Annonce les erreurs
-   */
   function announceError(error: string) {
     announce(`Erreur: ${error}`, "assertive");
   }
 
-  /**
-   * Annonce les succÃ¨s
-   */
   function announceSuccess(message: string) {
-    announce(`SuccÃ¨s: ${message}`, "polite");
+    announce(`Succès: ${message}`, "polite");
   }
 
   return {
@@ -124,22 +113,13 @@ export function useScreenReaderAnnouncements() {
   };
 }
 
-/**
- * Validation du contraste et couleurs accessibles
- */
 export function useAccessibleColors() {
-  /**
-   * VÃ©rifie si le contraste entre deux couleurs est suffisant
-   * BasÃ© sur les directives WCAG 2.1
-   */
   function calculateContrast(color1: string, color2: string): number {
-    // Conversion couleur vers luminositÃ© relative
     function getLuminance(color: string): number {
-      // Simplification - dans un vrai projet, utiliser une lib comme chroma.js
       const rgb = hexToRgb(color);
       if (!rgb) return 0;
 
-      const [r, g, b] = [rgb.r, rgb.g, rgb.b].map((c) => {
+      const [r = 0, g = 0, b = 0] = [rgb.r, rgb.g, rgb.b].map((c) => {
         c = c / 255;
         return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
       });
@@ -166,9 +146,6 @@ export function useAccessibleColors() {
     return (brightest + 0.05) / (darkest + 0.05);
   }
 
-  /**
-   * Valide si le contraste respecte WCAG AA (4.5:1) ou AAA (7:1)
-   */
   function isContrastValid(
     foreground: string,
     background: string,
@@ -185,20 +162,11 @@ export function useAccessibleColors() {
   };
 }
 
-/**
- * Gestion des rÃ´les ARIA et labels
- */
 export function useARIALabels() {
-  /**
-   * GÃ©nÃ¨re un ID unique pour aria-describedby
-   */
   function generateId(prefix = "aria"): string {
     return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  /**
-   * CrÃ©er les attributs ARIA pour un Ã©lÃ©ment interactif
-   */
   function createInteractiveARIA(options: {
     label: string;
     description?: string;
@@ -214,7 +182,6 @@ export function useARIALabels() {
     if (options.description) {
       const descId = generateId("desc");
       attrs["aria-describedby"] = descId;
-      // Le description ID sera utilisÃ© pour crÃ©er un Ã©lÃ©ment cachÃ© avec cette description
     }
 
     if (options.expanded !== undefined) {
@@ -236,9 +203,6 @@ export function useARIALabels() {
     return attrs;
   }
 
-  /**
-   * CrÃ©er les attributs pour une liste navigable au clavier
-   */
   function createListARIA(options: {
     listLabel: string;
     itemCount: number;
@@ -266,28 +230,20 @@ export function useARIALabels() {
   };
 }
 
-/**
- * Hook principal pour l'accessibilitÃ© des composants
- */
 export function useAccessibility() {
   const keyboard = useKeyboardNavigation();
   const announcer = useScreenReaderAnnouncements();
   const colors = useAccessibleColors();
   const aria = useARIALabels();
 
-  /**
-   * Configuration complÃ¨te pour un composant accessible
-   */
   function setupAccessibleComponent(container: Ref<HTMLElement | null>) {
     onMounted(() => {
       if (!container.value) return;
 
-      // Ajouter la navigation clavier
       container.value.addEventListener("keydown", (event) => {
         keyboard.handleKeyboardNavigation(event, container.value!);
       });
 
-      // AmÃ©liorer le focus visible
       const focusableElements = container.value.querySelectorAll(
         "button, a, input, select, textarea, [tabindex]"
       );
@@ -313,13 +269,7 @@ export function useAccessibility() {
   };
 }
 
-/**
- * Attributs ARIA pour des composants courants
- */
 export const commonARIAPatterns = {
-  /**
-   * Bouton toggle (ex: menu burger)
-   */
   toggleButton: (isExpanded: boolean, label: string) => ({
     "aria-expanded": isExpanded.toString(),
     "aria-label": label,
@@ -327,28 +277,19 @@ export const commonARIAPatterns = {
     tabindex: "0",
   }),
 
-  /**
-   * Lien de navigation
-   */
   navLink: (isCurrent: boolean, label: string) => ({
     "aria-current": isCurrent ? "page" : undefined,
     "aria-label": label,
   }),
 
-  /**
-   * Carte de restaurant/produit cliquable
-   */
   productCard: (name: string, price?: number, rating?: number) => ({
     role: "article",
     tabindex: "0",
-    "aria-label": `${name}${price ? `, ${price}â‚¬` : ""}${
-      rating ? `, notÃ© ${rating}/5` : ""
+    "aria-label": `${name}${price ? `, ${price}€` : ""}${
+      rating ? `, noté ${rating}/5` : ""
     }`,
   }),
 
-  /**
-   * Formulaire avec validation
-   */
   formField: (
     label: string,
     error?: string,
@@ -362,9 +303,6 @@ export const commonARIAPatterns = {
       describedBy || (error ? `error-${Math.random()}` : undefined),
   }),
 
-  /**
-   * Modal/Dialog
-   */
   modal: (title: string) => ({
     role: "dialog",
     "aria-modal": "true",

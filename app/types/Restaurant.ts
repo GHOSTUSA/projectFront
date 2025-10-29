@@ -1,4 +1,4 @@
-/** Types TypeScript - Restaurant et informations commerciales */
+/* Types TypeScript pour les restaurants et informations commerciales */
 import type { Dish } from "./Dish";
 
 export interface Restaurant {

@@ -1,4 +1,4 @@
-/** Types TypeScript - Utilisateur et authentification */
+/* Types TypeScript pour les utilisateurs et l'authentification */
 import type { Command } from "./Command";
 
 export interface User {

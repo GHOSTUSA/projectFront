@@ -1,4 +1,4 @@
-/** Store Pinia - Gestion de l'authentification */
+/* Store Pinia pour la gestion de l'authentification utilisateur */
 import { defineStore } from "pinia";
 import type { User, PublicUser } from "@/types/User";
 import type { LoginRequest } from "@/types/Api";
@@ -63,7 +63,6 @@ export const useAuthStore = defineStore("auth", {
       this.user = publicUser;
       this.error = null;
 
-      // Persister l'état d'authentification
       if (import.meta.client) {
         localStorage.setItem("auth-user", JSON.stringify(publicUser));
         localStorage.setItem("auth-isAuthenticated", "true");
@@ -75,14 +74,12 @@ export const useAuthStore = defineStore("auth", {
       this.user = null;
       this.error = null;
 
-      // Nettoyer la persistance
       if (import.meta.client) {
         localStorage.removeItem("auth-user");
         localStorage.removeItem("auth-isAuthenticated");
       }
     },
 
-    // Restaurer l'état depuis localStorage
     initializeAuth(): void {
       if (import.meta.client) {
         const savedUser = localStorage.getItem("auth-user");
@@ -93,10 +90,6 @@ export const useAuthStore = defineStore("auth", {
             this.user = JSON.parse(savedUser);
             this.isAuthenticated = true;
           } catch (error) {
-            console.error(
-              "Erreur lors de la restauration de l'authentification:",
-              error
-            );
             this.logout();
           }
         }

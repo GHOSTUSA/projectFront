@@ -1,4 +1,4 @@
-<!-- Page Vue - Détail d'un restaurant et menu des plats -->
+<!-- Page de détail d'un restaurant avec gestion sécurisée du panier -->
 <script lang="ts" setup>
 import DishCard from "~/components/DishCard.vue";
 import type { Restaurant } from "~/types/Restaurant";
@@ -10,10 +10,7 @@ const authStore = useAuthStore();
 const route = useRoute();
 const restaurantId = route.params.id;
 
-// Validation simple sans throw immédiat
 const isValidId = !(!restaurantId || Array.isArray(restaurantId));
-
-// Récupération des données seulement si l'ID est valide
 const {
   data: restaurantData,
   error,
@@ -22,10 +19,7 @@ const {
   key: `restaurant-${restaurantId}`,
   server: false,
   transform: (data: any) => {
-    console.log("Transform - ID recherché:", restaurantId);
-
     if (!data?.restaurants) {
-      console.log("Transform - Pas de restaurants dans la réponse");
       return null;
     }
 
@@ -33,15 +27,10 @@ const {
       (r: any) => String(r.id) === String(restaurantId)
     );
 
-    console.log(
-      "Transform - Restaurant trouvé:",
-      restaurant ? restaurant.name : "Non trouvé"
-    );
     return restaurant || null;
   },
 });
 
-// État calculé pour la gestion d'erreurs
 const restaurant = computed(() => restaurantData.value);
 const hasError = computed(() => !isValidId || !!error.value);
 const errorMessage = computed(() => {
@@ -52,7 +41,6 @@ const errorMessage = computed(() => {
   return null;
 });
 
-// SEO conditionnel
 watchEffect(() => {
   if (restaurant.value) {
     useRestaurantSEO(restaurant.value);
@@ -65,15 +53,12 @@ definePageMeta({
 });
 
 function addToCart(dish: any) {
-  // Vérifier si l'utilisateur est connecté
   if (!authStore.isAuth) {
-    // Rediriger vers la page de connexion
     navigateTo("/login");
     return;
   }
 
   cartStore.addToCart(dish);
-  console.log("Plat ajouté au panier:", dish.name);
 }
 </script>
 

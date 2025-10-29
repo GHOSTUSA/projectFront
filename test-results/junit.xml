@@ -1,12 +1,12 @@
-<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="40.398426">
-<testsuite name="auth-cart.spec.ts" timestamp="2025-10-29T12:52:47.472Z" hostname="chromium" tests="4" failures="0" skipped="0" time="83.393" errors="0">
-<testcase name="Authentification Panier › Doit rediriger vers login quand on tente d&apos;ajouter au panier sans être connecté" classname="auth-cart.spec.ts" time="25.062">
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="23.857187000000003">
+<testsuite name="auth-cart.spec.ts" timestamp="2025-10-29T13:14:56.537Z" hostname="chromium" tests="4" failures="0" skipped="0" time="32.465" errors="0">
+<testcase name="Authentification Panier › Doit rediriger vers login quand on tente d&apos;ajouter au panier sans être connecté" classname="auth-cart.spec.ts" time="7.847">
 </testcase>
-<testcase name="Authentification Panier › Doit permettre d&apos;ajouter au panier quand connecté" classname="auth-cart.spec.ts" time="8.619">
+<testcase name="Authentification Panier › Doit permettre d&apos;ajouter au panier quand connecté" classname="auth-cart.spec.ts" time="8.937">
 </testcase>
-<testcase name="Authentification Panier › Doit afficher le bon texte sur les boutons selon l&apos;état d&apos;authentification" classname="auth-cart.spec.ts" time="24.725">
+<testcase name="Authentification Panier › Doit afficher le bon texte sur les boutons selon l&apos;état d&apos;authentification" classname="auth-cart.spec.ts" time="7.729">
 </testcase>
-<testcase name="Authentification Panier › Sécurité - Vérification des contrôles d&apos;accès au panier" classname="auth-cart.spec.ts" time="24.987">
+<testcase name="Authentification Panier › Sécurité - Vérification des contrôles d&apos;accès au panier" classname="auth-cart.spec.ts" time="7.952">
 </testcase>
 </testsuite>
 </testsuites>
