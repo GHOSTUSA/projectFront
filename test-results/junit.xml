@@ -1,0 +1,6 @@
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="25.855997000000002">
+<testsuite name="auth.spec.ts" timestamp="2025-10-29T14:27:46.393Z" hostname="chromium" tests="1" failures="0" skipped="0" time="10.479" errors="0">
+<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="10.479">
+</testcase>
+</testsuite>
+</testsuites>

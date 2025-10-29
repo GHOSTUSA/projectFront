@@ -1,4 +1,4 @@
-/* Tests E2E pour l'authentification et la sécurité du panier */
+/** Tests E2E pour l'authentification et la sécurité du panier */
 import { test, expect } from "@playwright/test";
 
 test.describe("Authentification Panier", () => {

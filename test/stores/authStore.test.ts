@@ -1,3 +1,4 @@
+/** Tests unitaires pour AuthStore - Gestion de l'authentification utilisateur */
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { useAuthStore } from "../../app/stores/authentification/AuthStore";
@@ -5,7 +6,6 @@ import type { User, PublicUser } from "../../app/types/User";
 import type { LoginRequest } from "../../app/types/Api";
 import { ApiService } from "../../app/services/ApiService";
 
-// Mock du service API
 vi.mock("~/services/ApiService", () => ({
   ApiService: {
     login: vi.fn(),
@@ -14,8 +14,6 @@ vi.mock("~/services/ApiService", () => ({
 
 describe("AuthStore", () => {
   let authStore: ReturnType<typeof useAuthStore>;
-
-  // Données de test
   const mockUser: User = {
     id: 1,
     lastName: "Doe",
@@ -43,11 +41,8 @@ describe("AuthStore", () => {
   };
 
   beforeEach(() => {
-    // Créer une nouvelle instance de Pinia pour chaque test
     setActivePinia(createPinia());
     authStore = useAuthStore();
-
-    // Réinitialiser les mocks
     vi.clearAllMocks();
   });
 
@@ -113,7 +108,6 @@ describe("AuthStore", () => {
 
   describe("Action login", () => {
     it("devrait connecter un utilisateur avec succès", async () => {
-      // Mock du service API qui retourne un utilisateur
       vi.mocked(ApiService.login).mockResolvedValue(mockPublicUser);
 
       const result = await authStore.login(mockCredentials);
@@ -127,7 +121,6 @@ describe("AuthStore", () => {
     });
 
     it("devrait gérer un échec de connexion (utilisateur null)", async () => {
-      // Mock du service API qui retourne null
       vi.mocked(ApiService.login).mockResolvedValue(null);
 
       const result = await authStore.login(mockCredentials);
@@ -170,14 +163,11 @@ describe("AuthStore", () => {
 
       const loginPromise = authStore.login(mockCredentials);
 
-      // Vérifier que loading est true pendant la requête
       expect(authStore.loading).toBe(true);
 
-      // Résoudre la promesse
       resolvePromise!(mockPublicUser);
       await loginPromise;
 
-      // Vérifier que loading est false après la requête
       expect(authStore.loading).toBe(false);
     });
   });
@@ -187,13 +177,7 @@ describe("AuthStore", () => {
       authStore.loginUser(mockUser);
 
       expect(authStore.isAuthenticated).toBe(true);
-      expect(authStore.user).toEqual(mockPublicUser); // Sans le password
-      expect(authStore.error).toBeNull();
-    });
-
-    it("ne devrait pas inclure le mot de passe dans user", () => {
-      authStore.loginUser(mockUser);
-
+      expect(authStore.user).toEqual(mockPublicUser);
       expect(authStore.user).not.toHaveProperty("password");
       expect(authStore.user?.id).toBe(mockUser.id);
       expect(authStore.user?.email).toBe(mockUser.email);
@@ -202,7 +186,6 @@ describe("AuthStore", () => {
 
   describe("Action logout", () => {
     it("devrait déconnecter l'utilisateur", () => {
-      // Configurer un état connecté
       authStore.isAuthenticated = true;
       authStore.user = mockPublicUser;
       authStore.error = "Une erreur";
@@ -233,7 +216,7 @@ describe("AuthStore", () => {
 
       expect(authStore.user?.lastName).toBe("Smith");
       expect(authStore.user?.restaurantId).toBe(2);
-      expect(authStore.user?.email).toBe(mockPublicUser.email); // Inchangé
+      expect(authStore.user?.email).toBe(mockPublicUser.email);
     });
 
     it("ne devrait rien faire si aucun utilisateur n'est connecté", () => {

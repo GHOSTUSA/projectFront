@@ -73,6 +73,7 @@ export const useAuthStore = defineStore("auth", {
       this.isAuthenticated = false;
       this.user = null;
       this.error = null;
+      this.loading = false;
 
       if (import.meta.client) {
         localStorage.removeItem("auth-user");

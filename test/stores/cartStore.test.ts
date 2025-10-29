@@ -1,12 +1,14 @@
-import { describe, it, expect, beforeEach } from "vitest";
+/** Tests unitaires pour CartStore - Gestion du panier d'achat */
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { useCartStore } from "../../app/stores/panier/cardStore";
+import { useAuthStore } from "../../app/stores/authentification/AuthStore";
 import type { Dish, CartItem } from "../../app/types/Dish";
 
 describe("CartStore", () => {
   let cartStore: ReturnType<typeof useCartStore>;
+  let authStore: ReturnType<typeof useAuthStore>;
 
-  // Données de test
   const mockDish1: Dish = {
     id: 1,
     name: "Pizza Margherita",
@@ -37,13 +39,24 @@ describe("CartStore", () => {
     category: "Salade",
     image: "/images/salade-cesar.jpg",
     allergens: [],
-    restaurantId: 2, // Différent restaurant
+    restaurantId: 2,
   };
 
   beforeEach(() => {
-    // Créer une nouvelle instance de Pinia pour chaque test
     setActivePinia(createPinia());
+    authStore = useAuthStore();
     cartStore = useCartStore();
+
+    authStore.isAuthenticated = true;
+    authStore.user = {
+      id: 1,
+      lastName: "Test",
+      firstName: "User",
+      email: "test@example.com",
+      role: "user",
+      restaurantId: undefined,
+      createdAt: "2025-01-01T00:00:00.000Z",
+    };
   });
 
   describe("État initial", () => {
@@ -56,13 +69,12 @@ describe("CartStore", () => {
 
   describe("Getters", () => {
     beforeEach(() => {
-      // Ajouter quelques articles pour tester les getters
       cartStore.addToCart(mockDish1, 2);
       cartStore.addToCart(mockDish2, 1);
     });
 
     it("cartItemCount devrait retourner le nombre total d'articles", () => {
-      expect(cartStore.cartItemCount).toBe(3); // 2 + 1
+      expect(cartStore.cartItemCount).toBe(3);
     });
 
     it("cartItems devrait retourner la liste des articles", () => {
@@ -72,7 +84,6 @@ describe("CartStore", () => {
     });
 
     it("cartPrice devrait calculer le prix total correct", () => {
-      // (12.50 * 2) + (15.90 * 1) = 25.00 + 15.90 = 40.90
       expect(cartStore.cartPrice).toBe(40.9);
     });
 
@@ -88,7 +99,7 @@ describe("CartStore", () => {
     it("getItemQuantity devrait retourner la quantité correcte", () => {
       expect(cartStore.getItemQuantity(1)).toBe(2);
       expect(cartStore.getItemQuantity(2)).toBe(1);
-      expect(cartStore.getItemQuantity(999)).toBe(0); // Article inexistant
+      expect(cartStore.getItemQuantity(999)).toBe(0);
     });
 
     it("hasItem devrait vérifier la présence d'un article", () => {
@@ -109,7 +120,7 @@ describe("CartStore", () => {
       expect(cartStore.items).toHaveLength(1);
       expect(cartStore.items[0]?.id).toBe(1);
       expect(cartStore.items[0]?.quantity).toBe(2);
-      expect(cartStore.items[0]?.totalPrice).toBe(25.0); // 12.50 * 2
+      expect(cartStore.items[0]?.totalPrice).toBe(25.0);
     });
 
     it("devrait augmenter la quantité si l'article existe déjà", () => {
@@ -118,7 +129,7 @@ describe("CartStore", () => {
 
       expect(cartStore.items).toHaveLength(1);
       expect(cartStore.items[0]?.quantity).toBe(3);
-      expect(cartStore.items[0]?.totalPrice).toBe(37.5); // 12.50 * 3
+      expect(cartStore.items[0]?.totalPrice).toBe(37.5);
     });
 
     it("devrait ajouter avec quantité par défaut de 1", () => {
@@ -173,7 +184,7 @@ describe("CartStore", () => {
       cartStore.updateItemQuantity(1, 5);
 
       expect(cartStore.items[0]?.quantity).toBe(5);
-      expect(cartStore.items[0]?.totalPrice).toBe(62.5); // 12.50 * 5
+      expect(cartStore.items[0]?.totalPrice).toBe(62.5);
     });
 
     it("devrait retirer l'article si la quantité est 0", () => {
@@ -191,7 +202,7 @@ describe("CartStore", () => {
     it("ne devrait rien faire si l'article n'existe pas", () => {
       cartStore.updateItemQuantity(999, 5);
 
-      expect(cartStore.items).toHaveLength(1); // Toujours le mockDish1
+      expect(cartStore.items).toHaveLength(1);
     });
   });
 
@@ -204,18 +215,18 @@ describe("CartStore", () => {
       cartStore.incrementItem(1);
 
       expect(cartStore.items[0]?.quantity).toBe(4);
-      expect(cartStore.items[0]?.totalPrice).toBe(50.0); // 12.50 * 4
+      expect(cartStore.items[0]?.totalPrice).toBe(50.0);
     });
 
     it("decrementItem devrait diminuer la quantité de 1", () => {
       cartStore.decrementItem(1);
 
       expect(cartStore.items[0]?.quantity).toBe(2);
-      expect(cartStore.items[0]?.totalPrice).toBe(25.0); // 12.50 * 2
+      expect(cartStore.items[0]?.totalPrice).toBe(25.0);
     });
 
     it("decrementItem devrait retirer l'article si quantité devient 0", () => {
-      cartStore.updateItemQuantity(1, 1); // Mettre quantité à 1
+      cartStore.updateItemQuantity(1, 1);
       cartStore.decrementItem(1);
 
       expect(cartStore.items).toHaveLength(0);
@@ -225,7 +236,7 @@ describe("CartStore", () => {
       cartStore.incrementItem(999);
       cartStore.decrementItem(999);
 
-      expect(cartStore.items[0]?.quantity).toBe(3); // Inchangé
+      expect(cartStore.items[0]?.quantity).toBe(3);
     });
   });
 
@@ -258,15 +269,15 @@ describe("CartStore", () => {
     });
 
     it("validateSameRestaurant devrait retourner true pour le même restaurant", () => {
-      cartStore.addToCart(mockDish1); // restaurant 1
-      cartStore.addToCart(mockDish2); // restaurant 1
+      cartStore.addToCart(mockDish1);
+      cartStore.addToCart(mockDish2);
 
       expect(cartStore.validateSameRestaurant()).toBe(true);
     });
 
     it("validateSameRestaurant devrait retourner false pour différents restaurants", () => {
-      cartStore.addToCart(mockDish1); // restaurant 1
-      cartStore.addToCart(mockDish3); // restaurant 2
+      cartStore.addToCart(mockDish1);
+      cartStore.addToCart(mockDish3);
 
       expect(cartStore.validateSameRestaurant()).toBe(false);
     });
@@ -276,7 +287,7 @@ describe("CartStore", () => {
     });
 
     it("getCartRestaurantId devrait retourner l'ID du restaurant", () => {
-      cartStore.addToCart(mockDish1); // restaurant 1
+      cartStore.addToCart(mockDish1);
 
       expect(cartStore.getCartRestaurantId()).toBe(1);
     });
@@ -284,22 +295,20 @@ describe("CartStore", () => {
 
   describe("Calculs de prix", () => {
     it("devrait gérer les calculs de prix avec décimales", () => {
-      cartStore.addToCart(mockDish1, 3); // 12.50 * 3 = 37.50
-      cartStore.addToCart(mockDish2, 2); // 15.90 * 2 = 31.80
+      cartStore.addToCart(mockDish1, 3);
+      cartStore.addToCart(mockDish2, 2);
 
-      // Total: 37.50 + 31.80 = 69.30
       expect(cartStore.cartPrice).toBe(69.3);
     });
 
     it("devrait arrondir correctement les prix", () => {
       const dishWithDecimals: Dish = {
         ...mockDish1,
-        price: 10.333, // Prix avec plus de 2 décimales
+        price: 10.333,
       };
 
       cartStore.addToCart(dishWithDecimals, 3);
 
-      // 10.333 * 3 = 30.999, qui est arrondi par le store avec toFixed(2) -> 31.00
       expect(cartStore.items[0]?.totalPrice).toBe(31.0);
       expect(cartStore.cartPrice).toBe(31.0);
     });

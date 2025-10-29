@@ -1,4 +1,4 @@
-/* Tests E2E pour le parcours d'authentification - inscription, connexion et déconnexion */
+/** Tests E2E pour le parcours d'authentification - inscription, connexion et déconnexion */
 import { test, expect } from "@playwright/test";
 
 test.describe("Parcours Authentification", () => {
