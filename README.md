@@ -11,22 +11,22 @@
 ![Coverage](https://img.shields.io/badge/Coverage-E2E-blue?style=flat-square)
 ![Security](https://img.shields.io/badge/Security-Auth%20Protected-orange?style=flat-square)
 
-## 📋 Description
+## Description
 
-Application web moderne de commande de restaurants avec authentification sécurisée, gestion de panier et interface multilingue. Construite avec Nuxt 4, Vue 3 et TypeScript pour une expérience utilisateur optimale.
+Application web moderne de commande de restaurants avec authentification sécurisée, gestion de panier et interface multilingue. Construite avec Nuxt 4 et TypeScript pour une expérience utilisateur optimale.
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
-- 🔐 **Authentification sécurisée** avec persistance localStorage
-- 🛒 **Panier protégé** - connexion obligatoire pour commander
-- 🏪 **Gestion multi-restaurants** avec filtres et recherche
-- 👤 **3 rôles utilisateurs** : Admin, Restaurateur, Client
-- 🌍 **Multilingue** (FR/EN) avec i18n
-- 📱 **Responsive design** et PWA
-- ♿ **Accessibilité WCAG** avec navigation clavier
-- 🧪 **Tests E2E** complets avec Playwright
+- **Authentification sécurisée** avec persistance localStorage
+- **Panier protégé** - connexion obligatoire pour commander
+- **Gestion multi-restaurants** avec filtres et recherche
+- **3 rôles utilisateurs** : Admin, Restaurateur, Client
+- **Multilingue** (FR/EN) avec i18n
+- **Responsive design** et PWA
+- **Accessibilité WCAG** avec navigation clavier
+- **Tests E2E** complets avec Playwright
 
-## 🚀 Technologies
+## Technologies
 
 ### Frontend
 
@@ -49,13 +49,13 @@ Application web moderne de commande de restaurants avec authentification sécuri
 
 ## 👥 Comptes de Test
 
-| Rôle                | Nom          | Email | Mot de passe | Accès                |
-| ------------------- | ------------ | ----- | ------------ | -------------------- |
-| 👑 **Admin**        | Jean Dupont  | `a`   | `a`          | Back-office complet  |
-| 🏪 **Restaurateur** | Pierre Leroy | `c`   | `c`          | Gestion restaurant   |
-| 👤 **Client**       | Marie Martin | `b`   | `b`          | Commande restaurants |
+| Rôle             | Nom          | Email | Mot de passe | Accès                |
+| ---------------- | ------------ | ----- | ------------ | -------------------- |
+| **Admin**        | Jean Dupont  | `a`   | `a`          | Back-office complet  |
+| **Client**       | Marie Martin | `b`   | `b`          | Commande restaurants |
+| **Restaurateur** | Pierre Leroy | `c`   | `c`          | Gestion restaurant   |
 
-## 🛠️ Installation & Démarrage
+## Installation & Démarrage
 
 ```bash
 # Cloner le projet
@@ -72,7 +72,7 @@ npm run dev
 # http://localhost:3004
 ```
 
-## 🧪 Tests
+## Tests
 
 ```bash
 # Tests E2E complets
@@ -88,7 +88,7 @@ npm run test
 npm run test:coverage
 ```
 
-## 📁 Architecture
+## Architecture
 
 ```
 app/
@@ -168,14 +168,6 @@ npm run start:pm2
 npm run monitor
 ```
 
-## 📝 Contribution
-
-1. Fork le projet
-2. Créer une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
-3. Commit les changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
-4. Push la branche (`git push origin feature/nouvelle-fonctionnalite`)
-5. Ouvrir une Pull Request
-
 ## 🐛 Debugging
 
 - **Port par défaut** : 3004
@@ -186,7 +178,4 @@ npm run monitor
 ## 📄 Licence
 
 MIT © [GHOSTUSA](https://github.com/GHOSTUSA)
-
----
-
-**🎯 Prêt à commander ? Connectez-vous et découvrez nos restaurants !**
+s !\*\*
