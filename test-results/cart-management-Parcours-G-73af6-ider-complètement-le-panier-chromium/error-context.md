@@ -1,0 +1,134 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "FoodDelivery" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - heading "FoodDelivery" [level=2] [ref=e8]
+        - region "Changer de langue" [ref=e10]:
+          - button "Passer à English" [ref=e11] [cursor=pointer]:
+            - generic [ref=e14]: Français
+          - generic [ref=e15]: "Langue actuelle : Français: Français"
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Restaurants" [ref=e18] [cursor=pointer]:
+              - /url: /login
+          - listitem [ref=e19]:
+            - link "Panier (0)" [ref=e20] [cursor=pointer]:
+              - /url: /register
+          - listitem [ref=e21]:
+            - link "Mon compte" [ref=e22] [cursor=pointer]:
+              - /url: /utilisateur/compte
+          - listitem [ref=e23]: Test User
+          - listitem [ref=e24]:
+            - button "Déconnexion" [ref=e25] [cursor=pointer]
+    - main [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - img "Le Bistrot Parisien" [ref=e29]
+          - generic [ref=e30]:
+            - heading "Le Bistrot Parisien" [level=1] [ref=e31]
+            - paragraph [ref=e32]: French
+            - generic [ref=e33]:
+              - generic [ref=e34]: Note
+              - generic [ref=e35]:
+                - generic [ref=e36]: "4.5"
+                - generic [ref=e37]:
+                  - generic [ref=e38]: ★
+                  - generic [ref=e39]: ★
+                  - generic [ref=e40]: ★
+                  - generic [ref=e41]: ★
+                  - generic [ref=e42]: ★
+            - generic [ref=e43]:
+              - heading "Informations de contact" [level=3] [ref=e44]
+              - paragraph [ref=e45]: 15 Rue de la Paix, 75001 Paris
+              - paragraph [ref=e46]: 01 42 60 30 30
+        - generic [ref=e47]:
+          - heading "Plats disponibles" [level=2] [ref=e48]
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - button "Coq au Vin, 18.5€, Main Course" [active] [ref=e51] [cursor=pointer]:
+                - generic [ref=e52]:
+                  - img "Photo de Coq au Vin" [ref=e53]
+                  - generic [ref=e54]: 18.5€
+                - generic [ref=e55]:
+                  - heading "Coq au Vin" [level=3] [ref=e56]
+                  - paragraph [ref=e57]: Chicken braised in red wine with seasonal vegetables
+                  - generic [ref=e58]: "Prix: 18.5 euros"
+                  - generic [ref=e59]:
+                    - 'generic "Catégorie: Main Course" [ref=e60]': Main Course
+                    - 'alert "Attention allergènes: gluten" [ref=e61]': ⚠️ Allergènes :gluten
+                - generic [ref=e62]: Appuyez sur Entrée ou Espace pour voir les détails de ce plat
+              - button "Ajouter au panier" [ref=e64] [cursor=pointer]
+            - generic [ref=e65]:
+              - button "Escargots de Bourgogne, 12€, Appetizer" [ref=e66] [cursor=pointer]:
+                - generic [ref=e67]:
+                  - img "Photo de Escargots de Bourgogne" [ref=e68]
+                  - generic [ref=e69]: 12€
+                - generic [ref=e70]:
+                  - heading "Escargots de Bourgogne" [level=3] [ref=e71]
+                  - paragraph [ref=e72]: 12 snails with parsley butter
+                  - generic [ref=e73]: "Prix: 12 euros"
+                  - 'generic "Catégorie: Appetizer" [ref=e75]': Appetizer
+                - generic [ref=e76]: Appuyez sur Entrée ou Espace pour voir les détails de ce plat
+              - button "Ajouter au panier" [ref=e78] [cursor=pointer]
+            - generic [ref=e79]:
+              - button "Tarte Tatin, 8.5€, Dessert" [ref=e80] [cursor=pointer]:
+                - generic [ref=e81]:
+                  - img "Photo de Tarte Tatin" [ref=e82]
+                  - generic [ref=e83]: 8.5€
+                - generic [ref=e84]:
+                  - heading "Tarte Tatin" [level=3] [ref=e85]
+                  - paragraph [ref=e86]: Caramelized apple tart served warm
+                  - generic [ref=e87]: "Prix: 8.5 euros"
+                  - generic [ref=e88]:
+                    - 'generic "Catégorie: Dessert" [ref=e89]': Dessert
+                    - 'alert "Attention allergènes: gluten, eggs" [ref=e90]': ⚠️ Allergènes :gluten, eggs
+                - generic [ref=e91]: Appuyez sur Entrée ou Espace pour voir les détails de ce plat
+              - button "Ajouter au panier" [ref=e93] [cursor=pointer]
+            - generic [ref=e94]:
+              - button "French Onion Soup, 9€, Appetizer" [ref=e95] [cursor=pointer]:
+                - generic [ref=e96]:
+                  - img "Photo de French Onion Soup" [ref=e97]
+                  - generic [ref=e98]: 9€
+                - generic [ref=e99]:
+                  - heading "French Onion Soup" [level=3] [ref=e100]
+                  - paragraph [ref=e101]: Traditional soup topped with melted cheese
+                  - generic [ref=e102]: "Prix: 9 euros"
+                  - generic [ref=e103]:
+                    - 'generic "Catégorie: Appetizer" [ref=e104]': Appetizer
+                    - 'alert "Attention allergènes: dairy" [ref=e105]': ⚠️ Allergènes :dairy
+                - generic [ref=e106]: Appuyez sur Entrée ou Espace pour voir les détails de ce plat
+              - button "Ajouter au panier" [ref=e108] [cursor=pointer]
+            - generic [ref=e109]:
+              - button "Beef Bourguignon, 22€, Main Course" [ref=e110] [cursor=pointer]:
+                - generic [ref=e111]:
+                  - img "Photo de Beef Bourguignon" [ref=e112]
+                  - generic [ref=e113]: 22€
+                - generic [ref=e114]:
+                  - heading "Beef Bourguignon" [level=3] [ref=e115]
+                  - paragraph [ref=e116]: Beef braised in red wine with traditional garnish
+                  - generic [ref=e117]: "Prix: 22 euros"
+                  - 'generic "Catégorie: Main Course" [ref=e119]': Main Course
+                - generic [ref=e120]: Appuyez sur Entrée ou Espace pour voir les détails de ce plat
+              - button "Ajouter au panier" [ref=e122] [cursor=pointer]
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e123]:
+    - button "Toggle Nuxt DevTools" [ref=e124] [cursor=pointer]:
+      - img [ref=e125]
+    - generic "Page load time" [ref=e128]:
+      - generic [ref=e129]: "75"
+      - generic [ref=e130]: ms
+    - button "Toggle Component Inspector" [ref=e132] [cursor=pointer]:
+      - img [ref=e133]
+```

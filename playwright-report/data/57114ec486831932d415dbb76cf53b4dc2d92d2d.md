@@ -1,0 +1,85 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "FoodDelivery" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - heading "FoodDelivery" [level=2] [ref=e8]
+        - region "Changer de langue" [ref=e10]:
+          - button "Passer à English" [ref=e11] [cursor=pointer]:
+            - generic [ref=e14]: Français
+          - generic [ref=e15]: "Langue actuelle : Français: Français"
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Restaurants" [ref=e18] [cursor=pointer]:
+              - /url: /utilisateur/restaurant
+          - listitem [ref=e19]:
+            - link "Panier (0)" [ref=e20] [cursor=pointer]:
+              - /url: /utilisateur/panier
+          - listitem [ref=e21]:
+            - link "Mon compte" [ref=e22] [cursor=pointer]:
+              - /url: /utilisateur/compte
+          - listitem [ref=e23]: Test User
+          - listitem [ref=e24]:
+            - button "Déconnexion" [ref=e25] [cursor=pointer]
+    - main [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - heading "Inscription" [level=1] [ref=e31]
+            - paragraph [ref=e32]: Créez votre compte pour découvrir nos restaurants
+          - generic [ref=e33]:
+            - generic [ref=e35]: Votre compte a été créé avec succès ! Redirection vers les restaurants...
+            - generic [ref=e36]:
+              - generic [ref=e37]:
+                - generic [ref=e38]: Prénom *
+                - textbox "Prénom *" [ref=e39]:
+                  - /placeholder: Votre prénom
+                  - text: Test
+              - generic [ref=e40]:
+                - generic [ref=e41]: Nom *
+                - textbox "Nom *" [ref=e42]:
+                  - /placeholder: Votre nom
+                  - text: User
+            - generic [ref=e43]:
+              - generic [ref=e44]: Adresse e-mail *
+              - textbox "Adresse e-mail *" [ref=e45]:
+                - /placeholder: votre adresse email
+                - text: test@example.com
+            - generic [ref=e47]:
+              - generic [ref=e48]: Mot de passe *
+              - textbox "Mot de passe *" [ref=e49]:
+                - /placeholder: Votre mot de passe
+                - text: password123
+            - button "S'inscrire" [active] [ref=e50] [cursor=pointer]
+          - generic [ref=e51]:
+            - paragraph [ref=e52]: Déjà un compte ?
+            - link "Se connecter" [ref=e53] [cursor=pointer]:
+              - /url: /login
+        - generic [ref=e55]:
+          - heading "Bienvenue dans la famille !" [level=2] [ref=e56]
+          - paragraph [ref=e57]: Découvrez des centaines de restaurants
+          - generic [ref=e58]:
+            - generic [ref=e60]: Livraison gratuite dès 25€
+            - generic [ref=e62]: Restaurants sélectionnés
+            - generic [ref=e64]: Paiement 100% sécurisé
+            - generic [ref=e66]: Suivi en temps réel
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e67]:
+    - button "Toggle Nuxt DevTools" [ref=e68] [cursor=pointer]:
+      - img [ref=e69]
+    - generic "Page load time" [ref=e72]:
+      - generic [ref=e73]: "-"
+    - button "Toggle Component Inspector" [ref=e75] [cursor=pointer]:
+      - img [ref=e76]
+```

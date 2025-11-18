@@ -1,0 +1,140 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "FoodDelivery" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - heading "FoodDelivery" [level=2] [ref=e8]
+        - region "Changer de langue" [ref=e10]:
+          - button "Passer à English" [ref=e11] [cursor=pointer]:
+            - generic [ref=e14]: Français
+          - generic [ref=e15]: "Langue actuelle : Français: Français"
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Connexion" [ref=e18] [cursor=pointer]:
+              - /url: /login
+          - listitem [ref=e19]:
+            - link "Inscription" [ref=e20] [cursor=pointer]:
+              - /url: /register
+    - main [ref=e21]:
+      - main [ref=e22]:
+        - generic [ref=e23]:
+          - heading "Restaurants disponibles" [level=1] [ref=e24]
+          - paragraph [ref=e25]: Découvrez 5 restaurants de qualité. Où voulez-vous commander aujourd'hui ?
+        - generic [ref=e26]:
+          - button "Actualiser la liste des restaurants" [ref=e28] [cursor=pointer]:
+            - generic [ref=e29]: ↻
+            - text: Actualiser la liste des restaurants
+          - generic [ref=e30]: 5 restaurants disponibles
+          - region "Liste de 5 restaurants" [ref=e31]:
+            - link "Voir Bella Italia, cuisine Italian, noté 4.3 sur 5" [ref=e32] [cursor=pointer]:
+              - /url: /utilisateur/restaurant/3
+              - generic [ref=e33]:
+                - img "Photo du restaurant Bella Italia" [ref=e35]
+                - generic [ref=e37]:
+                  - heading "Bella Italia" [level=3] [ref=e38]
+                  - paragraph [ref=e39]: Italian
+                  - generic [ref=e40]:
+                    - generic [ref=e41]:
+                      - generic [ref=e42]: ★
+                      - generic [ref=e43]: ★
+                      - generic [ref=e44]: ★
+                      - generic [ref=e45]: ★
+                      - generic [ref=e46]: ★
+                    - generic [ref=e47]: "4.3"
+                  - generic [ref=e48]:
+                    - paragraph [ref=e49]: 42 Rue de Rivoli, 75004 Paris
+                    - paragraph [ref=e50]: 01 48 87 55 55
+            - link "Voir El Sombrero, cuisine Mexican, noté 4.2 sur 5" [ref=e51] [cursor=pointer]:
+              - /url: /utilisateur/restaurant/5
+              - generic [ref=e52]:
+                - img "Photo du restaurant El Sombrero" [ref=e54]
+                - generic [ref=e56]:
+                  - heading "El Sombrero" [level=3] [ref=e57]
+                  - paragraph [ref=e58]: Mexican
+                  - generic [ref=e59]:
+                    - generic [ref=e60]:
+                      - generic [ref=e61]: ★
+                      - generic [ref=e62]: ★
+                      - generic [ref=e63]: ★
+                      - generic [ref=e64]: ★
+                      - generic [ref=e65]: ★
+                    - generic [ref=e66]: "4.2"
+                  - generic [ref=e67]:
+                    - paragraph [ref=e68]: 33 Rue de la Roquette, 75011 Paris
+                    - paragraph [ref=e69]: 01 47 00 73 73
+            - link "Voir Le Bistrot Parisien, cuisine French, noté 4.5 sur 5" [ref=e70] [cursor=pointer]:
+              - /url: /utilisateur/restaurant/1
+              - generic [ref=e71]:
+                - img "Photo du restaurant Le Bistrot Parisien" [ref=e73]
+                - generic [ref=e75]:
+                  - heading "Le Bistrot Parisien" [level=3] [ref=e76]
+                  - paragraph [ref=e77]: French
+                  - generic [ref=e78]:
+                    - generic [ref=e79]:
+                      - generic [ref=e80]: ★
+                      - generic [ref=e81]: ★
+                      - generic [ref=e82]: ★
+                      - generic [ref=e83]: ★
+                      - generic [ref=e84]: ★
+                    - generic [ref=e85]: "4.5"
+                  - generic [ref=e86]:
+                    - paragraph [ref=e87]: 15 Rue de la Paix, 75001 Paris
+                    - paragraph [ref=e88]: 01 42 60 30 30
+            - link "Voir Sakura Sushi, cuisine Japanese, noté 4.8 sur 5" [ref=e89] [cursor=pointer]:
+              - /url: /utilisateur/restaurant/2
+              - generic [ref=e90]:
+                - img "Photo du restaurant Sakura Sushi" [ref=e92]
+                - generic [ref=e94]:
+                  - heading "Sakura Sushi" [level=3] [ref=e95]
+                  - paragraph [ref=e96]: Japanese
+                  - generic [ref=e97]:
+                    - generic [ref=e98]:
+                      - generic [ref=e99]: ★
+                      - generic [ref=e100]: ★
+                      - generic [ref=e101]: ★
+                      - generic [ref=e102]: ★
+                      - generic [ref=e103]: ★
+                    - generic [ref=e104]: "4.8"
+                  - generic [ref=e105]:
+                    - paragraph [ref=e106]: 28 Avenue des Champs-Élysées, 75008 Paris
+                    - paragraph [ref=e107]: 01 45 62 88 88
+            - link "Voir Taj Mahal, cuisine Indian, noté 4.4 sur 5" [ref=e108] [cursor=pointer]:
+              - /url: /utilisateur/restaurant/4
+              - generic [ref=e109]:
+                - img "Photo du restaurant Taj Mahal" [ref=e111]
+                - generic [ref=e113]:
+                  - heading "Taj Mahal" [level=3] [ref=e114]
+                  - paragraph [ref=e115]: Indian
+                  - generic [ref=e116]:
+                    - generic [ref=e117]:
+                      - generic [ref=e118]: ★
+                      - generic [ref=e119]: ★
+                      - generic [ref=e120]: ★
+                      - generic [ref=e121]: ★
+                      - generic [ref=e122]: ★
+                    - generic [ref=e123]: "4.4"
+                  - generic [ref=e124]:
+                    - paragraph [ref=e125]: 67 Boulevard Saint-Germain, 75005 Paris
+                    - paragraph [ref=e126]: 01 43 25 17 17
+          - generic [ref=e127]: Fin de la liste. 5 restaurants affichés
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e128]:
+    - button "Toggle Nuxt DevTools" [ref=e129] [cursor=pointer]:
+      - img [ref=e130]
+    - generic "Page load time" [ref=e133]:
+      - generic [ref=e134]: "133"
+      - generic [ref=e135]: ms
+    - button "Toggle Component Inspector" [ref=e137] [cursor=pointer]:
+      - img [ref=e138]
+```

@@ -1,0 +1,78 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "FoodDelivery" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - heading "FoodDelivery" [level=2] [ref=e8]
+        - region "Changer de langue" [ref=e10]:
+          - button "Passer à English" [ref=e11] [cursor=pointer]:
+            - generic [ref=e14]: Français
+          - generic [ref=e15]: "Langue actuelle : Français: Français"
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Connexion" [ref=e18] [cursor=pointer]:
+              - /url: /login
+          - listitem [ref=e19]:
+            - link "Inscription" [ref=e20] [cursor=pointer]:
+              - /url: /register
+    - main [ref=e21]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - heading "Inscription" [level=1] [ref=e26]
+            - paragraph [ref=e27]: Créez votre compte pour découvrir nos restaurants
+          - generic [ref=e28]:
+            - generic [ref=e29]:
+              - generic [ref=e30]:
+                - generic [ref=e31]: Prénom *
+                - textbox "Prénom *" [ref=e32]:
+                  - /placeholder: Votre prénom
+                  - text: Test
+              - generic [ref=e33]:
+                - generic [ref=e34]: Nom *
+                - textbox "Nom *" [ref=e35]:
+                  - /placeholder: Votre nom
+                  - text: User
+            - generic [ref=e36]:
+              - generic [ref=e37]: Adresse e-mail *
+              - textbox "Adresse e-mail *" [active] [ref=e38]:
+                - /placeholder: votre adresse email
+            - generic [ref=e40]:
+              - generic [ref=e41]: Mot de passe *
+              - textbox "Mot de passe *" [ref=e42]:
+                - /placeholder: Votre mot de passe
+                - text: password123
+            - button "S'inscrire" [ref=e43] [cursor=pointer]
+          - generic [ref=e44]:
+            - paragraph [ref=e45]: Déjà un compte ?
+            - link "Se connecter" [ref=e46] [cursor=pointer]:
+              - /url: /login
+        - generic [ref=e48]:
+          - heading "Bienvenue dans la famille !" [level=2] [ref=e49]
+          - paragraph [ref=e50]: Découvrez des centaines de restaurants
+          - generic [ref=e51]:
+            - generic [ref=e53]: Livraison gratuite dès 25€
+            - generic [ref=e55]: Restaurants sélectionnés
+            - generic [ref=e57]: Paiement 100% sécurisé
+            - generic [ref=e59]: Suivi en temps réel
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e60]:
+    - button "Toggle Nuxt DevTools" [ref=e61] [cursor=pointer]:
+      - img [ref=e62]
+    - generic "Page load time" [ref=e65]:
+      - generic [ref=e66]: "612"
+      - generic [ref=e67]: ms
+    - button "Toggle Component Inspector" [ref=e69] [cursor=pointer]:
+      - img [ref=e70]
+```

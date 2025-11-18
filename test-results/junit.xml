@@ -1,6 +1,958 @@
-<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="25.855997000000002">
-<testsuite name="auth.spec.ts" timestamp="2025-10-29T14:27:46.393Z" hostname="chromium" tests="1" failures="0" skipped="0" time="10.479" errors="0">
-<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="10.479">
+<testsuites id="" name="" tests="26" failures="22" skipped="0" errors="0" time="113.186624">
+<testsuite name="auth-cart.spec.ts" timestamp="2025-11-18T11:01:31.405Z" hostname="chromium" tests="4" failures="3" skipped="0" time="104.58" errors="0">
+<testcase name="Authentification Panier › Doit rediriger vers login quand on tente d&apos;ajouter au panier sans être connecté" classname="auth-cart.spec.ts" time="30.822">
+<failure message="auth-cart.spec.ts:5:3 Doit rediriger vers login quand on tente d&apos;ajouter au panier sans être connecté" type="FAILURE">
+<![CDATA[  [chromium] › auth-cart.spec.ts:5:3 › Authentification Panier › Doit rediriger vers login quand on tente d'ajouter au panier sans être connecté 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+      "commit" event fired
+      "domcontentloaded" event fired
+      "load" event fired
+    ============================================================
+
+       7 |   }) => {
+       8 |     await page.goto("/utilisateur/restaurant/1");
+    >  9 |     await page.waitForLoadState("networkidle");
+         |                ^
+      10 |
+      11 |     await expect(page.locator(".restaurant-detail h1")).toBeVisible({
+      12 |       timeout: 10000,
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth-cart.spec.ts:9:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-cart-Authentification-a83db-u-panier-sans-être-connecté-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-cart-Authentification-a83db-u-panier-sans-être-connecté-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-cart-Authentification-a83db-u-panier-sans-être-connecté-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-cart-Authentification-a83db-u-panier-sans-être-connecté-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-cart-Authentification-a83db-u-panier-sans-être-connecté-chromium\video.webm]]
+
+[[ATTACHMENT|auth-cart-Authentification-a83db-u-panier-sans-être-connecté-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentification Panier › Doit permettre d&apos;ajouter au panier quand connecté" classname="auth-cart.spec.ts" time="12.499">
+</testcase>
+<testcase name="Authentification Panier › Doit afficher le bon texte sur les boutons selon l&apos;état d&apos;authentification" classname="auth-cart.spec.ts" time="30.646">
+<failure message="auth-cart.spec.ts:65:3 Doit afficher le bon texte sur les boutons selon l&apos;état d&apos;authentification" type="FAILURE">
+<![CDATA[  [chromium] › auth-cart.spec.ts:65:3 › Authentification Panier › Doit afficher le bon texte sur les boutons selon l'état d'authentification 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+      "commit" event fired
+      "domcontentloaded" event fired
+      "load" event fired
+    ============================================================
+
+      67 |   }) => {
+      68 |     await page.goto("/utilisateur/restaurant/1");
+    > 69 |     await page.waitForLoadState("networkidle");
+         |                ^
+      70 |
+      71 |     const buttons = page
+      72 |       .locator("button")
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth-cart.spec.ts:69:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-cart-Authentification-d9709-n-l-état-d-authentification-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-cart-Authentification-d9709-n-l-état-d-authentification-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-cart-Authentification-d9709-n-l-état-d-authentification-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-cart-Authentification-d9709-n-l-état-d-authentification-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-cart-Authentification-d9709-n-l-état-d-authentification-chromium\video.webm]]
+
+[[ATTACHMENT|auth-cart-Authentification-d9709-n-l-état-d-authentification-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentification Panier › Sécurité - Vérification des contrôles d&apos;accès au panier" classname="auth-cart.spec.ts" time="30.613">
+<failure message="auth-cart.spec.ts:77:3 Sécurité - Vérification des contrôles d&apos;accès au panier" type="FAILURE">
+<![CDATA[  [chromium] › auth-cart.spec.ts:77:3 › Authentification Panier › Sécurité - Vérification des contrôles d'accès au panier 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+      "commit" event fired
+      "domcontentloaded" event fired
+      "load" event fired
+    ============================================================
+
+      79 |   }) => {
+      80 |     await page.goto("/utilisateur/restaurant/1");
+    > 81 |     await page.waitForLoadState("networkidle");
+         |                ^
+      82 |
+      83 |     const cartButtons = page
+      84 |       .locator("button")
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth-cart.spec.ts:81:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-cart-Authentification-37ba4-contrôles-d-accès-au-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-cart-Authentification-37ba4-contrôles-d-accès-au-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-cart-Authentification-37ba4-contrôles-d-accès-au-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-cart-Authentification-37ba4-contrôles-d-accès-au-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-cart-Authentification-37ba4-contrôles-d-accès-au-panier-chromium\video.webm]]
+
+[[ATTACHMENT|auth-cart-Authentification-37ba4-contrôles-d-accès-au-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-11-18T11:01:31.405Z" hostname="chromium" tests="6" failures="5" skipped="0" time="122.08" errors="0">
+<testcase name="Parcours Authentification › Doit permettre la navigation vers la page de connexion" classname="auth.spec.ts" time="11.467">
+</testcase>
+<testcase name="Parcours Authentification › Doit afficher une erreur pour des identifiants incorrects" classname="auth.spec.ts" time="16.089">
+<failure message="auth.spec.ts:22:3 Doit afficher une erreur pour des identifiants incorrects" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:22:3 › Parcours Authentification › Doit afficher une erreur pour des identifiants incorrects 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('text=/requis|obligatoire|required/i')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('text=/requis|obligatoire|required/i')
+
+
+      34 |     await expect(
+      35 |       page.locator("text=/requis|obligatoire|required/i")
+    > 36 |     ).toBeVisible({ timeout: 5000 });
+         |       ^
+      37 |   });
+      38 |
+      39 |   test("Doit permettre la connexion avec des identifiants valides", async ({
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth.spec.ts:36:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-c8725-des-identifiants-incorrects-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-c8725-des-identifiants-incorrects-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-Parcours-Authentifica-c8725-des-identifiants-incorrects-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Parcours-Authentifica-c8725-des-identifiants-incorrects-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-c8725-des-identifiants-incorrects-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-c8725-des-identifiants-incorrects-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la connexion avec des identifiants valides" classname="auth.spec.ts" time="30.654">
+<failure message="auth.spec.ts:39:3 Doit permettre la connexion avec des identifiants valides" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:39:3 › Parcours Authentification › Doit permettre la connexion avec des identifiants valides 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+      navigated to "http://localhost:3004/register"
+      navigated to "http://localhost:3004/register"
+    ============================================================
+
+      55 |     });
+      56 |
+    > 57 |     await page.waitForURL(/restaurant/, { timeout: 20000 });
+         |                ^
+      58 |
+      59 |     await expect(page.url()).toMatch(/utilisateur\/restaurant/);
+      60 |   });
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth.spec.ts:57:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-0c51d-ec-des-identifiants-valides-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-0c51d-ec-des-identifiants-valides-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-Parcours-Authentifica-0c51d-ec-des-identifiants-valides-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Parcours-Authentifica-0c51d-ec-des-identifiants-valides-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-0c51d-ec-des-identifiants-valides-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-0c51d-ec-des-identifiants-valides-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la déconnexion" classname="auth.spec.ts" time="30.657">
+<failure message="auth.spec.ts:62:3 Doit permettre la déconnexion" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:62:3 › Parcours Authentification › Doit permettre la déconnexion ───────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+      navigated to "http://localhost:3004/register"
+      navigated to "http://localhost:3004/register"
+    ============================================================
+
+      74 |       timeout: 5000,
+      75 |     });
+    > 76 |     await page.waitForURL(/restaurant/, { timeout: 20000 });
+         |                ^
+      77 |
+      78 |     const logoutButton = page
+      79 |       .locator("text=/déconnexion|logout/i, button")
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth.spec.ts:76:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentification-Doit-permettre-la-déconnexion-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentification-Doit-permettre-la-déconnexion-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-Parcours-Authentification-Doit-permettre-la-déconnexion-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Parcours-Authentification-Doit-permettre-la-déconnexion-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Parcours-Authentification-Doit-permettre-la-déconnexion-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Parcours-Authentification-Doit-permettre-la-déconnexion-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Authentification › Doit permettre la navigation entre connexion et inscription" classname="auth.spec.ts" time="5.908">
+<failure message="auth.spec.ts:89:3 Doit permettre la navigation entre connexion et inscription" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:89:3 › Parcours Authentification › Doit permettre la navigation entre connexion et inscription 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('input[type="email"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('input[type="email"]')
+
+
+      93 |     await page.waitForLoadState("networkidle");
+      94 |
+    > 95 |     await expect(page.locator('input[type="email"]')).toBeVisible();
+         |                                                       ^
+      96 |     await expect(page.locator('input[type="password"]')).toBeVisible();
+      97 |     await expect(page.locator('input[name="firstName"]')).toBeVisible();
+      98 |     await expect(page.locator('input[name="lastName"]')).toBeVisible();
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth.spec.ts:95:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-7d2c8-re-connexion-et-inscription-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-7d2c8-re-connexion-et-inscription-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-Parcours-Authentifica-7d2c8-re-connexion-et-inscription-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Parcours-Authentifica-7d2c8-re-connexion-et-inscription-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-7d2c8-re-connexion-et-inscription-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-7d2c8-re-connexion-et-inscription-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Authentification › Doit gérer les états de chargement" classname="auth.spec.ts" time="27.305">
+<failure message="auth.spec.ts:107:3 Doit gérer les états de chargement" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:107:3 › Parcours Authentification › Doit gérer les états de chargement ─
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('button[type="submit"]')
+    Expected pattern: /cours|creating|loading|succès/i
+    Received string:  " S'inscrire"
+    Timeout: 2000ms
+
+    Call log:
+      - Expect "toHaveText" with timeout 2000ms
+      - waiting for locator('button[type="submit"]')
+        5 × locator resolved to <button type="submit" data-v-5807bfac="" class="register-btn">…</button>
+          - unexpected value " S'inscrire"
+
+
+      116 |     await page.click('button[type="submit"]');
+      117 |
+    > 118 |     await expect(page.locator('button[type="submit"]')).toHaveText(
+          |                                                         ^
+      119 |       /cours|creating|loading|succès/i,
+      120 |       { timeout: 2000 }
+      121 |     );
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\auth.spec.ts:118:57
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-b7ab2-rer-les-états-de-chargement-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\auth-Parcours-Authentifica-b7ab2-rer-les-états-de-chargement-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\auth-Parcours-Authentifica-b7ab2-rer-les-états-de-chargement-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Parcours-Authentifica-b7ab2-rer-les-états-de-chargement-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-b7ab2-rer-les-états-de-chargement-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Parcours-Authentifica-b7ab2-rer-les-états-de-chargement-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="cart-management.spec.ts" timestamp="2025-11-18T11:01:31.405Z" hostname="chromium" tests="8" failures="8" skipped="0" time="241.435" errors="0">
+<testcase name="Parcours Gestion Panier › Doit afficher un panier vide initialement" classname="cart-management.spec.ts" time="30.691">
+<failure message="cart-management.spec.ts:38:3 Doit afficher un panier vide initialement" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:38:3 › Parcours Gestion Panier › Doit afficher un panier vide initialement 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+      3 |
+      4 | test.describe("Parcours Gestion Panier", () => {
+    > 5 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      6 |     await page.goto("/register");
+      7 |     await page.waitForLoadState("networkidle");
+      8 |
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:5:8
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-78258-un-panier-vide-initialement-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-78258-un-panier-vide-initialement-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-78258-un-panier-vide-initialement-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-78258-un-panier-vide-initialement-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-78258-un-panier-vide-initialement-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-78258-un-panier-vide-initialement-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre d&apos;ajouter des articles au panier" classname="cart-management.spec.ts" time="30.554">
+<failure message="cart-management.spec.ts:49:3 Doit permettre d&apos;ajouter des articles au panier" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:49:3 › Parcours Gestion Panier › Doit permettre d'ajouter des articles au panier 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+      49 |   test("Doit permettre d'ajouter des articles au panier", async ({ page }) => {
+      50 |     await page.goto("/utilisateur/restaurant/1");
+    > 51 |     await page.waitForLoadState("networkidle");
+         |                ^
+      52 |
+      53 |     const firstDish = page
+      54 |       .locator('[data-testid="dish-card"], .dish-card')
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:51:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-c7d77-uter-des-articles-au-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-c7d77-uter-des-articles-au-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-c7d77-uter-des-articles-au-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-c7d77-uter-des-articles-au-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-c7d77-uter-des-articles-au-panier-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-c7d77-uter-des-articles-au-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de modifier les quantités dans le panier" classname="cart-management.spec.ts" time="30.644">
+<failure message="cart-management.spec.ts:72:3 Doit permettre de modifier les quantités dans le panier" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:72:3 › Parcours Gestion Panier › Doit permettre de modifier les quantités dans le panier 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      82 |     await firstDish.click();
+      83 |
+    > 84 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+         |                ^
+      85 |     await page.click("text=/ajouter.*panier/i");
+      86 |
+      87 |     await page.goto("/utilisateur/panier");
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:84:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-f20f7-es-quantités-dans-le-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-f20f7-es-quantités-dans-le-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-f20f7-es-quantités-dans-le-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-f20f7-es-quantités-dans-le-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-f20f7-es-quantités-dans-le-panier-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-f20f7-es-quantités-dans-le-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de supprimer des articles du panier" classname="cart-management.spec.ts" time="30.42">
+<failure message="cart-management.spec.ts:113:3 Doit permettre de supprimer des articles du panier" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:113:3 › Parcours Gestion Panier › Doit permettre de supprimer des articles du panier 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      123 |     await firstDish.click();
+      124 |
+    > 125 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+          |                ^
+      126 |     await page.click("text=/ajouter.*panier/i");
+      127 |
+      128 |     await page.goto("/utilisateur/panier");
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:125:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-535a3-imer-des-articles-du-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-535a3-imer-des-articles-du-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-535a3-imer-des-articles-du-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-535a3-imer-des-articles-du-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-535a3-imer-des-articles-du-panier-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-535a3-imer-des-articles-du-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit calculer correctement le total du panier" classname="cart-management.spec.ts" time="30.288">
+<failure message="cart-management.spec.ts:153:3 Doit calculer correctement le total du panier" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:153:3 › Parcours Gestion Panier › Doit calculer correctement le total du panier 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      159 |
+      160 |     await dishCards.first().click();
+    > 161 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+          |                ^
+      162 |     await page.click("text=/ajouter.*panier/i");
+      163 |
+      164 |     await page.goto("/utilisateur/restaurant/1");
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:161:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-e955a-ectement-le-total-du-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-e955a-ectement-le-total-du-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-e955a-ectement-le-total-du-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-e955a-ectement-le-total-du-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-e955a-ectement-le-total-du-panier-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-e955a-ectement-le-total-du-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de vider complètement le panier" classname="cart-management.spec.ts" time="30.366">
+<failure message="cart-management.spec.ts:181:3 Doit permettre de vider complètement le panier" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:181:3 › Parcours Gestion Panier › Doit permettre de vider complètement le panier 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      189 |     await firstDish.click();
+      190 |
+    > 191 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+          |                ^
+      192 |     await page.click("text=/ajouter.*panier/i");
+      193 |
+      194 |     await page.goto("/utilisateur/panier");
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:191:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-73af6-ider-complètement-le-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-73af6-ider-complètement-le-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-73af6-ider-complètement-le-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-73af6-ider-complètement-le-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-73af6-ider-complètement-le-panier-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-73af6-ider-complètement-le-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit valider la cohérence du restaurant" classname="cart-management.spec.ts" time="30.407">
+<failure message="cart-management.spec.ts:212:3 Doit valider la cohérence du restaurant" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:212:3 › Parcours Gestion Panier › Doit valider la cohérence du restaurant 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      220 |     await firstDish.click();
+      221 |
+    > 222 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+          |                ^
+      223 |     await page.click("text=/ajouter.*panier/i");
+      224 |
+      225 |     await page.goto("/utilisateur/restaurant");
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:222:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-1ea0c--la-cohérence-du-restaurant-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-1ea0c--la-cohérence-du-restaurant-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-1ea0c--la-cohérence-du-restaurant-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-1ea0c--la-cohérence-du-restaurant-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-1ea0c--la-cohérence-du-restaurant-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-1ea0c--la-cohérence-du-restaurant-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Gestion Panier › Doit permettre de procéder à la commande" classname="cart-management.spec.ts" time="28.065">
+<failure message="cart-management.spec.ts:252:3 Doit permettre de procéder à la commande" type="FAILURE">
+<![CDATA[  [chromium] › cart-management.spec.ts:252:3 › Parcours Gestion Panier › Doit permettre de procéder à la commande 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      260 |     await firstDish.click();
+      261 |
+    > 262 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+          |                ^
+      263 |     await page.click("text=/ajouter.*panier/i");
+      264 |
+      265 |     await page.goto("/utilisateur/panier");
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\cart-management.spec.ts:262:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-f312e-e-de-procéder-à-la-commande-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\cart-management-Parcours-G-f312e-e-de-procéder-à-la-commande-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\cart-management-Parcours-G-f312e-e-de-procéder-à-la-commande-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|cart-management-Parcours-G-f312e-e-de-procéder-à-la-commande-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|cart-management-Parcours-G-f312e-e-de-procéder-à-la-commande-chromium\video.webm]]
+
+[[ATTACHMENT|cart-management-Parcours-G-f312e-e-de-procéder-à-la-commande-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="restaurant-order.spec.ts" timestamp="2025-11-18T11:01:31.405Z" hostname="chromium" tests="8" failures="6" skipped="0" time="181.036" errors="0">
+<testcase name="Parcours Commande Restaurant › Doit afficher la liste des restaurants" classname="restaurant-order.spec.ts" time="9.92">
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de naviguer vers un restaurant spécifique" classname="restaurant-order.spec.ts" time="12.54">
+<system-out>
+<![CDATA[Navigant vers: /utilisateur/restaurant/3
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de voir les détails d&apos;un plat" classname="restaurant-order.spec.ts" time="5.925">
+<failure message="restaurant-order.spec.ts:43:3 Doit permettre de voir les détails d&apos;un plat" type="FAILURE">
+<![CDATA[  [chromium] › restaurant-order.spec.ts:43:3 › Parcours Commande Restaurant › Doit permettre de voir les détails d'un plat 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /\/plat\/\d+/
+    Received string:  "http://localhost:3004/utilisateur/restaurant/1"
+
+      51 |     await firstDish.click();
+      52 |
+    > 53 |     await expect(page.url()).toMatch(/\/plat\/\d+/);
+         |                              ^
+      54 |
+      55 |     await expect(page.locator("text=/prix|€/i")).toBeVisible();
+      56 |     await expect(page.locator("text=/ajouter|panier/i")).toBeVisible();
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:53:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--064d9--voir-les-détails-d-un-plat-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--064d9--voir-les-détails-d-un-plat-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\restaurant-order-Parcours--064d9--voir-les-détails-d-un-plat-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|restaurant-order-Parcours--064d9--voir-les-détails-d-un-plat-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|restaurant-order-Parcours--064d9--voir-les-détails-d-un-plat-chromium\video.webm]]
+
+[[ATTACHMENT|restaurant-order-Parcours--064d9--voir-les-détails-d-un-plat-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre d&apos;ajouter un plat au panier" classname="restaurant-order.spec.ts" time="30.847">
+<failure message="restaurant-order.spec.ts:59:3 Doit permettre d&apos;ajouter un plat au panier" type="FAILURE">
+<![CDATA[  [chromium] › restaurant-order.spec.ts:59:3 › Parcours Commande Restaurant › Doit permettre d'ajouter un plat au panier 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+      3 |
+      4 | test.describe("Parcours Commande Restaurant", () => {
+    > 5 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      6 |     await page.goto("/utilisateur/restaurant");
+      7 |     await page.waitForLoadState("networkidle");
+      8 |   });
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:5:8
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+      "commit" event fired
+      "domcontentloaded" event fired
+      "load" event fired
+    ============================================================
+
+       5 |   test.beforeEach(async ({ page }) => {
+       6 |     await page.goto("/utilisateur/restaurant");
+    >  7 |     await page.waitForLoadState("networkidle");
+         |                ^
+       8 |   });
+       9 |
+      10 |   test("Doit afficher la liste des restaurants", async ({ page }) => {
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:7:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--26893-d-ajouter-un-plat-au-panier-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--26893-d-ajouter-un-plat-au-panier-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\restaurant-order-Parcours--26893-d-ajouter-un-plat-au-panier-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|restaurant-order-Parcours--26893-d-ajouter-un-plat-au-panier-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|restaurant-order-Parcours--26893-d-ajouter-un-plat-au-panier-chromium\video.webm]]
+
+[[ATTACHMENT|restaurant-order-Parcours--26893-d-ajouter-un-plat-au-panier-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre de gérer les quantités depuis la page plat" classname="restaurant-order.spec.ts" time="30.256">
+<failure message="restaurant-order.spec.ts:78:3 Doit permettre de gérer les quantités depuis la page plat" type="FAILURE">
+<![CDATA[  [chromium] › restaurant-order.spec.ts:78:3 › Parcours Commande Restaurant › Doit permettre de gérer les quantités depuis la page plat 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      88 |     await firstDish.click();
+      89 |
+    > 90 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+         |                ^
+      91 |
+      92 |     const plusButton = page.locator(
+      93 |       'button:has-text("+"), [data-testid="increment"]'
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:90:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--44b62-antités-depuis-la-page-plat-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--44b62-antités-depuis-la-page-plat-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\restaurant-order-Parcours--44b62-antités-depuis-la-page-plat-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|restaurant-order-Parcours--44b62-antités-depuis-la-page-plat-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|restaurant-order-Parcours--44b62-antités-depuis-la-page-plat-chromium\video.webm]]
+
+[[ATTACHMENT|restaurant-order-Parcours--44b62-antités-depuis-la-page-plat-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit afficher les informations nutritionnelles et allergènes" classname="restaurant-order.spec.ts" time="30.244">
+<failure message="restaurant-order.spec.ts:116:3 Doit afficher les informations nutritionnelles et allergènes" type="FAILURE">
+<![CDATA[  [chromium] › restaurant-order.spec.ts:116:3 › Parcours Commande Restaurant › Doit afficher les informations nutritionnelles et allergènes 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      126 |     await firstDish.click();
+      127 |
+    > 128 |     await page.waitForURL(/\/plat\/\d+/, { timeout: 10000 });
+          |                ^
+      129 |
+      130 |     await expect(page.locator("text=/description|ingrédients/i")).toBeVisible();
+      131 |
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:128:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--50941-tritionnelles-et-allergènes-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--50941-tritionnelles-et-allergènes-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\restaurant-order-Parcours--50941-tritionnelles-et-allergènes-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|restaurant-order-Parcours--50941-tritionnelles-et-allergènes-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|restaurant-order-Parcours--50941-tritionnelles-et-allergènes-chromium\video.webm]]
+
+[[ATTACHMENT|restaurant-order-Parcours--50941-tritionnelles-et-allergènes-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit permettre la navigation entre plats du même restaurant" classname="restaurant-order.spec.ts" time="30.549">
+<failure message="restaurant-order.spec.ts:135:3 Doit permettre la navigation entre plats du même restaurant" type="FAILURE">
+<![CDATA[  [chromium] › restaurant-order.spec.ts:135:3 › Parcours Commande Restaurant › Doit permettre la navigation entre plats du même restaurant 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+      137 |   }) => {
+      138 |     await page.goto("/utilisateur/restaurant/1");
+    > 139 |     await page.waitForLoadState("networkidle");
+          |                ^
+      140 |
+      141 |     const dishCards = page.locator('[data-testid="dish-card"], .dish-card');
+      142 |     const dishCount = await dishCards.count();
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:139:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--97701-re-plats-du-même-restaurant-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--97701-re-plats-du-même-restaurant-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\restaurant-order-Parcours--97701-re-plats-du-même-restaurant-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|restaurant-order-Parcours--97701-re-plats-du-même-restaurant-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|restaurant-order-Parcours--97701-re-plats-du-même-restaurant-chromium\video.webm]]
+
+[[ATTACHMENT|restaurant-order-Parcours--97701-re-plats-du-même-restaurant-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Parcours Commande Restaurant › Doit gérer les plats indisponibles" classname="restaurant-order.spec.ts" time="30.755">
+<failure message="restaurant-order.spec.ts:158:3 Doit gérer les plats indisponibles" type="FAILURE">
+<![CDATA[  [chromium] › restaurant-order.spec.ts:158:3 › Parcours Commande Restaurant › Doit gérer les plats indisponibles 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+      3 |
+      4 | test.describe("Parcours Commande Restaurant", () => {
+    > 5 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      6 |     await page.goto("/utilisateur/restaurant");
+      7 |     await page.waitForLoadState("networkidle");
+      8 |   });
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:5:8
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+      "commit" event fired
+      "domcontentloaded" event fired
+      "load" event fired
+    ============================================================
+
+       5 |   test.beforeEach(async ({ page }) => {
+       6 |     await page.goto("/utilisateur/restaurant");
+    >  7 |     await page.waitForLoadState("networkidle");
+         |                ^
+       8 |   });
+       9 |
+      10 |   test("Doit afficher la liste des restaurants", async ({ page }) => {
+        at C:\Users\ethan\ProjectFront\projectFront\tests\e2e\restaurant-order.spec.ts:7:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--ea9c8-rer-les-plats-indisponibles-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\test-results\restaurant-order-Parcours--ea9c8-rer-les-plats-indisponibles-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\test-results\restaurant-order-Parcours--ea9c8-rer-les-plats-indisponibles-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|restaurant-order-Parcours--ea9c8-rer-les-plats-indisponibles-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|restaurant-order-Parcours--ea9c8-rer-les-plats-indisponibles-chromium\video.webm]]
+
+[[ATTACHMENT|restaurant-order-Parcours--ea9c8-rer-les-plats-indisponibles-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
 </testsuite>
 </testsuites>
