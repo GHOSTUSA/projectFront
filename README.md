@@ -69,7 +69,7 @@ npm install
 npm run dev
 
 # Accéder à l'application
-# http://localhost:3004
+# http://localhost:300*
 ```
 
 ## Tests
@@ -170,7 +170,7 @@ npm run monitor
 
 ## Debugging
 
-- **Port par défaut** : 3004
+- **Port par défaut** : 3003 (configuré dans nuxt.config.ts)
 - **API mock** : `/api/data.json`
 - **Logs** : Console navigateur + terminal
 - **Tests** : `npm run test:e2e -- --headed` pour mode visuel
@@ -178,4 +178,3 @@ npm run monitor
 ## Licence
 
 MIT © [GHOSTUSA](https://github.com/GHOSTUSA)
-s !\*\*

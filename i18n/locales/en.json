@@ -344,6 +344,9 @@
       }
     }
   },
+  "messages": {
+    "languageChanged": "Language changed to {language}"
+  },
   "accessibility": {
     "skipToMainContent": "Skip to main content",
     "skipToRestaurantList": "Skip to restaurant list",

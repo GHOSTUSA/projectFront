@@ -19,7 +19,6 @@ useSeoMeta({
 const authStore = useAuthStore();
 const router = useRouter();
 
-// Données réactives du formulaire
 const formData = reactive<CreateUserRequest>({
   firstName: "",
   lastName: "",
@@ -31,8 +30,6 @@ const formData = reactive<CreateUserRequest>({
 const loading = ref(false);
 const error = ref<string | null>(null);
 const showPassword = ref(false);
-
-// Validation en temps réel
 const isValidEmail = computed(() => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(formData.email);
@@ -51,7 +48,6 @@ const isFormValid = computed(() => {
   );
 });
 
-// Fonction de création de compte
 const createAccount = async () => {
   if (!isFormValid.value) {
     error.value = t("account.create.validation.formErrors");
@@ -62,24 +58,17 @@ const createAccount = async () => {
   error.value = null;
 
   try {
-    // Simulation de la création de compte (à remplacer par un vrai appel API)
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Pour la simulation, on crée un utilisateur fictif
     const newUser = {
-      id: Date.now(), // ID temporaire
+      id: Date.now(),
       ...formData,
       createdAt: new Date().toISOString(),
     };
 
-    // Connecter l'utilisateur automatiquement après création
     authStore.loginUser(newUser);
 
-    // Rediriger vers la page d'accueil
     await router.push("/");
-
-    // Notification de succès (optionnel - si vous avez un système de toast)
-    // $toast?.success?.("Compte créé avec succès ! Bienvenue sur FoodDelivery.");
   } catch (err) {
     error.value =
       err instanceof Error
@@ -90,7 +79,6 @@ const createAccount = async () => {
   }
 };
 
-// Réinitialiser l'erreur quand l'utilisateur modifie le formulaire
 watch(
   () => [formData.email, formData.password],
   () => {
@@ -110,7 +98,6 @@ watch(
       </div>
 
       <form @submit.prevent="createAccount" class="creation-form">
-        <!-- Nom et Prénom -->
         <div class="form-row">
           <div class="form-group">
             <label for="firstName" class="form-label"
@@ -147,7 +134,6 @@ watch(
           </div>
         </div>
 
-        <!-- Email -->
         <div class="form-group">
           <label for="email" class="form-label"
             >{{ t("account.create.email") }}
@@ -170,7 +156,6 @@ watch(
           </span>
         </div>
 
-        <!-- Mot de passe -->
         <div class="form-group">
           <label for="password" class="form-label"
             >{{ t("account.create.password") }}
@@ -207,13 +192,11 @@ watch(
           </span>
         </div>
 
-        <!-- Message d'erreur global -->
         <div v-if="error" class="error-message">
           <Icon name="mdi:alert-circle" />
           {{ error }}
         </div>
 
-        <!-- Boutons -->
         <div class="form-actions">
           <button
             type="submit"

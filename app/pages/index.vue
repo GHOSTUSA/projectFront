@@ -12,7 +12,6 @@ const { t } = useI18n();
 const authStore = useAuthStore();
 
 onMounted(() => {
-  // Redirection basée sur l'état d'authentification
   if (authStore.isAuthenticated) {
     const user = authStore.user;
     if (user?.role === "admin") {
@@ -20,11 +19,9 @@ onMounted(() => {
     } else if (user?.role === "restaurateur") {
       navigateTo("/Admin/restaurateur");
     } else {
-      // Utilisateur normal - aller vers restaurants
       navigateTo("/utilisateur/restaurant");
     }
   } else {
-    // Non connecté - aller vers restaurants (public)
     navigateTo("/utilisateur/restaurant");
   }
 });

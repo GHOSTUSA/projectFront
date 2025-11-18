@@ -1,4 +1,4 @@
-<!-- Composant Vue - Image optimisée avec lazy loading -->
+<!-- Composant d'image optimisée avec lazy loading -->
 <script lang="ts" setup>
 interface OptimizedImageProps {
   src: string;
@@ -16,7 +16,6 @@ const props = withDefaults(defineProps<OptimizedImageProps>(), {
   height: 200,
 });
 
-// État de chargement pour les placeholders
 const isLoaded = ref(false);
 const hasError = ref(false);
 

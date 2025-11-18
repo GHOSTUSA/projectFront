@@ -11,15 +11,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const publicPages = ["/", "/login", "/register", "/utilisateur/restaurant"];
 
   if (!authStore.isAuthenticated && !publicPages.includes(to.path)) {
-    console.log(
-      "Utilisateur non connecté, redirection vers la page de connexion"
-    );
     return navigateTo("/login");
   }
 
   if (authStore.isAuthenticated && to.path === "/login") {
-    console.log("Utilisateur déjà connecté, redirection selon le rôle");
-
     if (authStore.user?.role === "admin") {
       return navigateTo("/Admin/backOffice");
     } else if (authStore.user?.role === "restaurateur") {

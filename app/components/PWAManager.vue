@@ -1,4 +1,4 @@
-<!-- Composant Vue - Gestionnaire PWA (installation, mises à jour) -->
+<!-- Gestionnaire PWA pour installation et mises à jour -->
 <script lang="ts" setup>
 const isInstallable = ref(false);
 const isInstalled = ref(false);
@@ -21,7 +21,6 @@ const handleBeforeInstallPrompt = (e: Event) => {
   }, 3000);
 };
 
-// Installation de la PWA
 const installPWA = async () => {
   if (!deferredPrompt) return;
 
@@ -33,7 +32,6 @@ const installPWA = async () => {
       isInstalled.value = true;
       showInstallPrompt.value = false;
 
-      // Notification de succès
       const { $notify } = useNuxtApp();
       if ($notify) {
         $notify.success("Application installée avec succès !");
@@ -47,7 +45,6 @@ const installPWA = async () => {
   }
 };
 
-// Fermeture du prompt d'installation
 const dismissInstallPrompt = () => {
   showInstallPrompt.value = false;
 

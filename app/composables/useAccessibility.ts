@@ -1,4 +1,4 @@
-﻿/* Composables pour la gestion de l'accessibilité et navigation clavier */
+﻿/* Composable - Gestion de l'accessibilité et navigation clavier */
 
 export function useKeyboardNavigation() {
   const focusedElementIndex = ref(-1);

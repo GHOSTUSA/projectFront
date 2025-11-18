@@ -49,7 +49,6 @@ onMounted(() => {
       <h3 class="dish-name">{{ props.dish.name }}</h3>
       <p class="dish-description">{{ props.dish.description }}</p>
 
-      <!-- Prix lisible par les lecteurs d'écran -->
       <div class="sr-only">Prix: {{ props.dish.price }} euros</div>
 
       <div class="dish-footer">
@@ -78,7 +77,6 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Indicateur visuel pour navigation clavier -->
     <div class="keyboard-hint sr-only" aria-live="polite">
       Appuyez sur Entrée ou Espace pour voir les détails de ce plat
     </div>

@@ -6,10 +6,6 @@ export default defineNuxtPlugin(() => {
     nextTick(() => {
       try {
         const authStore = useAuthStore();
-        console.log(
-          "Store d'authentification initialisé:",
-          authStore.isAuthenticated
-        );
       } catch (error) {
         console.error("Erreur lors de l'initialisation du store:", error);
       }

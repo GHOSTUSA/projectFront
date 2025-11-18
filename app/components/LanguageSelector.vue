@@ -1,159 +1,107 @@
-<!-- Composant Vue - Sélecteur de langue avec i18n -->
+<!-- Composant Vue - Toggle de langue simple FR/EN -->
 <script lang="ts" setup>
-const { locale, locales, setLocale } = useI18n();
+const { locale, setLocale } = useI18n();
 const { t } = useI18n();
 
-const availableLocales = computed(() => {
-  return locales.value.filter((l) => l.code !== locale.value);
-});
+const isEnglish = computed(() => locale.value === "en");
 
-const currentLocale = computed(() => {
-  return locales.value.find((l) => l.code === locale.value);
-});
-
-async function switchLanguage(code: string) {
-  await setLocale(code);
+async function toggleLanguage() {
+  const newLocale = isEnglish.value ? "fr" : "en";
+  await setLocale(newLocale);
 
   const { announceSuccess } = useScreenReaderAnnouncements();
-  const newLanguage = locales.value.find((l) => l.code === code)?.name;
-  announceSuccess(t("messages.languageChanged", { language: newLanguage }));
+  const languageName = newLocale === "fr" ? "Français" : "English";
+  announceSuccess(t("messages.languageChanged", { language: languageName }));
 }
 
-function handleKeydown(event: KeyboardEvent, code: string) {
+function handleKeydown(event: KeyboardEvent) {
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
-    switchLanguage(code);
+    toggleLanguage();
   }
 }
 </script>
 
 <template>
   <div
-    class="language-selector"
+    class="language-toggle"
     role="region"
-    :aria-label="t('accessibility.languageSelector')"
+    :aria-label="t('accessibility.languageSelector.label')"
   >
-    <!-- Bouton principal avec langue actuelle -->
     <button
-      class="current-language btn-accessible"
-      :aria-label="`${t('accessibility.currentLanguage')}: ${
-        currentLocale?.name
-      }`"
-      aria-haspopup="true"
-      :aria-expanded="false"
+      class="toggle-button btn-accessible"
+      :aria-label="
+        t('accessibility.languageSelector.switchTo', {
+          language: isEnglish ? 'Français' : 'English',
+        })
+      "
       type="button"
+      @click="toggleLanguage"
+      @keydown="handleKeydown"
     >
-      <span
-        class="language-flag"
-        :class="`flag-${locale}`"
-        aria-hidden="true"
-      ></span>
-      <span class="language-name">{{ currentLocale?.name }}</span>
-      <span class="language-code" aria-hidden="true">{{
-        locale.toUpperCase()
-      }}</span>
-    </button>
-
-    <!-- Liste des autres langues -->
-    <div class="language-options" role="menu">
-      <button
-        v-for="availableLocale in availableLocales"
-        :key="availableLocale.code"
-        class="language-option btn-accessible"
-        :aria-label="`${t('accessibility.switchTo')} ${availableLocale.name}`"
-        role="menuitem"
-        tabindex="0"
-        @click="switchLanguage(availableLocale.code)"
-        @keydown="handleKeydown($event, availableLocale.code)"
-      >
+      <!-- Langue actuelle seulement -->
+      <span class="current-lang">
         <span
           class="language-flag"
-          :class="`flag-${availableLocale.code}`"
+          :class="`flag-${locale}`"
           aria-hidden="true"
         ></span>
-        <span class="language-name">{{ availableLocale.name }}</span>
-        <span class="language-code" aria-hidden="true">{{
-          availableLocale.code.toUpperCase()
+        <span class="language-name">{{
+          isEnglish ? "English" : "Français"
         }}</span>
-      </button>
-    </div>
+      </span>
+    </button>
 
     <!-- Texte caché pour les lecteurs d'écran -->
     <span class="sr-only" aria-live="polite" aria-atomic="true">
-      {{ t("accessibility.currentLanguage") }}: {{ currentLocale?.name }}
+      {{ t("accessibility.languageSelector.currentLanguage") }}:
+      {{ isEnglish ? "English" : "Français" }}
     </span>
   </div>
 </template>
 
 <style scoped>
-.language-selector {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.language-toggle {
+  display: inline-block;
 }
 
-.current-language {
+.toggle-button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  background: transparent;
+  padding: 8px 16px;
+  background: #ffffff;
   border: 2px solid #e9ecef;
-  border-radius: 6px;
+  border-radius: 25px;
   color: #2c3e50;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
   min-height: 44px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.current-language:hover {
+.toggle-button:hover {
   border-color: #27ae60;
   background: rgba(39, 174, 96, 0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);
 }
 
-.current-language:focus-visible {
+.toggle-button:focus-visible {
   outline: 3px solid #005fcc;
   outline-offset: 2px;
 }
 
-.language-options {
-  display: flex;
-  gap: 4px;
+.toggle-button:active {
+  transform: translateY(0);
 }
 
-.language-option {
+.current-lang {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: transparent;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  color: #6c757d;
-  font-size: 13px;
-  font-weight: 400;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  min-height: 36px;
-}
-
-.language-option:hover {
-  border-color: #27ae60;
-  background: #27ae60;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.language-option:focus-visible {
-  outline: 2px solid #005fcc;
-  outline-offset: 1px;
-}
-
-.language-option:active {
-  transform: translateY(0);
+  gap: 8px;
 }
 
 .language-flag {
@@ -163,6 +111,7 @@ function handleKeydown(event: KeyboardEvent, code: string) {
   display: inline-block;
   background-size: cover;
   background-position: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .flag-fr {
@@ -175,58 +124,67 @@ function handleKeydown(event: KeyboardEvent, code: string) {
 }
 
 .flag-en {
-  background-image: linear-gradient(90deg, #012169 100%),
-    linear-gradient(135deg, #ffffff 25%, transparent 25%),
-    linear-gradient(45deg, #ffffff 25%, transparent 25%),
-    linear-gradient(-45deg, #ffffff 25%, transparent 25%),
-    linear-gradient(-135deg, #ffffff 25%, transparent 25%);
+  background: linear-gradient(
+    to bottom,
+    #012169 0%,
+    #012169 25%,
+    #ffffff 25%,
+    #ffffff 35%,
+    #dc143c 35%,
+    #dc143c 65%,
+    #ffffff 65%,
+    #ffffff 75%,
+    #012169 75%,
+    #012169 100%
+  );
 }
 
 .language-name {
-  font-weight: 500;
-}
-
-.language-code {
-  font-size: 11px;
-  opacity: 0.7;
   font-weight: 600;
+  font-size: 14px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .language-selector {
+  .toggle-button {
+    padding: 6px 12px;
     gap: 6px;
   }
 
-  .current-language {
-    padding: 6px 8px;
-    font-size: 13px;
-  }
-
-  .language-option {
-    padding: 4px 6px;
-    font-size: 12px;
+  .language-flag {
+    width: 18px;
+    height: 13px;
   }
 
   .language-name {
-    display: none; /* Masquer les noms sur mobile, garder seulement les drapeaux */
+    font-size: 13px;
   }
 }
 
 /* Mode sombre */
 @media (prefers-color-scheme: dark) {
-  .current-language {
+  .toggle-button {
+    background: #2c3e50;
     border-color: #404040;
     color: #ffffff;
   }
 
-  .current-language:hover {
+  .toggle-button:hover {
     background: rgba(39, 174, 96, 0.2);
+    border-color: #27ae60;
   }
+}
 
-  .language-option {
-    border-color: #505050;
-    color: #b3b3b3;
-  }
+/* Classes utilitaires */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>

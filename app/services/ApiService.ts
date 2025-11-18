@@ -1,28 +1,9 @@
 ﻿/* Service centralisé pour la gestion des API avec typage strict */
-import type {
-  ApiResponse,
-  DataApiResponse,
-  LoginRequest,
-  LoginResponse,
-  CreateUserRequest,
-  CreateCommandRequest,
-} from "@/types/Api";
+import type { DataApiResponse, LoginRequest } from "@/types/Api";
 import type { Restaurant } from "@/types/Restaurant";
-import type { User, PublicUser } from "@/types/User";
+import type { PublicUser } from "@/types/User";
 import type { Command } from "@/types/Command";
 import type { Dish } from "@/types/Dish";
-
-const API_CONFIG = {
-  baseUrl: process.env.API_BASE_URL || "/api",
-  timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-} as const;
-
-type ApiFunction<TRequest = any, TResponse = any> = (
-  data?: TRequest
-) => Promise<TResponse>;
 
 export class ApiService {
   static async getStaticData(): Promise<DataApiResponse> {

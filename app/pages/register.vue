@@ -69,30 +69,24 @@ async function submitForm() {
   isLoading.value = true;
 
   try {
-    // Simuler la création du compte
     const newUser: User = {
-      id: Date.now(), // ID temporaire
+      id: Date.now(),
       firstName: formData.value.firstName,
       lastName: formData.value.lastName,
       email: formData.value.email,
       password: formData.value.password,
-      role: "user", // Tous les utilisateurs sont des clients classiques
+      role: "user",
       createdAt: new Date().toISOString(),
     };
 
     console.log("Nouveau compte créé (simulation):", newUser);
 
-    // Dans un vrai app, on ferait un POST vers l'API
-    // const response = await $fetch('/api/users', { method: 'POST', body: newUser })
-
     successMessage.value = t("pages.auth.register.success");
 
-    // Connexion automatique
     setTimeout(() => {
       const authStore = useAuthStore();
       authStore.loginUser(newUser);
 
-      // Tous les utilisateurs vont sur la page restaurant
       navigateTo("/utilisateur/restaurant");
     }, 1500);
   } catch (error) {

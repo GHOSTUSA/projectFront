@@ -64,13 +64,11 @@ function addToCart(dish: any) {
 </script>
 
 <template>
-  <!-- État de chargement -->
   <div v-if="pending" class="loading-state">
     <div class="loading-spinner"></div>
     <p>Chargement du restaurant...</p>
   </div>
 
-  <!-- État d'erreur -->
   <div v-else-if="hasError || errorMessage" class="error-state">
     <h1>{{ t("errors.pages.default.title") }}</h1>
     <p>{{ errorMessage }}</p>
@@ -79,7 +77,6 @@ function addToCart(dish: any) {
     </NuxtLink>
   </div>
 
-  <!-- Restaurant trouvé -->
   <div v-else-if="restaurant" class="restaurant-detail">
     <div class="restaurant-header">
       <img
