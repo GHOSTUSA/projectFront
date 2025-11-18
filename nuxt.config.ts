@@ -9,39 +9,36 @@ export default defineNuxtConfig({
     port: 3003,
   },
 
-  modules: [
-    "@pinia/nuxt",
-    [
-      "@nuxtjs/i18n",
-      {
-        locales: [
-          {
-            code: "fr",
-            iso: "fr-FR",
-            name: "Français",
-            file: "fr.json",
-          },
-          {
-            code: "en",
-            iso: "en-US",
-            name: "English",
-            file: "en.json",
-          },
-        ],
-        lazy: true,
-        langDir: "../i18n/locales/",
-        defaultLocale: "fr",
-        strategy: "prefix_except_default",
-        detectBrowserLanguage: {
-          useCookie: true,
-          cookieKey: "i18n_redirected",
-          redirectOn: "root",
-          alwaysRedirect: false,
+  modules: ["@pinia/nuxt", [
+    "@nuxtjs/i18n",
+    {
+      locales: [
+        {
+          code: "fr",
+          iso: "fr-FR",
+          name: "Français",
+          file: "fr.json",
         },
-        vueI18n: "./app/i18n.config.ts",
+        {
+          code: "en",
+          iso: "en-US",
+          name: "English",
+          file: "en.json",
+        },
+      ],
+      lazy: true,
+      langDir: "../i18n/locales/",
+      defaultLocale: "fr",
+      strategy: "prefix_except_default",
+      detectBrowserLanguage: {
+        useCookie: true,
+        cookieKey: "i18n_redirected",
+        redirectOn: "root",
+        alwaysRedirect: false,
       },
-    ],
-  ],
+      vueI18n: "./app/i18n.config.ts",
+    },
+  ], "@nuxt/image"],
 
   build: {
     analyze: process.env.ANALYZE === "true",

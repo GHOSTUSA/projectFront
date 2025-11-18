@@ -208,9 +208,9 @@ const cuisineTypes = [
           </div>
           <div class="restaurant-info">
             <h3>{{ restaurant.name }}</h3>
-            <p class="restaurant-address"> {{ restaurant.address }}</p>
-            <p class="restaurant-phone"> {{ restaurant.phone }}</p>
-            <p class="restaurant-cuisine"> {{ restaurant.cuisineType }}</p>
+            <p class="restaurant-address">{{ restaurant.address }}</p>
+            <p class="restaurant-phone">{{ restaurant.phone }}</p>
+            <p class="restaurant-cuisine">{{ restaurant.cuisineType }}</p>
             <div class="restaurant-rating">
               ⭐ {{ restaurant.averageRating }}/5
             </div>

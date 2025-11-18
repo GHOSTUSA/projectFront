@@ -10,11 +10,12 @@ const props = defineProps<{
 <template>
   <div class="restaurant-card">
     <div class="restaurant-image">
-      <OptimizedImage
+      <NuxtImg
+        format="webp"
         :src="props.restaurant.image"
         :alt="`Photo du restaurant ${props.restaurant.name}`"
-        :width="320"
-        :height="200"
+        width="320"
+        height="200"
         loading="lazy"
         class="restaurant-img"
       />
