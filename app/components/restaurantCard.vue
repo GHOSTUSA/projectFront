@@ -5,19 +5,29 @@ import type { Restaurant } from "~/types/Restaurant";
 const props = defineProps<{
   restaurant: Restaurant;
 }>();
+
+const { restaurant } = toRefs(props);
+
+const handleImageError = () => {
+  console.warn(`Erreur de chargement de l'image pour ${restaurant.value.name}`);
+};
 </script>
 
 <template>
   <div class="restaurant-card">
     <div class="restaurant-image">
       <NuxtImg
+        :src="restaurant.image"
+        :alt="`Photo du restaurant ${restaurant.name}`"
+        width="400"
+        height="250"
+        sizes="sm:400px md:320px lg:400px"
         format="webp"
-        :src="props.restaurant.image"
-        :alt="`Photo du restaurant ${props.restaurant.name}`"
-        width="320"
-        height="200"
+        quality="85"
         loading="lazy"
+        placeholder
         class="restaurant-img"
+        @error="handleImageError"
       />
       <div class="image-overlay"></div>
     </div>
