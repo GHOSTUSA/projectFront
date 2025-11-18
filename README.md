@@ -45,7 +45,7 @@ Application web moderne de commande de restaurants avec authentification sécuri
 ### Déploiement
 
 - **PM2** - Gestionnaire de processus
-- **GitHub Actions** - CI/CD
+- **GitHub Actions** - CI/CD = > http://31.207.36.151/
 
 ## 👥 Comptes de Test
 
