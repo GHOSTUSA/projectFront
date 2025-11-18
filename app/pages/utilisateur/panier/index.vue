@@ -107,7 +107,7 @@ async function validateOrder() {
       class="empty-cart"
     >
       <h3>{{ t("pages.cart.empty") }}</h3>
-      <p>{{ t("pages.restaurants.noResultsMessage") }}</p>
+      <p>{{ t("pages.restaurant.noResultsMessage") }}</p>
       <NuxtLink to="/utilisateur/restaurant" class="browse-restaurants-btn">
         {{ t("nav.restaurants") }}
       </NuxtLink>
@@ -123,7 +123,7 @@ async function validateOrder() {
           <DishCard :dish="dish" />
           <div class="item-actions">
             <button @click="cartStore.removeFromCart(dish)" class="remove-btn">
-              Retirer du panier
+              {{ t("pages.cart.removeFromCart") }}
             </button>
           </div>
         </div>
@@ -131,7 +131,7 @@ async function validateOrder() {
 
       <div class="cart-summary">
         <div class="summary-content">
-          <h3>Résumé de la commande</h3>
+          <h3>{{ t("pages.cart.summary") }}</h3>
           <div class="total-price">
             <span>Total: {{ cartStore.cartPrice }}€</span>
           </div>
@@ -141,15 +141,17 @@ async function validateOrder() {
               @click="cartStore.clearCart()"
               :disabled="isOrderProcessing"
             >
-              Vider le panier
+              {{ t("pages.cart.clearCart") }}
             </button>
             <button
               class="order-button"
               @click="validateOrder"
               :disabled="isOrderProcessing"
             >
-              <span v-if="isOrderProcessing">Traitement...</span>
-              <span v-else>Passer la commande</span>
+              <span v-if="isOrderProcessing">{{
+                t("pages.cart.processing")
+              }}</span>
+              <span v-else>{{ t("pages.cart.placeOrder") }}</span>
             </button>
           </div>
         </div>

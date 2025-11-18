@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
+const { t } = useI18n();
+
 definePageMeta({
   layout: "restaurateur",
   middleware: ["auth", "restaurateur"],
@@ -188,9 +190,9 @@ const saveRestaurant = async () => {
     </div>
 
     <div v-else class="error-state">
-      <p>Erreur : Restaurant non trouvé</p>
+      <p>{{ t("errors.restaurant.notFound") }}</p>
       <NuxtLink to="/Admin/restaurateur" class="back-btn">
-        Retour au dashboard
+        {{ t("errors.actions.backToDashboard") }}
       </NuxtLink>
     </div>
   </div>

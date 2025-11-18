@@ -9,42 +9,43 @@ interface ErrorProps {
 }
 
 const props = defineProps<ErrorProps>();
+const { t } = useI18n();
 
 const getErrorTitle = (statusCode: number): string => {
   switch (statusCode) {
     case 400:
-      return "Requête incorrecte";
+      return t("errors.pages.400.title");
     case 401:
-      return "Non autorisé";
+      return t("errors.pages.401.title");
     case 403:
-      return "Accès interdit";
+      return t("errors.pages.403.title");
     case 404:
-      return "Page non trouvée";
+      return t("errors.pages.404.title");
     case 500:
-      return "Erreur serveur";
+      return t("errors.pages.500.title");
     case 503:
-      return "Service indisponible";
+      return t("errors.pages.503.title");
     default:
-      return "Une erreur est survenue";
+      return t("errors.pages.default.title");
   }
 };
 
 const getErrorDescription = (statusCode: number): string => {
   switch (statusCode) {
     case 400:
-      return "La requête envoyée n'est pas valide.";
+      return t("errors.pages.400.description");
     case 401:
-      return "Vous devez vous connecter pour accéder à cette ressource.";
+      return t("errors.pages.401.description");
     case 403:
-      return "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
+      return t("errors.pages.403.description");
     case 404:
-      return "La page que vous recherchez n'existe pas ou a été déplacée.";
+      return t("errors.pages.404.description");
     case 500:
-      return "Une erreur interne du serveur s'est produite.";
+      return t("errors.pages.500.description");
     case 503:
-      return "Le service est temporairement indisponible.";
+      return t("errors.pages.503.description");
     default:
-      return "Une erreur inattendue s'est produite.";
+      return t("errors.pages.default.description");
   }
 };
 
@@ -68,7 +69,9 @@ const goHome = () => {
         </p>
 
         <div class="error-actions">
-          <button @click="goHome" class="btn btn-primary">Accueil</button>
+          <button @click="goHome" class="btn btn-primary">
+            {{ t("errors.pages.actions.goHome") }}
+          </button>
         </div>
       </div>
     </div>

@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
+const { t } = useI18n();
+
 definePageMeta({
   layout: "restaurateur",
   middleware: ["auth", "restaurateur"],
@@ -14,13 +16,13 @@ const users = ref<any[]>([]);
 const loading = ref(true);
 const selectedStatus = ref("all");
 
-const statusOptions = [
-  { value: "all", label: "Toutes" },
-  { value: "pending", label: "En attente" },
-  { value: "in-progress", label: "En cours" },
-  { value: "delivered", label: "Livrées" },
-  { value: "cancelled", label: "Annulées" },
-];
+const statusOptions = computed(() => [
+  { value: "all", label: t("admin.orders.filters.all") },
+  { value: "pending", label: t("admin.orders.filters.pending") },
+  { value: "in-progress", label: t("admin.orders.filters.inProgress") },
+  { value: "delivered", label: t("admin.orders.filters.delivered") },
+  { value: "cancelled", label: t("admin.orders.filters.cancelled") },
+]);
 
 onMounted(async () => {
   try {
@@ -65,7 +67,9 @@ const orderStats = computed(() => {
 
 const getUserName = (userId: number) => {
   const user = users.value.find((u) => u.id === userId);
-  return user ? `${user.firstName} ${user.lastName}` : "Client inconnu";
+  return user
+    ? `${user.firstName} ${user.lastName}`
+    : t("admin.orders.labels.unknownClient");
 };
 
 const formatDate = (dateString: string) => {
@@ -80,10 +84,19 @@ const formatDate = (dateString: string) => {
 
 const getStatusBadge = (status: string) => {
   const badges = {
-    pending: { class: "badge-warning", text: "En attente" },
-    "in-progress": { class: "badge-info", text: "En cours" },
-    delivered: { class: "badge-success", text: "Livré" },
-    cancelled: { class: "badge-danger", text: "Annulé" },
+    pending: { class: "badge-warning", text: t("admin.orders.status.pending") },
+    "in-progress": {
+      class: "badge-info",
+      text: t("admin.orders.status.inProgress"),
+    },
+    delivered: {
+      class: "badge-success",
+      text: t("admin.orders.status.delivered"),
+    },
+    cancelled: {
+      class: "badge-danger",
+      text: t("admin.orders.status.cancelled"),
+    },
   };
   return (
     badges[status as keyof typeof badges] || {
@@ -119,8 +132,8 @@ const getOrderDetails = (order: any) => {
 <template>
   <div class="orders-management">
     <div class="page-header">
-      <h1>Gestion des Commandes</h1>
-      <p>Suivez et gérez les commandes de votre restaurant</p>
+      <h1>{{ t("admin.orders.title") }}</h1>
+      <p>{{ t("admin.orders.subtitle") }}</p>
     </div>
 
     <div class="stats-section">
@@ -128,42 +141,42 @@ const getOrderDetails = (order: any) => {
         <div class="stat-icon"></div>
         <div class="stat-content">
           <h3>{{ orderStats.total }}</h3>
-          <p>Total commandes</p>
+          <p>{{ t("admin.orders.stats.total") }}</p>
         </div>
       </div>
       <div class="stat-card stat-warning">
         <div class="stat-icon"></div>
         <div class="stat-content">
           <h3>{{ orderStats.pending }}</h3>
-          <p>En attente</p>
+          <p>{{ t("admin.orders.stats.pending") }}</p>
         </div>
       </div>
       <div class="stat-card stat-info">
         <div class="stat-icon"></div>
         <div class="stat-content">
           <h3>{{ orderStats.inProgress }}</h3>
-          <p>En cours</p>
+          <p>{{ t("admin.orders.stats.inProgress") }}</p>
         </div>
       </div>
       <div class="stat-card stat-success">
         <div class="stat-icon"></div>
         <div class="stat-content">
           <h3>{{ orderStats.delivered }}</h3>
-          <p>Livrées</p>
+          <p>{{ t("admin.orders.stats.delivered") }}</p>
         </div>
       </div>
       <div class="stat-card stat-revenue">
         <div class="stat-icon"></div>
         <div class="stat-content">
           <h3>{{ orderStats.totalRevenue.toFixed(2) }}€</h3>
-          <p>Chiffre d'affaires</p>
+          <p>{{ t("admin.orders.stats.revenue") }}</p>
         </div>
       </div>
     </div>
 
     <div class="filters-section">
       <div class="filter-group">
-        <label for="status-filter">Filtrer par statut :</label>
+        <label for="status-filter">{{ t("admin.orders.filters.label") }}</label>
         <select
           id="status-filter"
           v-model="selectedStatus"
@@ -182,8 +195,8 @@ const getOrderDetails = (order: any) => {
 
     <div class="orders-list" v-if="!loading">
       <div v-if="filteredOrders.length === 0" class="no-orders">
-        <h3>Aucune commande</h3>
-        <p>Aucune commande trouvée pour ce filtre.</p>
+        <h3>{{ t("admin.orders.empty.title") }}</h3>
+        <p>{{ t("admin.orders.empty.message") }}</p>
       </div>
 
       <div v-else class="orders-grid">
@@ -200,21 +213,26 @@ const getOrderDetails = (order: any) => {
 
           <div class="order-details">
             <p>
-              <strong>Client:</strong> {{ getOrderDetails(order).customer }}
+              <strong>{{ t("admin.orders.labels.client") }}:</strong>
+              {{ getOrderDetails(order).customer }}
             </p>
-            <p><strong>Commande:</strong> {{ getOrderDetails(order).date }}</p>
+            <p>
+              <strong>{{ t("admin.orders.labels.orderDate") }}:</strong>
+              {{ getOrderDetails(order).date }}
+            </p>
             <p v-if="getOrderDetails(order).deliveryDate">
-              <strong>Livraison:</strong>
+              <strong>{{ t("admin.orders.labels.deliveryDate") }}:</strong>
               {{ getOrderDetails(order).deliveryDate }}
             </p>
             <p>
-              <strong>Articles:</strong>
-              {{ getOrderDetails(order).itemsCount }} article(s)
+              <strong>{{ t("admin.orders.labels.articles") }}:</strong>
+              {{ getOrderDetails(order).itemsCount }}
+              {{ t("admin.orders.labels.articlesCount") }}
             </p>
           </div>
 
           <div class="order-items">
-            <h4>Articles commandés:</h4>
+            <h4>{{ t("admin.orders.labels.orderedItems") }}:</h4>
             <div class="items-list">
               <div
                 v-for="item in order.items"
@@ -228,7 +246,9 @@ const getOrderDetails = (order: any) => {
           </div>
 
           <div class="order-actions">
-            <label for="status-select">Statut:</label>
+            <label for="status-select"
+              >{{ t("admin.orders.labels.statusLabel") }}:</label
+            >
             <select
               :value="order.status"
               @change="
@@ -239,10 +259,18 @@ const getOrderDetails = (order: any) => {
               "
               class="status-select"
             >
-              <option value="pending">En attente</option>
-              <option value="in-progress">En cours</option>
-              <option value="delivered">Livré</option>
-              <option value="cancelled">Annulé</option>
+              <option value="pending">
+                {{ t("admin.orders.status.pending") }}
+              </option>
+              <option value="in-progress">
+                {{ t("admin.orders.status.inProgress") }}
+              </option>
+              <option value="delivered">
+                {{ t("admin.orders.status.delivered") }}
+              </option>
+              <option value="cancelled">
+                {{ t("admin.orders.status.cancelled") }}
+              </option>
             </select>
           </div>
         </div>
@@ -250,7 +278,7 @@ const getOrderDetails = (order: any) => {
     </div>
 
     <div v-else class="loading-state">
-      <p>Chargement des commandes...</p>
+      <p>{{ t("admin.orders.loading") }}</p>
     </div>
   </div>
 </template>

@@ -9,7 +9,78 @@
     "logout": "Logout",
     "admin": "Administration"
   },
+  "account": {
+    "title": "My account",
+    "welcome": "Welcome {firstName} {lastName}",
+    "personalInfo": "Personal information",
+    "updateProfile": "Update profile",
+    "updating": "Updating...",
+    "myOrders": "My orders",
+    "noOrders": "No orders",
+    "noOrdersMessage": "You haven't placed any orders yet.",
+    "browseRestaurants": "Discover our restaurants",
+    "loading": "Loading your account...",
+    "updateSuccess": "Profile updated successfully!",
+    "updateError": "Error updating profile",
+    "allFieldsRequired": "All fields are required",
+    "invalidEmail": "Invalid email format",
+    "form": {
+      "email": "Email",
+      "emailPlaceholder": "Your email",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Your last name",
+      "firstName": "First name",
+      "firstNamePlaceholder": "Your first name"
+    },
+    "create": {
+      "title": "Create account",
+      "subtitle": "Join FoodDelivery and discover the best restaurants near you",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "required": "*",
+      "firstNamePlaceholder": "Your first name",
+      "lastNamePlaceholder": "Your last name",
+      "emailPlaceholder": "your.emailexample.com",
+      "passwordPlaceholder": "Minimum 8 characters",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Create my account",
+      "creating": "Creating...",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "validation": {
+        "invalidEmail": "Invalid email format",
+        "passwordTooShort": "Password must contain at least 8 characters",
+        "formErrors": "Please correct the form errors"
+      },
+      "errors": {
+        "createAccount": "Error creating account"
+      }
+    }
+  },
   "pages": {
+    "cart": {
+      "title": "Your Cart",
+      "seo": {
+        "title": "Cart - FoodDelivery",
+        "description": "View the items in your cart and proceed to checkout to order your favorite dishes."
+      },
+      "empty": "Your cart is empty",
+      "continue": "Continue exploring our restaurants and add your favorite dishes to your cart.",
+      "removeFromCart": "Remove from cart",
+      "summary": "Order summary",
+      "clearCart": "Clear cart",
+      "placeOrder": "Place order",
+      "processing": "Processing...",
+      "validation": {
+        "emptyCart": "Your cart is empty",
+        "orderError": "Error validating the order. Please try again."
+      },
+      "success": "Order validated successfully! You will be redirected to your account.",
+      "close": "Close"
+    },
     "home": {
       "seo": {
         "title": "Login - FoodDelivery",
@@ -33,6 +104,10 @@
         "wideSelection": "Wide selection of restaurants",
         "fastDelivery": "Fast delivery",
         "securePayment": "Secure payment"
+      },
+      "auth": {
+        "noAccount": "Don't have an account yet?",
+        "createAccount": "Create an account"
       }
     },
     "auth": {
@@ -77,6 +152,7 @@
       }
     },
     "restaurant": {
+      "noResultsMessage": "No restaurant found. Please try again later.",
       "list": {
         "title": "Available restaurants",
         "description": "Discover {count} quality restaurants. Where would you like to order today?",
@@ -117,13 +193,155 @@
     },
     "loading": {
       "title": "Loading error",
-      "restaurantsGeneral": "Unable to load restaurants"
+      "restaurantsGeneral": "Unable to load restaurants",
+      "general": "Error loading"
     },
     "network": {
       "connectionError": "Connection error. Please try again."
     },
     "auth": {
       "invalidCredentials": "Invalid credentials"
+    },
+    "restaurant": {
+      "invalidId": "Invalid restaurant ID",
+      "notFound": "Error: Restaurant not found",
+      "notFoundWithId": "Restaurant with ID {id} not found"
+    },
+    "actions": {
+      "backToDashboard": "Back to dashboard",
+      "backToRestaurants": "← Back to restaurant list"
+    },
+    "pages": {
+      "400": {
+        "title": "Bad Request",
+        "description": "The request sent is not valid."
+      },
+      "401": {
+        "title": "Unauthorized",
+        "description": "You must log in to access this resource."
+      },
+      "403": {
+        "title": "Access Forbidden",
+        "description": "You do not have the necessary permissions to access this page."
+      },
+      "404": {
+        "title": "Page Not Found",
+        "description": "The page you are looking for does not exist or has been moved."
+      },
+      "500": {
+        "title": "Server Error",
+        "description": "An internal server error has occurred."
+      },
+      "503": {
+        "title": "Service Unavailable",
+        "description": "The service is temporarily unavailable."
+      },
+      "default": {
+        "title": "An Error Occurred",
+        "description": "An unexpected error has occurred."
+      },
+      "actions": {
+        "goHome": "Home"
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "welcome": "Administration of orders from all restaurants"
+    },
+    "orders": {
+      "title": "Order Management",
+      "subtitle": "Track and manage your restaurant orders",
+      "stats": {
+        "total": "Total orders",
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "revenue": "Revenue"
+      },
+      "filters": {
+        "label": "Filter by status:",
+        "all": "All",
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "status": {
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "labels": {
+        "client": "Client",
+        "orderDate": "Order",
+        "deliveryDate": "Delivery",
+        "articles": "Items",
+        "articlesCount": "item(s)",
+        "orderedItems": "Ordered items",
+        "statusLabel": "Status",
+        "unknownClient": "Unknown client"
+      },
+      "empty": {
+        "title": "No orders",
+        "message": "No orders found for this filter."
+      },
+      "loading": "Loading orders..."
+    },
+    "commands": {
+      "title": "Order Management",
+      "subtitle": "Administration of orders from all restaurants",
+      "stats": {
+        "total": "Total orders",
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered"
+      },
+      "filters": {
+        "all": "All",
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "table": {
+        "id": "ID",
+        "date": "Date",
+        "customer": "Customer",
+        "restaurant": "Restaurant",
+        "total": "Total",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "unknown": "Unknown status"
+      },
+      "unknownRestaurant": "Unknown restaurant",
+      "unknownUser": "Unknown user"
+    }
+  },
+  "components": {
+    "commandCard": {
+      "title": "Order #{id}",
+      "restaurant": "Restaurant",
+      "orderDate": "Order date",
+      "deliveryDate": "Delivery date",
+      "totalPrice": "Total price",
+      "orderedItems": "Ordered items",
+      "quantity": "x{quantity}",
+      "unknownRestaurant": "Unknown restaurant",
+      "unknownDish": "Unknown dish",
+      "status": {
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      }
     }
   },
   "accessibility": {

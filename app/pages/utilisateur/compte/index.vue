@@ -61,12 +61,12 @@ async function updateProfile() {
   try {
     // Validation côté client
     if (!user.value.email || !user.value.firstName || !user.value.lastName) {
-      updateMessage.value = "Tous les champs sont obligatoires";
+      updateMessage.value = t("account.allFieldsRequired");
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(user.value.email)) {
-      updateMessage.value = "Format d'email invalide";
+      updateMessage.value = t("account.invalidEmail");
       return;
     }
 
@@ -77,7 +77,7 @@ async function updateProfile() {
       firstName: user.value.firstName,
     });
 
-    updateMessage.value = "Profil mis à jour avec succès !";
+    updateMessage.value = t("account.updateSuccess");
     console.log("Profil mis à jour côté client:", user.value);
 
     // Effacer le message après 3 secondes
@@ -86,7 +86,7 @@ async function updateProfile() {
     }, 3000);
   } catch (error) {
     console.error("Erreur lors de la mise à jour:", error);
-    updateMessage.value = "Erreur lors de la mise à jour";
+    updateMessage.value = t("account.updateError");
   } finally {
     isUpdating.value = false;
   }
@@ -97,12 +97,19 @@ async function updateProfile() {
   <div class="account-page">
     <div v-if="user">
       <div class="page-header">
-        <h1>Mon Compte</h1>
-        <p>Bienvenue {{ user.firstName }} {{ user.lastName }}</p>
+        <h1>{{ t("account.title") }}</h1>
+        <p>
+          {{
+            t("account.welcome", {
+              firstName: user.firstName,
+              lastName: user.lastName,
+            })
+          }}
+        </p>
       </div>
 
       <div class="profile-section">
-        <h2>Informations personnelles</h2>
+        <h2>{{ t("account.personalInfo") }}</h2>
         <div class="profile-form">
           <!-- Message de mise à jour -->
           <div
@@ -117,36 +124,36 @@ async function updateProfile() {
           </div>
 
           <div class="form-group">
-            <label for="email">Email :</label>
+            <label for="email">{{ t("account.form.email") }} :</label>
             <input
               type="email"
               id="email"
               v-model="user.email"
-              placeholder="Votre email"
+              :placeholder="t('account.form.emailPlaceholder')"
               :disabled="isUpdating"
               required
             />
           </div>
 
           <div class="form-group">
-            <label for="lastName">Nom :</label>
+            <label for="lastName">{{ t("account.form.lastName") }} :</label>
             <input
               type="text"
               id="lastName"
               v-model="user.lastName"
-              placeholder="Votre nom"
+              :placeholder="t('account.form.lastNamePlaceholder')"
               :disabled="isUpdating"
               required
             />
           </div>
 
           <div class="form-group">
-            <label for="firstName">Prénom :</label>
+            <label for="firstName">{{ t("account.form.firstName") }} :</label>
             <input
               type="text"
               id="firstName"
               v-model="user.firstName"
-              placeholder="Votre prénom"
+              :placeholder="t('account.form.firstNamePlaceholder')"
               :disabled="isUpdating"
               required
             />
@@ -158,13 +165,15 @@ async function updateProfile() {
             :disabled="isUpdating"
           >
             <span v-if="isUpdating" class="loading-spinner">⟳</span>
-            {{ isUpdating ? "Mise à jour..." : "Mettre à jour le profil" }}
+            {{
+              isUpdating ? t("account.updating") : t("account.updateProfile")
+            }}
           </button>
         </div>
       </div>
 
       <div class="commands-section">
-        <h2>Mes commandes</h2>
+        <h2>{{ t("account.myOrders") }}</h2>
         <div v-if="userCommands.length > 0" class="commands-list">
           <CommandCard
             v-for="command in userCommands"
@@ -173,17 +182,17 @@ async function updateProfile() {
           />
         </div>
         <div v-else class="no-commands">
-          <h3>Aucune commande</h3>
-          <p>Vous n'avez pas encore passé de commandes.</p>
+          <h3>{{ t("account.noOrders") }}</h3>
+          <p>{{ t("account.noOrdersMessage") }}</p>
           <NuxtLink to="/utilisateur/restaurant" class="browse-restaurants-btn">
-            Découvrir nos restaurants
+            {{ t("account.browseRestaurants") }}
           </NuxtLink>
         </div>
       </div>
     </div>
 
     <div v-else class="loading">
-      <p>Chargement de votre compte...</p>
+      <p>{{ t("account.loading") }}</p>
     </div>
   </div>
 </template>

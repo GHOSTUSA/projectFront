@@ -2,30 +2,39 @@
 <template>
   <div class="command-card">
     <div class="command-header">
-      <h3>Commande #{{ command.id }}</h3>
+      <h3>{{ t("components.commandCard.title", { id: command.id }) }}</h3>
       <span :class="['status', command.status]">
         {{ getStatusText(command.status) }}
       </span>
     </div>
 
     <div class="command-info">
-      <p><strong>Restaurant:</strong> {{ restaurantName }}</p>
       <p>
-        <strong>Date de commande:</strong> {{ formatDate(command.orderDate) }}
+        <strong>{{ t("components.commandCard.restaurant") }}:</strong>
+        {{ restaurantName }}
+      </p>
+      <p>
+        <strong>{{ t("components.commandCard.orderDate") }}:</strong>
+        {{ formatDate(command.orderDate) }}
       </p>
       <p v-if="command.deliveryDate">
-        <strong>Date de livraison:</strong>
+        <strong>{{ t("components.commandCard.deliveryDate") }}:</strong>
         {{ formatDate(command.deliveryDate) }}
       </p>
-      <p><strong>Prix total:</strong> {{ command.totalPrice.toFixed(2) }}€</p>
+      <p>
+        <strong>{{ t("components.commandCard.totalPrice") }}:</strong>
+        {{ command.totalPrice.toFixed(2) }}€
+      </p>
     </div>
 
     <div class="command-items">
-      <h4>Articles commandés:</h4>
+      <h4>{{ t("components.commandCard.orderedItems") }}:</h4>
       <div class="items-list">
         <div v-for="item in command.items" :key="item.productId" class="item">
           <span class="item-name">{{ getDishName(item.productId) }}</span>
-          <span class="item-quantity">x{{ item.quantity }}</span>
+          <span class="item-quantity">{{
+            t("components.commandCard.quantity", { quantity: item.quantity })
+          }}</span>
           <span class="item-price">{{ item.unitPrice.toFixed(2) }}€</span>
         </div>
       </div>
@@ -35,6 +44,8 @@
 
 <script setup lang="ts">
 import type { Command } from "~/types/Command";
+
+const { t } = useI18n();
 
 interface Props {
   command: Command;
@@ -50,7 +61,7 @@ const restaurantName = computed(() => {
   const restaurant = restaurants.find(
     (r: any) => r.id === props.command.restaurantId
   );
-  return restaurant?.name || "Restaurant inconnu";
+  return restaurant?.name || t("components.commandCard.unknownRestaurant");
 });
 
 const getDishName = (productId: number) => {
@@ -58,15 +69,15 @@ const getDishName = (productId: number) => {
     const dish = restaurant.dishes?.find((d: any) => d.id === productId);
     if (dish) return dish.name;
   }
-  return "Plat inconnu";
+  return t("components.commandCard.unknownDish");
 };
 
 const getStatusText = (status: string) => {
   const statusMap = {
-    pending: "En attente",
-    "in-progress": "En préparation",
-    delivered: "Livré",
-    cancelled: "Annulé",
+    pending: t("components.commandCard.status.pending"),
+    "in-progress": t("components.commandCard.status.inProgress"),
+    delivered: t("components.commandCard.status.delivered"),
+    cancelled: t("components.commandCard.status.cancelled"),
   };
   return statusMap[status as keyof typeof statusMap] || status;
 };

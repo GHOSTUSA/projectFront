@@ -5,6 +5,7 @@ import type { Restaurant } from "~/types/Restaurant";
 import { useCartStore } from "~/stores/panier/cardStore";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
+const { t } = useI18n();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
 const route = useRoute();
@@ -34,10 +35,10 @@ const {
 const restaurant = computed(() => restaurantData.value);
 const hasError = computed(() => !isValidId || !!error.value);
 const errorMessage = computed(() => {
-  if (!isValidId) return "ID de restaurant invalide";
-  if (error.value) return "Erreur lors du chargement";
+  if (!isValidId) return t("errors.restaurant.invalidId");
+  if (error.value) return t("errors.loading.general");
   if (!pending.value && !restaurant.value && isValidId)
-    return `Restaurant avec l'ID ${restaurantId} introuvable`;
+    return t("errors.restaurant.notFoundWithId", { id: restaurantId });
   return null;
 });
 
@@ -71,10 +72,10 @@ function addToCart(dish: any) {
 
   <!-- État d'erreur -->
   <div v-else-if="hasError || errorMessage" class="error-state">
-    <h1>Erreur</h1>
+    <h1>{{ t("errors.pages.default.title") }}</h1>
     <p>{{ errorMessage }}</p>
     <NuxtLink to="/utilisateur/restaurant" class="back-link">
-      ← Retour à la liste des restaurants
+      {{ t("errors.actions.backToRestaurants") }}
     </NuxtLink>
   </div>
 

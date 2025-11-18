@@ -54,7 +54,7 @@ const isFormValid = computed(() => {
 // Fonction de création de compte
 const createAccount = async () => {
   if (!isFormValid.value) {
-    error.value = "Veuillez corriger les erreurs du formulaire";
+    error.value = t("account.create.validation.formErrors");
     return;
   }
 
@@ -84,7 +84,7 @@ const createAccount = async () => {
     error.value =
       err instanceof Error
         ? err.message
-        : "Erreur lors de la création du compte";
+        : t("account.create.errors.createAccount");
   } finally {
     loading.value = false;
   }
@@ -103,10 +103,9 @@ watch(
   <div class="account-creation-container">
     <div class="form-wrapper">
       <div class="form-header">
-        <h1 class="form-title">Créer un compte</h1>
+        <h1 class="form-title">{{ t("account.create.title") }}</h1>
         <p class="form-subtitle">
-          Rejoignez FoodDelivery et découvrez les meilleurs restaurants près de
-          chez vous
+          {{ t("account.create.subtitle") }}
         </p>
       </div>
 
@@ -114,7 +113,10 @@ watch(
         <!-- Nom et Prénom -->
         <div class="form-row">
           <div class="form-group">
-            <label for="firstName" class="form-label">Prénom *</label>
+            <label for="firstName" class="form-label"
+              >{{ t("account.create.firstName") }}
+              {{ t("account.create.required") }}</label
+            >
             <input
               type="text"
               id="firstName"
@@ -123,20 +125,23 @@ watch(
               :class="{
                 error: !formData.firstName.trim() && formData.firstName,
               }"
-              placeholder="Votre prénom"
+              :placeholder="t('account.create.firstNamePlaceholder')"
               required
             />
           </div>
 
           <div class="form-group">
-            <label for="lastName" class="form-label">Nom *</label>
+            <label for="lastName" class="form-label"
+              >{{ t("account.create.lastName") }}
+              {{ t("account.create.required") }}</label
+            >
             <input
               type="text"
               id="lastName"
               v-model="formData.lastName"
               class="form-input"
               :class="{ error: !formData.lastName.trim() && formData.lastName }"
-              placeholder="Votre nom"
+              :placeholder="t('account.create.lastNamePlaceholder')"
               required
             />
           </div>
@@ -144,7 +149,10 @@ watch(
 
         <!-- Email -->
         <div class="form-group">
-          <label for="email" class="form-label">Email *</label>
+          <label for="email" class="form-label"
+            >{{ t("account.create.email") }}
+            {{ t("account.create.required") }}</label
+          >
           <input
             type="email"
             id="email"
@@ -154,17 +162,20 @@ watch(
               error: formData.email && !isValidEmail,
               success: isValidEmail,
             }"
-            placeholder="votre.email@exemple.com"
+            :placeholder="t('account.create.emailPlaceholder')"
             required
           />
           <span v-if="formData.email && !isValidEmail" class="error-text">
-            Format d'email invalide
+            {{ t("account.create.validation.invalidEmail") }}
           </span>
         </div>
 
         <!-- Mot de passe -->
         <div class="form-group">
-          <label for="password" class="form-label">Mot de passe *</label>
+          <label for="password" class="form-label"
+            >{{ t("account.create.password") }}
+            {{ t("account.create.required") }}</label
+          >
           <div class="password-input-wrapper">
             <input
               :type="showPassword ? 'text' : 'password'"
@@ -175,7 +186,7 @@ watch(
                 error: formData.password && !isValidPassword,
                 success: isValidPassword,
               }"
-              placeholder="Minimum 8 caractères"
+              :placeholder="t('account.create.passwordPlaceholder')"
               required
             />
             <button
@@ -184,15 +195,15 @@ watch(
               class="password-toggle"
               :aria-label="
                 showPassword
-                  ? 'Masquer le mot de passe'
-                  : 'Afficher le mot de passe'
+                  ? t('account.create.hidePassword')
+                  : t('account.create.showPassword')
               "
             >
               <Icon :name="showPassword ? 'mdi:eye-off' : 'mdi:eye'" />
             </button>
           </div>
           <span v-if="formData.password && !isValidPassword" class="error-text">
-            Le mot de passe doit contenir au moins 8 caractères
+            {{ t("account.create.validation.passwordTooShort") }}
           </span>
         </div>
 
@@ -211,13 +222,17 @@ watch(
           >
             <Icon v-if="loading" name="mdi:loading" class="spinning" />
             <span>{{
-              loading ? "Création en cours..." : "Créer mon compte"
+              loading
+                ? t("account.create.creating")
+                : t("account.create.submit")
             }}</span>
           </button>
 
           <p class="login-link">
-            Vous avez déjà un compte ?
-            <NuxtLink to="/login" class="link">Se connecter</NuxtLink>
+            {{ t("account.create.hasAccount") }}
+            <NuxtLink to="/login" class="link">{{
+              t("account.create.login")
+            }}</NuxtLink>
           </p>
         </div>
       </form>

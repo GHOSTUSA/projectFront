@@ -137,7 +137,7 @@ const commandStats = computed(() => {
     <div class="stats-row">
       <div class="stat-item">
         <span class="stat-number">{{ commandStats.total }}</span>
-        <span class="stat-label">{{ t("pages.cart.total") }}</span>
+        <span class="stat-label">{{ t("admin.commands.stats.total") }}</span>
       </div>
       <div class="stat-item stat-warning">
         <span class="stat-number">{{ commandStats.pending }}</span>
@@ -160,7 +160,7 @@ const commandStats = computed(() => {
     <!-- Filtres -->
     <div class="filters-section">
       <div class="filter-group">
-        <label for="status-filter">Filtrer par statut :</label>
+        <label for="status-filter">{{ t("admin.orders.filters.label") }}</label>
         <select
           id="status-filter"
           v-model="selectedStatus"
@@ -179,17 +179,17 @@ const commandStats = computed(() => {
 
     <div class="commands-table" v-if="!loading">
       <div class="table-header">
-        <span>ID</span>
-        <span>Date</span>
-        <span>Client</span>
-        <span>Restaurant</span>
-        <span>Montant</span>
-        <span>Statut</span>
-        <span>Actions</span>
+        <span>{{ t("admin.commands.table.id") }}</span>
+        <span>{{ t("admin.commands.table.date") }}</span>
+        <span>{{ t("admin.commands.table.customer") }}</span>
+        <span>{{ t("admin.commands.table.restaurant") }}</span>
+        <span>{{ t("admin.commands.table.total") }}</span>
+        <span>{{ t("admin.commands.table.status") }}</span>
+        <span>{{ t("admin.commands.table.actions") }}</span>
       </div>
 
       <div v-if="filteredCommands.length === 0" class="no-commands">
-        <p>Aucune commande trouvée pour ce filtre.</p>
+        <p>{{ t("admin.orders.empty.message") }}</p>
       </div>
 
       <div
@@ -220,17 +220,25 @@ const commandStats = computed(() => {
             "
             class="status-select"
           >
-            <option value="pending">En attente</option>
-            <option value="in-progress">En cours</option>
-            <option value="delivered">Livré</option>
-            <option value="cancelled">Annulé</option>
+            <option value="pending">
+              {{ t("admin.commands.status.pending") }}
+            </option>
+            <option value="in-progress">
+              {{ t("admin.commands.status.inProgress") }}
+            </option>
+            <option value="delivered">
+              {{ t("admin.commands.status.delivered") }}
+            </option>
+            <option value="cancelled">
+              {{ t("admin.commands.status.cancelled") }}
+            </option>
           </select>
         </span>
       </div>
     </div>
 
     <div v-else class="loading-state">
-      <p>Chargement des commandes...</p>
+      <p>{{ t("admin.orders.loading") }}</p>
     </div>
   </div>
 </template>
