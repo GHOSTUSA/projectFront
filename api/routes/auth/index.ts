@@ -13,7 +13,13 @@ import { User } from "../../generated/prisma/client.js";
 
 export const authRoutes = async (app: FastifyInstance) => {
   const authService = new AuthService(app.prisma);
-  const { register, login } = authService;
+  const { register, login, getAllUsers } = authService;
+
+  app.get("/", async (request, reply) => {
+    const users = await getAllUsers();
+    return reply.status(200).send(users);
+  });
+
   app.post<{ Body: RegisterRequest }>(
     "/register",
     {
@@ -26,7 +32,9 @@ export const authRoutes = async (app: FastifyInstance) => {
       },
     },
     async (request, reply) => {
-      const user = await register(request.body);
+      const user = await register(
+        request.body as import("../../services/auth.service.js").RegisterInput,
+      );
       const token = app.jwt.sign({ id: user.id });
       return reply.status(201).send({ token });
     },

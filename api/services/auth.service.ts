@@ -10,6 +10,7 @@ export interface LoginInput {
 export interface RegisterInput {
   email: string;
   password: string;
+  role?: "USER" | "ADMIN" | "RESTAURANT";
 }
 
 export interface AuthResponse {
@@ -23,6 +24,17 @@ export default class AuthService {
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
+
+  getAllUsers = async () => {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+  };
 
   register = async (input: RegisterInput): Promise<AuthResponse> => {
     const existingUser = await this.prisma.user.findUnique({
@@ -39,6 +51,7 @@ export default class AuthService {
       data: {
         email: input.email,
         password: hashedPassword,
+        role: input.role || "USER",
       },
     });
 

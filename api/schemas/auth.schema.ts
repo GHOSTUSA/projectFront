@@ -8,6 +8,7 @@ export const LoginSchema = Type.Object({
 export const RegisterSchema = Type.Object({
   email: Type.String({ format: "email" }),
   password: Type.String({ minLength: 2 }),
+  role: Type.Optional(Type.String({ enum: ["USER", "ADMIN", "RESTAURANT"] })),
 });
 
 export const UserResponseSchema = Type.Object({

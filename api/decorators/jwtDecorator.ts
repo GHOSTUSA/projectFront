@@ -19,7 +19,6 @@ export default fp(async function (fastify: FastifyInstance, options = {}) {
     async (req: FastifyRequest, res: FastifyReply) => {
       try {
         const decoded = await req.jwtVerify<{ id: string }>();
-
         const user = await fastify.prisma.user.findUnique({
           where: { id: decoded.id },
           select: { id: true, email: true, role: true },
