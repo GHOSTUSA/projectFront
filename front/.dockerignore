@@ -1,0 +1,11 @@
+node_modules
+.npm
+.output
+.nuxt
+dist
+.env
+.git
+.vscode
+tests/
+playwright-report/
+test-results/
