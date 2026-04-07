@@ -18,24 +18,33 @@ export default fp(async function (fastify: FastifyInstance, options = {}) {
     "authenticate",
     async (req: FastifyRequest, res: FastifyReply) => {
       try {
-        //1. verifier le token
-        //2. extraire les infos du token et recuperer l'utilisateur correspondant dans la base de données
-        //3. Throw une erreur si jamais le user n'est pas trouvé
-        //4. Attacher l'utilisateur à la requete pour les prochaines middlewares ou handlers avec req.user = user
-        //modifier le fichier types/fastify.d.ts pour typer req.user
-      } catch (err) {
-        throw new UnauthorizedError();
+        const decoded = await req.jwtVerify<{ id: string }>();
+
+        const user = await fastify.prisma.user.findUnique({
+          where: { id: decoded.id },
+          select: { id: true, email: true, role: true },
+        });
+
+        if (!user) {
+          throw new UnauthorizedError("Utilisateur non trouvé");
+        }
+
+        req.user = user as typeof req.user;
+      } catch (err: any) {
+        if (err instanceof UnauthorizedError) throw err;
+        throw new UnauthorizedError("Non autorisé");
       }
     },
   );
 
   fastify.decorate("authorize", (allowedRoles: string[]) => {
     return async (req: FastifyRequest, res: FastifyReply) => {
-      // D'abord authentifier l'utilisateur
       await fastify.authenticate(req, res);
 
-      //todo: Vérifier que req.user.role est dans allowedRoles
-      // Si le rôle de l'utilisateur n'est pas autorisé, throw une ForbiddenError
+      const userRole = req.user?.role;
+      if (!userRole || !allowedRoles.includes(userRole)) {
+        throw new ForbiddenError("Accès refusé : Rôle insuffisant");
+      }
     };
   });
 });

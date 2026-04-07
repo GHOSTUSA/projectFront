@@ -25,33 +25,49 @@ export default class AuthService {
   }
 
   register = async (input: RegisterInput): Promise<AuthResponse> => {
-    //1. recuperer l'utilisateur avec l'email en base de données
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: input.email },
+    });
 
-    //2. si l'utilisateur existe déjà, throw une erreur de conflit
+    if (existingUser) {
+      throw new ConflictError("L'utilisateur existe déjà");
+    }
 
-    //3. hasher le mot de passe avec la fonction hash (nombre de rounds recommandé : 10)
+    const hashedPassword = await hash(input.password, 10);
 
-    //4. créer l'utilisateur en base de données avec le mdp hashé
+    const newUser = await this.prisma.user.create({
+      data: {
+        email: input.email,
+        password: hashedPassword,
+      },
+    });
 
     return {
-      id: "a remplacer par l'id de l'utilisateur créé",
-      email: "a remplacer par l'email de l'utilisateur créé",
-      role: "a remplacer par le rôle de l'utilisateur créé",
+      id: newUser.id,
+      email: newUser.email,
+      role: newUser.role,
     };
   };
 
   login = async (input: LoginInput): Promise<AuthResponse> => {
-    //1. recuperer l'utilisateur avec l'email en base de données
+    const user = await this.prisma.user.findUnique({
+      where: { email: input.email },
+    });
 
-    //2. si l'utilisateur n'existe pas, throw une erreur d'Unauthorized
-    //3. comparer le mot de passe fourni avec le mot de passe hashé en base de données (utiliser la fonction compare de bcryptjs)
+    if (!user) {
+      throw new UnauthorizedError("Identifiants incorrects");
+    }
 
-    //4. si les mots de passe ne correspondent pas, throw une erreur d'Unauthorized
+    const isValidPassword = await compare(input.password, user.password);
+
+    if (!isValidPassword) {
+      throw new UnauthorizedError("Identifiants incorrects");
+    }
 
     return {
-      id: "a remplacer par l'id de l'utilisateur connecté",
-      email: "a remplacer par l'email de l'utilisateur connecté",
-      role: "a remplacer par le rôle de l'utilisateur connecté",
+      id: user.id,
+      email: user.email,
+      role: user.role,
     };
   };
 }

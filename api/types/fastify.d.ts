@@ -25,7 +25,7 @@ declare module "@fastify/jwt" {
     user: {
       id: string;
       email: string;
-      role: "USER";
+      role: "USER" | "ADMIN" | "RESTAURANT";
     };
   }
 }
