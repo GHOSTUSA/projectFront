@@ -1,11 +1,14 @@
 import { Type, type Static } from "@sinclair/typebox";
 
-export const DishBodySchema = Type.Object({
-  name: Type.String(),
-  description: Type.String(),
-  price: Type.Number(),
-  image: Type.String(),
-});
+export const DishBodySchema = Type.Object(
+  {
+    name: Type.String(),
+    description: Type.String(),
+    price: Type.Number(),
+    image: Type.String(),
+  },
+  { additionalProperties: false },
+);
 
 export const UpdateDishBodySchema = Type.Partial(DishBodySchema);
 

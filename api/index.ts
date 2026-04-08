@@ -14,6 +14,11 @@ const __dirname = dirname(__filename);
 
 const server = fastify({
   logger: true,
+  ajv: {
+    customOptions: {
+      removeAdditional: false,
+    },
+  },
 });
 
 // Gestionnaire d'erreurs global (RFC 7807)

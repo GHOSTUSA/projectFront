@@ -1,15 +1,21 @@
 import { Type, Static } from "@sinclair/typebox";
 
-export const LoginSchema = Type.Object({
-  email: Type.String({ format: "email" }),
-  password: Type.String({ minLength: 2 }),
-});
+export const LoginSchema = Type.Object(
+  {
+    email: Type.String({ format: "email" }),
+    password: Type.String({ minLength: 2 }),
+  },
+  { additionalProperties: false },
+);
 
-export const RegisterSchema = Type.Object({
-  email: Type.String({ format: "email" }),
-  password: Type.String({ minLength: 2 }),
-  role: Type.Optional(Type.String({ enum: ["USER", "ADMIN", "RESTAURANT"] })),
-});
+export const RegisterSchema = Type.Object(
+  {
+    email: Type.String({ format: "email" }),
+    password: Type.String({ minLength: 2 }),
+    role: Type.Optional(Type.String({ enum: ["USER", "ADMIN", "RESTAURANT"] })),
+  },
+  { additionalProperties: false },
+);
 
 export const UserResponseSchema = Type.Object({
   id: Type.String(),
