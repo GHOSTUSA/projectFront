@@ -1,6 +1,8 @@
 import type { User } from "../generated/prisma/client.js";
+import type { WebSocket } from "@fastify/websocket";
 
 export interface AuthenticatedWebSocket {
   user?: User;
-  socket?: WebSocket;
+  restaurantId?: string;
+  socket: WebSocket;
 }

@@ -5,6 +5,7 @@ import {
   BadRequestError,
 } from "../common/exceptions.js";
 import { CreateOrderRequest } from "../schemas/order.schema.js";
+import { notifyRestaurant } from "./websocket.service.js";
 
 export default class OrderService {
   private prisma: PrismaClient;
@@ -53,7 +54,7 @@ export default class OrderService {
       });
     }
 
-    return await this.prisma.order.create({
+    const newOrder = await this.prisma.order.create({
       data: {
         userId,
         restaurantId: data.restaurantId,
@@ -71,6 +72,16 @@ export default class OrderService {
         },
       },
     });
+
+    // Notifier le restaurant de la nouvelle commande en temps réel
+    notifyRestaurant(data.restaurantId, "new-order", {
+      orderId: newOrder.id,
+      totalPrice: newOrder.totalPrice,
+      itemCount: data.items.reduce((acc, item) => acc + item.quantity, 0),
+      createdAt: newOrder.createdAt.toISOString(),
+    });
+
+    return newOrder;
   };
 
   getOrderById = async (
