@@ -4,7 +4,7 @@ export const DishBodySchema = Type.Object(
   {
     name: Type.String(),
     description: Type.String(),
-    price: Type.Number(),
+    price: Type.Number({ minimum: 0 }),
     image: Type.String(),
   },
   { additionalProperties: false },
