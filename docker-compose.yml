@@ -42,11 +42,6 @@ services:
       - "3307:3306"
     networks:
       - uber_eats_network
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-      interval: 5s
 
 networks:
   uber_eats_network:
