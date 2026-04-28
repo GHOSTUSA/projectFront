@@ -28,6 +28,8 @@ services:
     networks:
       - default
       - uber_eats_network
+    depends_on:
+      - mariadb
 
   mariadb:
     image: mariadb:11.0
@@ -41,7 +43,7 @@ services:
     networks:
       - uber_eats_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 20s
       retries: 10
       interval: 5s

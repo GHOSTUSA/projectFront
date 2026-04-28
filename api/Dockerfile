@@ -1,6 +1,7 @@
 FROM node:20-alpine
 
 WORKDIR /app
+RUN apk add --no-cache netcat-openbsd
 
 COPY package*.json ./
 RUN npm install
@@ -18,4 +19,5 @@ EXPOSE 8080
 ENV HOST=0.0.0.0
 ENV PORT=8080
 
-CMD ["npm", "start"]
+# Wait for MariaDB to be reachable, then run Prisma migrations and start the app
+CMD ["sh", "-c", "until nc -z mariadb 3306; do echo 'Waiting for mariadb...'; sleep 1; done; npx prisma migrate deploy && npm start"]
