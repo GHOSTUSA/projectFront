@@ -12,80 +12,84 @@ import { AppError } from "./common/exceptions.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const server = fastify({
-  logger: true,
-  ajv: {
-    customOptions: {
-      removeAdditional: false,
+export function buildServer() {
+  const server = fastify({
+    logger: true,
+    ajv: {
+      customOptions: {
+        removeAdditional: false,
+      },
     },
-  },
-});
-
-// Gestionnaire d'erreurs global (RFC 7807)
-server.setErrorHandler((error, request, reply) => {
-  // Enregistrer l'erreur complète côté serveur pour le debugging
-  server.log.error({
-    err: error,
-    url: request.url,
-    method: request.method,
   });
 
-  // AppError: utiliser le format RFC 7807
-  if (error instanceof AppError) {
-    const problemDetail = error.problemDetail;
-    problemDetail.instance = request.url;
-    return reply.status(error.statusCode).send(problemDetail);
-  }
-
-  // Erreurs de validation Fastify
-  const validationError = error as FastifyError;
-  if (validationError.code === "FST_ERR_VALIDATION") {
-    return reply.status(400).send({
-      type: "urn:app:error:validation",
-      title: "Validation Error",
-      status: 400,
-      detail: validationError.message,
-      instance: request.url,
+  // Gestionnaire d'erreurs global (RFC 7807)
+  server.setErrorHandler((error, request, reply) => {
+    server.log.error({
+      err: error,
+      url: request.url,
+      method: request.method,
     });
-  }
 
-  reply.status(500).send({
-    type: "urn:app:error:internal",
-    title: "Internal Server Error",
-    status: 500,
-    detail: "An unexpected error occurred",
-    instance: request.url,
-  });
-});
-
-server.get("/health", async () => {
-  return { status: "ok" };
-});
-
-const start = async () => {
-  try {
-    const port = Number(process.env.PORT) || 3000;
-    const host = "0.0.0.0";
-
-    await server.register(cors, {});
-    // Todo: Enregistrer Swagger uniquement en développement
-    // Todo: Register Swagger-ui uniquement en développement
-
-    await registerPlugins(server);
-    await registerGraphQL(server);
-    await registerRoutes(server);
-
-    await server.ready();
-    if (process.env.NODE_ENV === "development") {
-      //server.swagger();
+    if (error instanceof AppError) {
+      const problemDetail = error.problemDetail;
+      problemDetail.instance = request.url;
+      return reply.status(error.statusCode).send(problemDetail);
     }
 
-    await server.listen({ port, host });
-    server.log.info(`Server running on http://${host}:${port}`);
-  } catch (err) {
-    server.log.error(err);
-    process.exit(1);
-  }
-};
+    const validationError = error as FastifyError;
+    if (validationError.code === "FST_ERR_VALIDATION") {
+      return reply.status(400).send({
+        type: "urn:app:error:validation",
+        title: "Validation Error",
+        status: 400,
+        detail: validationError.message,
+        instance: request.url,
+      });
+    }
 
-start();
+    reply.status(500).send({
+      type: "urn:app:error:internal",
+      title: "Internal Server Error",
+      status: 500,
+      detail: "An unexpected error occurred",
+      instance: request.url,
+    });
+  });
+
+  server.get("/health", async () => {
+    return { status: "ok" };
+  });
+
+  return server;
+}
+
+if (process.env.NODE_ENV !== "test") {
+  const appServer = buildServer();
+  const start = async () => {
+    try {
+      const port = Number(process.env.PORT) || 3000;
+      const host = "0.0.0.0";
+
+      await appServer.register(cors, {});
+      // Todo: Enregistrer Swagger uniquement en développement
+      // Todo: Register Swagger-ui uniquement en développement
+
+      await registerPlugins(appServer);
+      await registerGraphQL(appServer);
+      await registerRoutes(appServer);
+
+      await appServer.ready();
+      if (process.env.NODE_ENV === "development") {
+        //appServer.swagger();
+      }
+
+      await appServer.listen({ port, host });
+      appServer.log.info(`Server running on http://${host}:${port}`);
+    } catch (err) {
+      appServer.log.error(err);
+      process.exit(1);
+    }
+  };
+
+  start();
+}
