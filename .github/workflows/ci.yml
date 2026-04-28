@@ -1,0 +1,51 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+        services:
+            mariadb:
+                image: mariadb:11.0
+                env:
+                    MYSQL_ROOT_PASSWORD: password
+                    MYSQL_DATABASE: uber_eats_dev
+                ports:
+                    - 3306:3306
+                options: >-
+                    --health-cmd="mariadb-admin ping --silent"
+                    --health-interval=10s --health-timeout=5s --health-retries=5
+        env:
+            DATABASE_URL: mysql://root:password@localhost:3306/uber_eats_dev
+            JWT_SECRET: testsecret
+            NODE_ENV: test
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install dependencies
+              run: npm ci --workspace ./projectFront/api
+
+            - name: Generate Prisma Client
+              run: npx prisma generate --schema=./projectFront/api/prisma/schema.prisma
+
+            - name: Run Prisma Migrate
+              run: npx prisma migrate deploy --schema=./projectFront/api/prisma/schema.prisma
+
+            - name: Build API
+              run: npm run build --workspace ./projectFront/api
+
+            - name: Run tests
+              run: npm test --workspace ./projectFront/api
