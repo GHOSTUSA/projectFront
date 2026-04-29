@@ -69,26 +69,26 @@ async function submitForm() {
   isLoading.value = true;
 
   try {
-    const newUser: User = {
-      id: Date.now(),
-      firstName: formData.value.firstName,
-      lastName: formData.value.lastName,
-      email: formData.value.email,
-      password: formData.value.password,
-      role: "user",
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log("Nouveau compte créé (simulation):", newUser);
+    // Appel REST pour inscription
+    const response = await $fetch("http://localhost:8080/api/auth/register", {
+      method: "POST",
+      body: {
+        firstName: formData.value.firstName,
+        lastName: formData.value.lastName,
+        email: formData.value.email,
+        password: formData.value.password,
+      },
+    });
 
     successMessage.value = t("pages.auth.register.success");
 
-    setTimeout(() => {
-      const authStore = useAuthStore();
-      authStore.loginUser(newUser);
-
-      navigateTo("/utilisateur/restaurant");
-    }, 1500);
+    // Connexion automatique après inscription
+    const authStore = useAuthStore();
+    await authStore.login({
+      email: formData.value.email,
+      password: formData.value.password,
+    });
+    navigateTo("/utilisateur/restaurant");
   } catch (error) {
     console.error("Erreur lors de la création du compte:", error);
     errorMessage.value = t("errors.network.connectionError");
@@ -423,11 +423,8 @@ function clearMessages() {
 }
 
 .register-image {
-  background: linear-gradient(
-      135deg,
-      rgba(39, 174, 96, 0.9),
-      rgba(46, 204, 113, 0.9)
-    ),
+  background:
+    linear-gradient(135deg, rgba(39, 174, 96, 0.9), rgba(46, 204, 113, 0.9)),
     url("https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80");
   background-size: cover;
   background-position: center;

@@ -45,7 +45,7 @@ export const useRestaurantStore = defineStore("restaurant", {
           (restaurant) =>
             restaurant.name.toLowerCase().includes(query) ||
             restaurant.cuisineType.toLowerCase().includes(query) ||
-            restaurant.address.toLowerCase().includes(query)
+            restaurant.address.toLowerCase().includes(query),
         );
       }
 
@@ -53,13 +53,13 @@ export const useRestaurantStore = defineStore("restaurant", {
         filtered = filtered.filter(
           (restaurant) =>
             restaurant.cuisineType.toLowerCase() ===
-            state.filters.cuisineType.toLowerCase()
+            state.filters.cuisineType.toLowerCase(),
         );
       }
 
       if (state.filters.minRating > 0) {
         filtered = filtered.filter(
-          (restaurant) => restaurant.averageRating >= state.filters.minRating
+          (restaurant) => restaurant.averageRating >= state.filters.minRating,
         );
       }
 
@@ -106,7 +106,7 @@ export const useRestaurantStore = defineStore("restaurant", {
           : 0,
       totalDishes: state.restaurants.reduce(
         (sum, r) => sum + (r.dishes?.length || 0),
-        0
+        0,
       ),
       topRated: state.restaurants
         .filter((r) => r.averageRating >= 4.5)
@@ -123,10 +123,10 @@ export const useRestaurantStore = defineStore("restaurant", {
     getDishById: (state) => {
       return (
         restaurantId: string | number,
-        dishId: string | number
+        dishId: string | number,
       ): Dish | undefined => {
         const restaurant = state.restaurants.find(
-          (r) => String(r.id) === String(restaurantId)
+          (r) => String(r.id) === String(restaurantId),
         );
         if (!restaurant) return undefined;
 
@@ -162,13 +162,12 @@ export const useRestaurantStore = defineStore("restaurant", {
       this.errors.restaurants = null;
 
       try {
-        const data = await $fetch<{ restaurants: Restaurant[] }>(
-          "/api/data.json"
+        // Utilise ApiService pour récupérer les restaurants depuis l'API REST
+        const restaurants = await import("@/services/ApiService").then((m) =>
+          m.ApiService.getRestaurants(),
         );
-
-        this.restaurants = data.restaurants || [];
+        this.restaurants = restaurants || [];
         this.cache.restaurantsLastFetch = new Date();
-
         return this.restaurants;
       } catch (error) {
         const errorMessage = "Erreur lors du chargement des restaurants";
@@ -190,13 +189,13 @@ export const useRestaurantStore = defineStore("restaurant", {
       this.errors.currentRestaurant = null;
 
       try {
-        await this.fetchRestaurants();
-
-        const restaurant = this.getRestaurantById(id);
+        // Utilise ApiService pour récupérer le restaurant depuis l'API REST
+        const restaurant = await import("@/services/ApiService").then((m) =>
+          m.ApiService.getRestaurantById(Number(id)),
+        );
         if (!restaurant) {
           throw new Error(`Restaurant avec l'ID ${id} introuvable`);
         }
-
         this.currentRestaurant = restaurant;
         return restaurant;
       } catch (error) {
@@ -210,7 +209,7 @@ export const useRestaurantStore = defineStore("restaurant", {
 
     async fetchDish(
       restaurantId: string | number,
-      dishId: string | number
+      dishId: string | number,
     ): Promise<{ dish: Dish; restaurant: Restaurant }> {
       this.loading.currentDish = true;
       this.errors.currentDish = null;
@@ -221,7 +220,7 @@ export const useRestaurantStore = defineStore("restaurant", {
         const dish = this.getDishById(restaurantId, dishId);
         if (!dish) {
           throw new Error(
-            `Plat avec l'ID ${dishId} introuvable dans le restaurant ${restaurantId}`
+            `Plat avec l'ID ${dishId} introuvable dans le restaurant ${restaurantId}`,
           );
         }
 

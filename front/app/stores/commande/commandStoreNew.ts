@@ -73,14 +73,14 @@ export const useCommandStoreNew = defineStore("commandNew", {
       if (state.filters.searchQuery) {
         const query = state.filters.searchQuery.toLowerCase();
         filtered = filtered.filter((command) =>
-          String(command.id).includes(query)
+          String(command.id).includes(query),
         );
       }
 
       // Filtre par statut
       if (state.filters.status) {
         filtered = filtered.filter(
-          (command) => command.status === state.filters.status
+          (command) => command.status === state.filters.status,
         );
       }
 
@@ -88,26 +88,26 @@ export const useCommandStoreNew = defineStore("commandNew", {
       if (state.filters.restaurantId) {
         filtered = filtered.filter(
           (command) =>
-            String(command.restaurantId) === state.filters.restaurantId
+            String(command.restaurantId) === state.filters.restaurantId,
         );
       }
 
       // Filtre par utilisateur
       if (state.filters.userId) {
         filtered = filtered.filter(
-          (command) => String(command.userId) === state.filters.userId
+          (command) => String(command.userId) === state.filters.userId,
         );
       }
 
       // Filtre par montant
       if (state.filters.minAmount > 0) {
         filtered = filtered.filter(
-          (command) => command.totalPrice >= state.filters.minAmount
+          (command) => command.totalPrice >= state.filters.minAmount,
         );
       }
       if (state.filters.maxAmount > 0) {
         filtered = filtered.filter(
-          (command) => command.totalPrice <= state.filters.maxAmount
+          (command) => command.totalPrice <= state.filters.maxAmount,
         );
       }
 
@@ -115,14 +115,14 @@ export const useCommandStoreNew = defineStore("commandNew", {
       if (state.filters.dateFrom) {
         const fromDate = new Date(state.filters.dateFrom);
         filtered = filtered.filter(
-          (command) => new Date(command.orderDate) >= fromDate
+          (command) => new Date(command.orderDate) >= fromDate,
         );
       }
       if (state.filters.dateTo) {
         const toDate = new Date(state.filters.dateTo);
         toDate.setHours(23, 59, 59, 999);
         filtered = filtered.filter(
-          (command) => new Date(command.orderDate) <= toDate
+          (command) => new Date(command.orderDate) <= toDate,
         );
       }
 
@@ -169,34 +169,43 @@ export const useCommandStoreNew = defineStore("commandNew", {
       const total = commands.length;
 
       // Statistiques par statut
-      const byStatus = commands.reduce((acc, command) => {
-        acc[command.status] = (acc[command.status] || 0) + 1;
-        return acc;
-      }, {} as Record<CommandStatus, number>);
+      const byStatus = commands.reduce(
+        (acc, command) => {
+          acc[command.status] = (acc[command.status] || 0) + 1;
+          return acc;
+        },
+        {} as Record<CommandStatus, number>,
+      );
 
       // Chiffre d'affaires total
       const totalRevenue = commands.reduce(
         (sum, command) => sum + command.totalPrice,
-        0
+        0,
       );
 
       // Panier moyen
       const averageOrderValue = total > 0 ? totalRevenue / total : 0;
 
       // Top restaurants par commandes
-      const restaurantStats = commands.reduce((acc, command) => {
-        const restId = command.restaurantId;
-        if (!acc[restId]) {
-          acc[restId] = {
-            restaurantId: restId,
-            orderCount: 0,
-            revenue: 0,
-          };
-        }
-        acc[restId].orderCount++;
-        acc[restId].revenue += command.totalPrice;
-        return acc;
-      }, {} as Record<number, { restaurantId: number; orderCount: number; revenue: number }>);
+      const restaurantStats = commands.reduce(
+        (acc, command) => {
+          const restId = command.restaurantId;
+          if (!acc[restId]) {
+            acc[restId] = {
+              restaurantId: restId,
+              orderCount: 0,
+              revenue: 0,
+            };
+          }
+          acc[restId].orderCount++;
+          acc[restId].revenue += command.totalPrice;
+          return acc;
+        },
+        {} as Record<
+          number,
+          { restaurantId: number; orderCount: number; revenue: number }
+        >,
+      );
 
       const topRestaurants = Object.values(restaurantStats)
         .sort((a, b) => b.orderCount - a.orderCount)
@@ -209,7 +218,7 @@ export const useCommandStoreNew = defineStore("commandNew", {
         .filter((command) => new Date(command.orderDate) >= weekAgo)
         .sort(
           (a, b) =>
-            new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
+            new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
         )
         .slice(0, 20);
 
@@ -237,7 +246,7 @@ export const useCommandStoreNew = defineStore("commandNew", {
           .filter((command) => command.userId === Number(userId))
           .sort(
             (a, b) =>
-              new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
+              new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
           );
       };
     },
@@ -251,7 +260,7 @@ export const useCommandStoreNew = defineStore("commandNew", {
           .filter((command) => command.restaurantId === Number(restaurantId))
           .sort(
             (a, b) =>
-              new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
+              new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
           );
       };
     },
@@ -312,13 +321,14 @@ export const useCommandStoreNew = defineStore("commandNew", {
       this.errors.commands = null;
 
       try {
-        const data = await $fetch<{ commands: Command[] }>("/api/data.json");
-
-        this.commands = data.commands || [];
+        // Utilise ApiService pour récupérer les commandes depuis l'API REST
+        const commands = await import("@/services/ApiService").then((m) =>
+          m.ApiService.getAllCommands(),
+        );
+        this.commands = commands || [];
         this.cache.commandsLastFetch = new Date();
-
         console.log(
-          `✅ ${this.commands.length} commandes chargées et mises en cache`
+          `✅ ${this.commands.length} commandes chargées et mises en cache`,
         );
         return this.commands;
       } catch (error) {
@@ -371,19 +381,19 @@ export const useCommandStoreNew = defineStore("commandNew", {
      */
     async updateCommandStatus(
       commandId: string | number,
-      newStatus: CommandStatus
+      newStatus: CommandStatus,
     ): Promise<void> {
       this.loading.updating = true;
       this.errors.updating = null;
 
       try {
         console.log(
-          `🔄 Mise à jour commande ${commandId} vers statut ${newStatus}`
+          `🔄 Mise à jour commande ${commandId} vers statut ${newStatus}`,
         );
 
         // Mise à jour locale (optimistic update)
         const commandIndex = this.commands.findIndex(
-          (c) => c.id === Number(commandId)
+          (c) => c.id === Number(commandId),
         );
         if (commandIndex !== -1) {
           const command = this.commands[commandIndex];
@@ -400,7 +410,7 @@ export const useCommandStoreNew = defineStore("commandNew", {
         }
 
         console.log(
-          `✅ Statut de la commande ${commandId} mis à jour: ${newStatus}`
+          `✅ Statut de la commande ${commandId} mis à jour: ${newStatus}`,
         );
       } catch (error) {
         const errorMessage = `Erreur lors de la mise à jour de la commande ${commandId}`;

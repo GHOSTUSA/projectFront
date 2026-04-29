@@ -54,20 +54,13 @@ async function submitForm() {
 
   try {
     console.log("Tentative de connexion côté client...");
-
-    const data: any = await $fetch("/api/data.json");
-
-    const user: User | undefined = data.users.find(
-      (u: any) => u.email === userName.value && u.password === passWord.value
-    );
-
-    if (user) {
-      console.log("Connexion réussie !", user.email);
-
-      const authStore = useAuthStore();
-      authStore.loginUser(user);
-
-      redirectUserByRole(user);
+    const authStore = useAuthStore();
+    const success = await authStore.login({
+      email: userName.value,
+      password: passWord.value,
+    });
+    if (success) {
+      redirectUserByRole(authStore.user);
     } else {
       errorMessage.value = t("errors.auth.invalidCredentials");
     }
