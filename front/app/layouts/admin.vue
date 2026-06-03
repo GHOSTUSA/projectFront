@@ -11,7 +11,11 @@ watch(
   [isAuthenticated, isAdmin],
   ([auth, admin]) => {
     if (auth && !admin) {
-      navigateTo("/restaurant");
+      if (authStore.user?.role === "restaurateur") {
+        navigateTo("/Admin/restaurateur");
+      } else {
+        navigateTo("/utilisateur/restaurant");
+      }
     } else if (!auth) {
       navigateTo("/");
     }
@@ -19,9 +23,9 @@ watch(
   { immediate: true }
 );
 
-function logout() {
+async function logout() {
   authStore.logout();
-  navigateTo("/");
+  await navigateTo("/login", { replace: true });
 }
 </script>
 
@@ -33,7 +37,9 @@ function logout() {
           <h2>Administration</h2>
         </div>
         <ul class="nav-menu">
-          <li><NuxtLink to="/Admin/backOffice">Dashboard</NuxtLink></li>
+          <li>
+            <NuxtLink to="/Admin/backOffice">Dashboard</NuxtLink>
+          </li>
           <li>
             <NuxtLink to="/Admin/backOffice/restaurants">Restaurants</NuxtLink>
           </li>
@@ -41,10 +47,8 @@ function logout() {
             <NuxtLink to="/Admin/backOffice/commands">Commandes</NuxtLink>
           </li>
           <li class="user-info">
-            <span
-              >{{ authStore.user?.firstName }}
-              {{ authStore.user?.lastName }}</span
-            >
+            <span>{{ authStore.user?.firstName }}
+              {{ authStore.user?.lastName }}</span>
           </li>
           <li>
             <button @click="logout" class="logout-btn">Déconnexion</button>

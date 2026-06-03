@@ -53,9 +53,10 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Récupération des données depuis data.json
-const data = await $fetch<{ restaurants: any[] }>("/api/data.json");
-const restaurants = data.restaurants;
+import { ApiService } from "~/services/ApiService";
+
+// Récupération des restaurants depuis l'API
+const restaurants = await ApiService.getRestaurants();
 
 const restaurantName = computed(() => {
   const restaurant = restaurants.find(
@@ -66,7 +67,7 @@ const restaurantName = computed(() => {
 
 const getDishName = (productId: number) => {
   for (const restaurant of restaurants) {
-    const dish = restaurant.dishes?.find((d: any) => d.id === productId);
+    const dish = restaurant.dishes?.find((d: any) => String(d.id) === String(productId));
     if (dish) return dish.name;
   }
   return t("components.commandCard.unknownDish");

@@ -9,6 +9,17 @@ const userRoutes = async (app: FastifyInstance) => {
   const usersService = new UsersService(app.prisma);
 
   app.get(
+    "/",
+    {
+      onRequest: [app.authorize(["ADMIN"])],
+    },
+    async (request, reply) => {
+      const users = await usersService.getAllUsers();
+      return reply.status(200).send(users);
+    },
+  );
+
+  app.get(
     "/me",
     {
       onRequest: [app.authenticate],

@@ -25,6 +25,23 @@ const user = ref<PublicUser | null>(null);
 const isUpdating = ref<boolean>(false);
 const updateMessage = ref<string>("");
 
+const toDisplayName = (value?: string | null) => {
+  if (!value) return "";
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+};
+
+const normalizeProfileUser = (profile: PublicUser): PublicUser => {
+  const emailPrefix = String(profile.email || "").split("@")[0] || "";
+
+  return {
+    ...profile,
+    firstName: toDisplayName(profile.firstName) || toDisplayName(emailPrefix) || "Utilisateur",
+    lastName: toDisplayName(profile.lastName) || "Client",
+  };
+};
+
 onMounted(async () => {
   try {
     await commandStore.loadCommands();
@@ -43,7 +60,7 @@ watch(
   () => authStore.user,
   (newUser) => {
     if (newUser) {
-      user.value = { ...newUser };
+      user.value = normalizeProfileUser({ ...newUser });
     }
   },
   { immediate: true }
@@ -70,12 +87,17 @@ async function updateProfile() {
       return;
     }
 
-    // Mise à jour via le store
-    authStore.updateUser({
+    // Mise à jour via le store + API
+    const success = await authStore.saveProfile({
       email: user.value.email,
       lastName: user.value.lastName,
       firstName: user.value.firstName,
     });
+
+    if (!success) {
+      updateMessage.value = authStore.error || t("account.updateError");
+      return;
+    }
 
     updateMessage.value = t("account.updateSuccess");
     console.log("Profil mis à jour côté client:", user.value);
@@ -112,58 +134,32 @@ async function updateProfile() {
         <h2>{{ t("account.personalInfo") }}</h2>
         <div class="profile-form">
           <!-- Message de mise à jour -->
-          <div
-            v-if="updateMessage"
-            class="update-message"
-            :class="{
-              success: updateMessage.includes('succès'),
-              error: !updateMessage.includes('succès'),
-            }"
-          >
+          <div v-if="updateMessage" class="update-message" :class="{
+            success: updateMessage.includes('succès'),
+            error: !updateMessage.includes('succès'),
+          }">
             {{ updateMessage }}
           </div>
 
           <div class="form-group">
             <label for="email">{{ t("account.form.email") }} :</label>
-            <input
-              type="email"
-              id="email"
-              v-model="user.email"
-              :placeholder="t('account.form.emailPlaceholder')"
-              :disabled="isUpdating"
-              required
-            />
+            <input type="email" id="email" v-model="user.email" :placeholder="t('account.form.emailPlaceholder')"
+              :disabled="isUpdating" required />
           </div>
 
           <div class="form-group">
             <label for="lastName">{{ t("account.form.lastName") }} :</label>
-            <input
-              type="text"
-              id="lastName"
-              v-model="user.lastName"
-              :placeholder="t('account.form.lastNamePlaceholder')"
-              :disabled="isUpdating"
-              required
-            />
+            <input type="text" id="lastName" v-model="user.lastName"
+              :placeholder="t('account.form.lastNamePlaceholder')" :disabled="isUpdating" required />
           </div>
 
           <div class="form-group">
             <label for="firstName">{{ t("account.form.firstName") }} :</label>
-            <input
-              type="text"
-              id="firstName"
-              v-model="user.firstName"
-              :placeholder="t('account.form.firstNamePlaceholder')"
-              :disabled="isUpdating"
-              required
-            />
+            <input type="text" id="firstName" v-model="user.firstName"
+              :placeholder="t('account.form.firstNamePlaceholder')" :disabled="isUpdating" required />
           </div>
 
-          <button
-            @click="updateProfile"
-            class="update-btn"
-            :disabled="isUpdating"
-          >
+          <button @click="updateProfile" class="update-btn" :disabled="isUpdating">
             <span v-if="isUpdating" class="loading-spinner">⟳</span>
             {{
               isUpdating ? t("account.updating") : t("account.updateProfile")
@@ -175,11 +171,7 @@ async function updateProfile() {
       <div class="commands-section">
         <h2>{{ t("account.myOrders") }}</h2>
         <div v-if="userCommands.length > 0" class="commands-list">
-          <CommandCard
-            v-for="command in userCommands"
-            :key="command.id"
-            :command="command"
-          />
+          <CommandCard v-for="command in userCommands" :key="command.id" :command="command" />
         </div>
         <div v-else class="no-commands">
           <h3>{{ t("account.noOrders") }}</h3>
@@ -308,6 +300,7 @@ async function updateProfile() {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

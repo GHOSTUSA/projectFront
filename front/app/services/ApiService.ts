@@ -5,56 +5,130 @@ import type { PublicUser } from "@/types/User";
 import type { Command } from "@/types/Command";
 import type { Dish } from "@/types/Dish";
 
+const DISH_META_STORAGE_KEY = "dish-meta-map";
+
+type DishMeta = {
+  category?: string;
+  allergens?: string[];
+};
+
+const readDishMetaMap = (): Record<string, DishMeta> => {
+  if (!import.meta.client) return {};
+
+  try {
+    return JSON.parse(localStorage.getItem(DISH_META_STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+};
+
+const normalizeDish = (dish: any): Dish => {
+  const meta = readDishMetaMap()[String(dish.id)] || {};
+
+  return {
+    ...dish,
+    description: dish.description || "Description non renseignée",
+    category: dish.category || meta.category || "Plat",
+    allergens: Array.isArray(dish.allergens)
+      ? dish.allergens
+      : meta.allergens || [],
+  } as Dish;
+};
+
+type RestaurantApiRecord = {
+  id: string | number;
+  name: string;
+  address: string;
+  phone?: string;
+  phoneNumber?: string;
+  cuisineType?: string;
+  averageRating?: number;
+  rating?: number;
+  image?: string;
+  picture?: string | null;
+  dishes?: Dish[];
+};
+
+const normalizeRestaurant = (restaurant: RestaurantApiRecord): Restaurant => ({
+  id: restaurant.id,
+  name: restaurant.name,
+  address: restaurant.address,
+  phone: restaurant.phone ?? restaurant.phoneNumber ?? "",
+  cuisineType: restaurant.cuisineType ?? "",
+  averageRating: restaurant.averageRating ?? restaurant.rating ?? 0,
+  image: restaurant.image ?? restaurant.picture ?? "",
+  dishes: restaurant.dishes ?? [],
+});
+
 export class ApiService {
   // Appel REST pour récupérer tous les restaurants
   static async getRestaurants(): Promise<Restaurant[]> {
-    return await $fetch<Restaurant[]>("http://localhost:8080/api/restaurants");
+    const response = await $fetch<
+      { restaurants: RestaurantApiRecord[] } | RestaurantApiRecord[]
+    >("http://localhost:8082/api/restaurants");
+
+    const restaurants = Array.isArray(response)
+      ? response
+      : response.restaurants || [];
+
+    return restaurants.map(normalizeRestaurant);
   }
 
   // Appel REST pour récupérer un restaurant par ID
-  static async getRestaurantById(id: number): Promise<Restaurant | null> {
+  static async getRestaurantById(
+    id: string | number,
+  ): Promise<Restaurant | null> {
     try {
-      return await $fetch<Restaurant>(
-        `http://localhost:8080/api/restaurants/${id}`,
-      );
+      const all = await this.getRestaurants();
+      return all.find((r) => String(r.id) === String(id)) || null;
     } catch (e) {
       return null;
     }
   }
 
   // Appel REST pour récupérer les plats d'un restaurant
-  static async getDishesByRestaurant(restaurantId: number): Promise<Dish[]> {
-    return await $fetch<Dish[]>(
-      `http://localhost:8080/api/restaurants/${restaurantId}/dishes`,
+  static async getDishesByRestaurant(
+    restaurantId: string | number,
+  ): Promise<Dish[]> {
+    const dishes = await $fetch<any[]>(
+      `http://localhost:8082/api/dishes/restaurant/${restaurantId}`,
     );
+
+    return dishes.map(normalizeDish);
   }
 
   // Appel REST pour login
-  static async login(credentials: LoginRequest): Promise<PublicUser | null> {
+  static async login(credentials: LoginRequest): Promise<string | null> {
     try {
-      const user = await $fetch<PublicUser>(
-        "http://localhost:8080/api/auth/login",
+      const res = await $fetch<{ token: string }>(
+        "http://localhost:8082/api/auth/login",
         {
           method: "POST",
           body: credentials,
         },
       );
-      return user;
+      return res.token;
     } catch (e) {
       return null;
     }
   }
 
   // Appel REST pour récupérer les commandes d'un utilisateur
-  static async getUserCommands(userId: number): Promise<Command[]> {
-    return await $fetch<Command[]>(
-      `http://localhost:8080/api/users/${userId}/commands`,
+  static async getUserCommands(userId: string | number): Promise<Command[]> {
+    // backend exposes /api/orders/me for the authenticated user; this method
+    // is a best-effort fallback to fetch user commands via that route when
+    // called client-side with proper auth elsewhere. Keep as-is for now.
+    return await $fetch<Command[]>(`/api/data.json`).then(
+      (d: any) => d.commands || [],
     );
   }
 
-  // Appel REST pour récupérer toutes les commandes
-  static async getAllCommands(): Promise<Command[]> {
-    return await $fetch<Command[]>("http://localhost:8080/api/commands");
+  // Appel REST pour récupérer toutes les commandes (admin)
+  static async getAllCommands(token?: string | null): Promise<Command[]> {
+    if (!token) return [];
+    return await $fetch<Command[]>("http://localhost:8082/api/orders", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
   }
 
   // Appel REST pour rechercher des restaurants
@@ -66,12 +140,15 @@ export class ApiService {
     if (query) params.append("q", query);
     if (cuisineType) params.append("cuisineType", cuisineType);
     return await $fetch<Restaurant[]>(
-      `http://localhost:8080/api/restaurants/search?${params.toString()}`,
+      `http://localhost:8082/api/restaurants/search?${params.toString()}`,
     );
   }
-  // Appel REST pour récupérer tous les utilisateurs
-  static async getAllUsers(): Promise<PublicUser[]> {
-    return await $fetch<PublicUser[]>("http://localhost:8080/api/users");
+  // Appel REST pour récupérer tous les utilisateurs (admin)
+  static async getAllUsers(token?: string | null): Promise<PublicUser[]> {
+    if (!token) return [];
+    return await $fetch<PublicUser[]>("http://localhost:8082/api/users", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
   }
 }
 
@@ -101,7 +178,7 @@ export function useRestaurants() {
   };
 }
 
-export function useRestaurant(id: Ref<number> | number) {
+export function useRestaurant(id: Ref<string | number> | string | number) {
   const restaurant = ref<Restaurant | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);

@@ -5,6 +5,13 @@ import { hash } from "bcryptjs";
 class UsersService {
   constructor(private prisma: PrismaClient) {}
 
+  async getAllUsers() {
+    return await this.prisma.user.findMany({
+      select: { id: true, email: true, role: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },

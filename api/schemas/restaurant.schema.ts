@@ -13,6 +13,8 @@ export const CreateRestaurantSchema = Type.Object(
 export const UpdateRestaurantSchema = Type.Object(
   {
     name: Type.Optional(Type.String({ minLength: 2 })),
+    address: Type.Optional(Type.String({ minLength: 5 })),
+    phoneNumber: Type.Optional(Type.String({ minLength: 5 })),
     picture: Type.Optional(Type.String({ format: "uri" })),
   },
   { additionalProperties: false },

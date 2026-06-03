@@ -7,6 +7,10 @@ definePageMeta({
   middleware: ["auth", "admin"],
 });
 
+import { ApiService } from "~/services/ApiService";
+import { useAuthStore } from "~/stores/authentification/AuthStore";
+
+const authStore = useAuthStore();
 const commands = ref<any[]>([]);
 const restaurants = ref<any[]>([]);
 const users = ref<any[]>([]);
@@ -21,12 +25,33 @@ const statusOptions = [
   { value: "cancelled", label: t("admin.commands.filters.cancelled") },
 ];
 
+const normalizeStatus = (status: string): string => {
+  const map: Record<string, string> = {
+    PENDING: "pending",
+    CONFIRMED: "in-progress",
+    PREPARING: "in-progress",
+    READY: "in-progress",
+    DELIVERED: "delivered",
+    CANCELLED: "cancelled",
+  };
+  return map[status?.toUpperCase()] ?? status?.toLowerCase() ?? "pending";
+};
+
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
-    commands.value = data.commands || [];
-    restaurants.value = data.restaurants || [];
-    users.value = data.users || [];
+    const token = authStore.token;
+    const [rawCommands, fetchedRestaurants, fetchedUsers] = await Promise.all([
+      ApiService.getAllCommands(token),
+      ApiService.getRestaurants(),
+      ApiService.getAllUsers(token),
+    ]);
+    commands.value = (rawCommands || []).map((cmd: any) => ({
+      ...cmd,
+      status: normalizeStatus(cmd.status),
+      orderDate: cmd.orderDate || cmd.createdAt,
+    }));
+    restaurants.value = fetchedRestaurants || [];
+    users.value = fetchedUsers || [];
   } catch (error) {
     console.error("Erreur lors du chargement des données:", error);
   } finally {
@@ -41,15 +66,15 @@ const filteredCommands = computed(() => {
   return commands.value.filter((cmd) => cmd.status === selectedStatus.value);
 });
 
-const getRestaurantName = (restaurantId: number) => {
-  const restaurant = restaurants.value.find((r) => r.id === restaurantId);
+const getRestaurantName = (restaurantId: string | number) => {
+  const restaurant = restaurants.value.find((r) => String(r.id) === String(restaurantId));
   return restaurant?.name || t("admin.commands.unknownRestaurant");
 };
 
-const getUserName = (userId: number) => {
-  const user = users.value.find((u) => u.id === userId);
+const getUserName = (userId: string | number) => {
+  const user = users.value.find((u) => String(u.id) === String(userId));
   return user
-    ? `${user.firstName} ${user.lastName}`
+    ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email
     : t("admin.commands.unknownUser");
 };
 
@@ -90,22 +115,28 @@ const getStatusBadge = (status: string) => {
   );
 };
 
-const updateCommandStatus = async (commandId: number, newStatus: string) => {
+const statusToBackend: Record<string, string> = {
+  pending: "PENDING",
+  "in-progress": "CONFIRMED",
+  delivered: "DELIVERED",
+  cancelled: "CANCELLED",
+};
+
+const updateCommandStatus = async (commandId: string | number, newStatus: string) => {
   try {
+    const backendStatus = statusToBackend[newStatus] ?? newStatus.toUpperCase();
+    await $fetch(`http://localhost:8082/api/orders/${commandId}/status`, {
+      method: "PATCH",
+      body: { status: backendStatus },
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
+
     const commandIndex = commands.value.findIndex(
-      (cmd) => cmd.id === commandId
+      (cmd) => String(cmd.id) === String(commandId)
     );
     if (commandIndex !== -1) {
       commands.value[commandIndex].status = newStatus;
-
-      if (newStatus === "delivered") {
-        commands.value[commandIndex].deliveryDate = new Date().toISOString();
-      }
     }
-
-    console.log(
-      `Commande ${commandId} mise à jour avec le statut: ${newStatus}`
-    );
   } catch (error) {
     console.error("Erreur lors de la mise à jour:", error);
   }
@@ -161,16 +192,8 @@ const commandStats = computed(() => {
     <div class="filters-section">
       <div class="filter-group">
         <label for="status-filter">{{ t("admin.orders.filters.label") }}</label>
-        <select
-          id="status-filter"
-          v-model="selectedStatus"
-          class="filter-select"
-        >
-          <option
-            v-for="option in statusOptions"
-            :key="option.value"
-            :value="option.value"
-          >
+        <select id="status-filter" v-model="selectedStatus" class="filter-select">
+          <option v-for="option in statusOptions" :key="option.value" :value="option.value">
             {{ option.label }}
           </option>
         </select>
@@ -192,11 +215,7 @@ const commandStats = computed(() => {
         <p>{{ t("admin.orders.empty.message") }}</p>
       </div>
 
-      <div
-        v-for="command in filteredCommands"
-        :key="command.id"
-        class="table-row"
-      >
+      <div v-for="command in filteredCommands" :key="command.id" class="table-row">
         <span class="command-id">#{{ command.id }}</span>
         <span class="command-date">{{ formatDate(command.orderDate) }}</span>
         <span class="command-user">{{ getUserName(command.userId) }}</span>
@@ -210,16 +229,12 @@ const commandStats = computed(() => {
           </span>
         </span>
         <span class="command-actions">
-          <select
-            :value="command.status"
-            @change="
-              updateCommandStatus(
-                command.id,
-                ($event.target as HTMLSelectElement).value
-              )
-            "
-            class="status-select"
-          >
+          <select :value="command.status" @change="
+            updateCommandStatus(
+              command.id,
+              ($event.target as HTMLSelectElement).value
+            )
+            " class="status-select">
             <option value="pending">
               {{ t("admin.commands.status.pending") }}
             </option>
@@ -283,9 +298,11 @@ const commandStats = computed(() => {
 .stat-item.stat-warning {
   border-left-color: #f39c12;
 }
+
 .stat-item.stat-info {
   border-left-color: #3498db;
 }
+
 .stat-item.stat-success {
   border-left-color: #27ae60;
 }
@@ -394,14 +411,17 @@ const commandStats = computed(() => {
   background-color: #fff3cd;
   color: #856404;
 }
+
 .badge-info {
   background-color: #d1ecf1;
   color: #0c5460;
 }
+
 .badge-success {
   background-color: #d4edda;
   color: #155724;
 }
+
 .badge-danger {
   background-color: #f8d7da;
   color: #721c24;
@@ -436,6 +456,7 @@ const commandStats = computed(() => {
 }
 
 @media (max-width: 768px) {
+
   .table-header,
   .table-row {
     grid-template-columns: 60px 100px 120px 120px 80px 100px 100px;

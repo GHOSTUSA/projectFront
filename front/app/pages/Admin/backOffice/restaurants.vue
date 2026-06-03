@@ -1,9 +1,15 @@
 <!-- Page Vue - Gestion des restaurants pour administrateurs -->
 <script setup lang="ts">
+import { useAuthStore } from "~/stores/authentification/AuthStore";
+
 definePageMeta({
   layout: "admin",
   middleware: ["auth", "admin"],
 });
+
+const authStore = useAuthStore();
+
+import { ApiService } from "~/services/ApiService";
 
 const restaurants = ref<any[]>([]);
 const loading = ref(true);
@@ -21,41 +27,50 @@ const newRestaurant = ref({
 
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
-    restaurants.value = data.restaurants || [];
+    restaurants.value = await ApiService.getRestaurants();
   } catch (error) {
     console.error("Erreur lors du chargement des restaurants:", error);
+    restaurants.value = [];
   } finally {
     loading.value = false;
   }
 });
 
-const addRestaurant = () => {
-  const newId =
-    restaurants.value.length > 0
-      ? Math.max(...restaurants.value.map((r) => r.id)) + 1
-      : 1;
+const addRestaurant = async () => {
+  if (!authStore.token) {
+    console.error("Utilisateur non authentifié");
+    return;
+  }
 
-  const restaurant = {
-    id: newId,
-    ...newRestaurant.value,
-    dishes: [],
-  };
+  try {
+    await $fetch("http://localhost:8082/api/restaurants", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+      },
+      body: {
+        name: newRestaurant.value.name,
+        address: newRestaurant.value.address,
+        phoneNumber: newRestaurant.value.phone,
+        picture: newRestaurant.value.image || undefined,
+      },
+    });
 
-  restaurants.value.push(restaurant);
+    restaurants.value = await ApiService.getRestaurants();
 
-  newRestaurant.value = {
-    name: "",
-    address: "",
-    phone: "",
-    cuisineType: "",
-    averageRating: 4.0,
-    image: "",
-  };
+    newRestaurant.value = {
+      name: "",
+      address: "",
+      phone: "",
+      cuisineType: "",
+      averageRating: 4.0,
+      image: "",
+    };
 
-  showAddForm.value = false;
-
-  console.log("Nouveau restaurant ajouté:", restaurant);
+    showAddForm.value = false;
+  } catch (error) {
+    console.error("Erreur lors de la création du restaurant:", error);
+  }
 };
 
 const cuisineTypes = [
@@ -109,11 +124,11 @@ const cuisineTypes = [
             {{
               restaurants.length > 0
                 ? (
-                    restaurants.reduce(
-                      (total, r) => total + r.averageRating,
-                      0
-                    ) / restaurants.length
-                  ).toFixed(1)
+                  restaurants.reduce(
+                    (total, r) => total + r.averageRating,
+                    0
+                  ) / restaurants.length
+                ).toFixed(1)
                 : "0"
             }}
           </h3>
@@ -134,27 +149,15 @@ const cuisineTypes = [
       <div class="form-grid">
         <div class="form-group">
           <label>Nom du restaurant</label>
-          <input
-            v-model="newRestaurant.name"
-            type="text"
-            placeholder="Nom du restaurant"
-          />
+          <input v-model="newRestaurant.name" type="text" placeholder="Nom du restaurant" />
         </div>
         <div class="form-group">
           <label>Adresse</label>
-          <input
-            v-model="newRestaurant.address"
-            type="text"
-            placeholder="Adresse complète"
-          />
+          <input v-model="newRestaurant.address" type="text" placeholder="Adresse complète" />
         </div>
         <div class="form-group">
           <label>Téléphone</label>
-          <input
-            v-model="newRestaurant.phone"
-            type="text"
-            placeholder="Numéro de téléphone"
-          />
+          <input v-model="newRestaurant.phone" type="text" placeholder="Numéro de téléphone" />
         </div>
         <div class="form-group">
           <label>Type de cuisine</label>
@@ -167,40 +170,22 @@ const cuisineTypes = [
         </div>
         <div class="form-group">
           <label>Note moyenne</label>
-          <input
-            v-model.number="newRestaurant.averageRating"
-            type="number"
-            min="0"
-            max="5"
-            step="0.1"
-          />
+          <input v-model.number="newRestaurant.averageRating" type="number" min="0" max="5" step="0.1" />
         </div>
         <div class="form-group full-width">
           <label>URL de l'image</label>
-          <input
-            v-model="newRestaurant.image"
-            type="url"
-            placeholder="https://..."
-          />
+          <input v-model="newRestaurant.image" type="url" placeholder="https://..." />
         </div>
       </div>
       <div class="form-actions">
-        <button
-          @click="addRestaurant"
-          class="save-btn"
-          :disabled="!newRestaurant.name"
-        >
+        <button @click="addRestaurant" class="save-btn" :disabled="!newRestaurant.name">
           Ajouter le restaurant
         </button>
       </div>
     </div>
 
     <div class="restaurants-grid" v-if="!loading">
-      <div
-        v-for="restaurant in restaurants"
-        :key="restaurant.id"
-        class="restaurant-card"
-      >
+      <div v-for="restaurant in restaurants" :key="restaurant.id" class="restaurant-card">
         <!-- Mode visualisation seulement pour les admins -->
         <div class="restaurant-view">
           <div class="restaurant-image">

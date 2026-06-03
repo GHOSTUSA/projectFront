@@ -12,6 +12,8 @@ definePageMeta({
 const authStore = useAuthStore();
 
 const restaurant = ref<any>(null);
+const restaurantId = ref<string | null>(null);
+const isNewRestaurant = ref(false);
 const loading = ref(true);
 const saving = ref(false);
 const successMessage = ref("");
@@ -32,17 +34,38 @@ const cuisineTypes = [
 
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
-    const userRestaurantId = authStore.user?.restaurantId;
-    restaurant.value = data.restaurants.find(
-      (r: any) => r.id === userRestaurantId
+    const token = authStore.token;
+    if (!token) throw new Error("Token manquant");
+
+    const rest = await $fetch<any>("http://localhost:8082/api/restaurants/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    restaurantId.value = rest.id;
+
+    // récupérer les plats du restaurant
+    const dishes = await $fetch(
+      `http://localhost:8082/api/dishes/restaurant/${rest.id}`,
     );
 
-    if (!restaurant.value) {
-      throw new Error("Restaurant non trouvé");
-    }
+    restaurant.value = {
+      ...rest,
+      phone: rest.phoneNumber,
+      image: rest.picture || "",
+      dishes,
+    };
   } catch (error) {
     console.error("Erreur lors du chargement du restaurant:", error);
+    isNewRestaurant.value = true;
+    restaurant.value = {
+      name: "",
+      address: "",
+      phone: "",
+      image: "",
+      cuisineType: "",
+      averageRating: 0,
+      dishes: [],
+    };
   } finally {
     loading.value = false;
   }
@@ -54,9 +77,44 @@ const saveRestaurant = async () => {
   saving.value = true;
 
   try {
-    console.log("Restaurant mis à jour:", restaurant.value);
+    const token = authStore.token;
+    if (!token) throw new Error("Token manquant");
 
-    successMessage.value = "Restaurant mis à jour avec succès !";
+    if (isNewRestaurant.value) {
+      const created = await $fetch<any>("http://localhost:8082/api/restaurants", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: {
+          name: restaurant.value.name,
+          address: restaurant.value.address,
+          phoneNumber: restaurant.value.phone,
+          picture: restaurant.value.image || undefined,
+        },
+      });
+
+      isNewRestaurant.value = false;
+      restaurantId.value = created.id;
+      successMessage.value = "Restaurant créé avec succès !";
+    } else {
+      const updated = await $fetch<any>("http://localhost:8082/api/restaurants/me", {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        body: {
+          name: restaurant.value.name,
+          address: restaurant.value.address,
+          phoneNumber: restaurant.value.phone,
+          picture: restaurant.value.image || undefined,
+        },
+      });
+
+      restaurant.value = {
+        ...restaurant.value,
+        ...updated,
+        phone: restaurant.value.phone,
+        image: restaurant.value.image,
+      };
+      successMessage.value = "Restaurant mis à jour avec succès !";
+    }
 
     setTimeout(() => {
       successMessage.value = "";
@@ -86,32 +144,17 @@ const saveRestaurant = async () => {
         <div class="form-grid">
           <div class="form-group">
             <label for="name">Nom du restaurant</label>
-            <input
-              v-model="restaurant.name"
-              type="text"
-              id="name"
-              placeholder="Nom de votre restaurant"
-            />
+            <input v-model="restaurant.name" type="text" id="name" placeholder="Nom de votre restaurant" />
           </div>
 
           <div class="form-group">
             <label for="phone">Téléphone</label>
-            <input
-              v-model="restaurant.phone"
-              type="tel"
-              id="phone"
-              placeholder="Numéro de téléphone"
-            />
+            <input v-model="restaurant.phone" type="tel" id="phone" placeholder="Numéro de téléphone" />
           </div>
 
           <div class="form-group full-width">
             <label for="address">Adresse</label>
-            <input
-              v-model="restaurant.address"
-              type="text"
-              id="address"
-              placeholder="Adresse complète"
-            />
+            <input v-model="restaurant.address" type="text" id="address" placeholder="Adresse complète" />
           </div>
 
           <div class="form-group">
@@ -125,26 +168,13 @@ const saveRestaurant = async () => {
 
           <div class="form-group">
             <label for="rating">Note moyenne</label>
-            <input
-              v-model.number="restaurant.averageRating"
-              type="number"
-              id="rating"
-              min="0"
-              max="5"
-              step="0.1"
-              readonly
-              title="La note est calculée automatiquement"
-            />
+            <input v-model.number="restaurant.averageRating" type="number" id="rating" min="0" max="5" step="0.1"
+              readonly title="La note est calculée automatiquement" />
           </div>
 
           <div class="form-group full-width">
             <label for="image">URL de l'image</label>
-            <input
-              v-model="restaurant.image"
-              type="url"
-              id="image"
-              placeholder="https://exemple.com/image.jpg"
-            />
+            <input v-model="restaurant.image" type="url" id="image" placeholder="https://exemple.com/image.jpg" />
           </div>
         </div>
       </div>

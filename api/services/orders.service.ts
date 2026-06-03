@@ -150,7 +150,7 @@ export default class OrderService {
 
   updateOrderStatus = async (
     id: string,
-    restaurantId: string,
+    restaurantId: string | undefined,
     newStatus: OrderStatus,
   ) => {
     const order = await this.prisma.order.findUnique({
@@ -161,17 +161,18 @@ export default class OrderService {
       throw new NotFoundError("Order not found");
     }
 
-    if (order.restaurantId !== restaurantId) {
+    // restaurantId is undefined for ADMIN — skip ownership check
+    if (restaurantId !== undefined && order.restaurantId !== restaurantId) {
       throw new UnauthorizedError(
         "You are not authorized to update this order's status",
       );
     }
 
     const statusFlow: Record<string, string[]> = {
-      PENDING: ["CONFIRMED", "CANCELLED"],
+      PENDING: ["CONFIRMED", "PREPARING", "CANCELLED"],
       CONFIRMED: ["PREPARING", "CANCELLED"],
-      PREPARING: ["READY", "CANCELLED"],
-      READY: ["DELIVERED"],
+      PREPARING: ["READY", "DELIVERED", "CANCELLED"],
+      READY: ["DELIVERED", "CANCELLED"],
       DELIVERED: [],
       CANCELLED: [],
     };
@@ -187,6 +188,23 @@ export default class OrderService {
     return await this.prisma.order.update({
       where: { id },
       data: { status: newStatus },
+    });
+  };
+
+  getAllOrders = async () => {
+    return await this.prisma.order.findMany({
+      include: {
+        user: {
+          select: { id: true, email: true },
+        },
+        restaurant: {
+          select: { id: true, name: true },
+        },
+        items: {
+          include: { dish: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
     });
   };
 

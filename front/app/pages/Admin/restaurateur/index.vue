@@ -10,6 +10,8 @@ definePageMeta({
 const authStore = useAuthStore();
 
 const restaurant = ref<any>(null);
+const restaurantMissing = ref(false);
+const loadingRestaurant = ref(true);
 const stats = ref({
   todayOrders: 0,
   totalRevenue: 0,
@@ -19,48 +21,96 @@ const stats = ref({
 
 const recentOrders = ref<any[]>([]);
 
+const normalizeOrderStatus = (status?: string) => {
+  const normalized = (status || "").toUpperCase();
+
+  if (normalized === "DELIVERED") return "delivered";
+  if (normalized === "CANCELLED") return "cancelled";
+  if (["CONFIRMED", "PREPARING", "READY"].includes(normalized)) {
+    return "in-progress";
+  }
+
+  return "pending";
+};
+
+const getOrderDate = (order: any) => order.orderDate || order.createdAt || null;
+
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
+    loadingRestaurant.value = true;
+    const token = authStore.token;
+    if (!token) throw new Error("Token manquant");
 
-    const userRestaurantId = authStore.user?.restaurantId;
-    restaurant.value = data.restaurants.find(
-      (r: any) => r.id === userRestaurantId
-    );
+    // Récupérer le restaurant du restaurateur connecté
+    const rawRestaurant = await $fetch<any>("http://localhost:8082/api/restaurants/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    restaurant.value = {
+      ...rawRestaurant,
+      phone: rawRestaurant.phone ?? rawRestaurant.phoneNumber ?? "",
+      image: rawRestaurant.image ?? rawRestaurant.picture ?? "",
+      averageRating: rawRestaurant.averageRating ?? rawRestaurant.rating ?? 0,
+    };
+    restaurantMissing.value = false;
 
-    if (restaurant.value) {
-      const restaurantOrders =
-        data.commands?.filter(
-          (cmd: any) => cmd.restaurantId === userRestaurantId
-        ) || [];
-      const today = new Date().toISOString().split("T")[0];
-      const todayOrders = restaurantOrders.filter((cmd: any) =>
-        cmd.orderDate.startsWith(today)
+    try {
+      // Récupérer les commandes du restaurant
+      const restaurantOrders = await $fetch<any[]>("http://localhost:8082/api/orders/restaurant", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const dishes = await $fetch<any[]>(
+        `http://localhost:8082/api/dishes/restaurant/${restaurant.value.id}`,
       );
+
+      const mappedOrders = restaurantOrders.map((order) => ({
+        ...order,
+        orderDate: getOrderDate(order),
+        status: normalizeOrderStatus(order.status),
+      }));
+
+      const today = new Date().toISOString().split("T")[0] || "";
+      const todayOrders = mappedOrders.filter((cmd: any) => {
+        if (!cmd.orderDate) return false;
+        return String(cmd.orderDate).startsWith(today);
+      });
 
       stats.value = {
         todayOrders: todayOrders.length,
-        totalRevenue: restaurantOrders.reduce(
-          (total: number, cmd: any) => total + (cmd.totalPrice || 0),
-          0
-        ),
-        activeMenuItems: restaurant.value.dishes?.length || 0,
+        totalRevenue: mappedOrders.reduce((total: number, cmd: any) => total + (cmd.totalPrice || 0), 0),
+        activeMenuItems: dishes.length || 0,
         averageRating: restaurant.value.averageRating || 0,
       };
 
-      recentOrders.value = restaurantOrders
-        .sort(
-          (a: any, b: any) =>
-            new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
-        )
+      recentOrders.value = mappedOrders
+        .sort((a: any, b: any) => new Date(b.orderDate || 0).getTime() - new Date(a.orderDate || 0).getTime())
         .slice(0, 5);
+    } catch (ordersError) {
+      console.error("Erreur lors du chargement des commandes du restaurant:", ordersError);
+      recentOrders.value = [];
+      stats.value = {
+        todayOrders: 0,
+        totalRevenue: 0,
+        activeMenuItems: 0,
+        averageRating: restaurant.value.averageRating || 0,
+      };
     }
   } catch (error) {
     console.error("Erreur lors du chargement des données:", error);
+    restaurant.value = null;
+    restaurantMissing.value = true;
+    stats.value = {
+      todayOrders: 0,
+      totalRevenue: 0,
+      activeMenuItems: 0,
+      averageRating: 0,
+    };
+  } finally {
+    loadingRestaurant.value = false;
   }
 });
 
 const formatDate = (dateString: string) => {
+  if (!dateString) return "-";
   return new Date(dateString).toLocaleDateString("fr-FR", {
     day: "2-digit",
     month: "2-digit",
@@ -94,9 +144,26 @@ const getStatusBadge = (status: string) => {
           restaurant.name
         }}"
       </p>
+      <p v-else>
+        Bienvenue {{ authStore.user?.firstName }}, créez votre restaurant pour
+        accéder à l'interface admin.
+      </p>
     </div>
 
-    <div class="stats-grid">
+    <div v-if="restaurantMissing && !loadingRestaurant" class="empty-state">
+      <div class="empty-card">
+        <h2>Aucun restaurant associé</h2>
+        <p>
+          Vous devez d'abord créer votre restaurant pour gérer le menu et les
+          commandes.
+        </p>
+        <NuxtLink to="/Admin/restaurateur/restaurant" class="empty-cta">
+          Créer mon restaurant
+        </NuxtLink>
+      </div>
+    </div>
+
+    <div class="stats-grid" v-if="restaurant || loadingRestaurant === false">
       <div class="stat-card">
         <div class="stat-icon"></div>
         <div class="stat-content">
@@ -135,8 +202,14 @@ const getStatusBadge = (status: string) => {
       <div class="actions-grid">
         <NuxtLink to="/Admin/restaurateur/restaurant" class="action-card">
           <div class="action-icon"></div>
-          <h3>Mon Restaurant</h3>
-          <p>Modifier les informations de votre restaurant</p>
+          <h3>{{ restaurant ? "Mon Restaurant" : "Créer mon restaurant" }}</h3>
+          <p>
+            {{
+              restaurant
+                ? "Modifier les informations de votre restaurant"
+                : "Créer votre restaurant et le raccorder à votre compte"
+            }}
+          </p>
         </NuxtLink>
 
         <NuxtLink to="/Admin/restaurateur/dishes" class="action-card">
@@ -153,7 +226,7 @@ const getStatusBadge = (status: string) => {
       </div>
     </div>
 
-    <div class="recent-orders" v-if="recentOrders.length > 0">
+    <div class="recent-orders" v-if="recentOrders.length > 0 && restaurant">
       <h2>Commandes récentes</h2>
       <div class="orders-table">
         <div class="table-header">
@@ -215,6 +288,43 @@ const getStatusBadge = (status: string) => {
 .dashboard-header p {
   color: #7f8c8d;
   font-size: 1.1rem;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 2rem;
+}
+
+.empty-card {
+  background: #fff8f1;
+  border: 1px solid #f2c18d;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 720px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(230, 126, 34, 0.08);
+}
+
+.empty-card h2 {
+  color: #c45a00;
+  margin-bottom: 0.75rem;
+}
+
+.empty-card p {
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+}
+
+.empty-cta {
+  display: inline-block;
+  background: #e67e22;
+  color: white;
+  padding: 0.9rem 1.4rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .stats-grid {
@@ -361,14 +471,17 @@ const getStatusBadge = (status: string) => {
   background-color: #fff3cd;
   color: #856404;
 }
+
 .badge-info {
   background-color: #d1ecf1;
   color: #0c5460;
 }
+
 .badge-success {
   background-color: #d4edda;
   color: #155724;
 }
+
 .badge-danger {
   background-color: #f8d7da;
   color: #721c24;

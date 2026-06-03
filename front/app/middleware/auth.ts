@@ -1,12 +1,16 @@
 /** Middleware - Gestion de l'authentification et redirections */
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.server) return;
 
   if (!process.client) return;
 
   const authStore = useAuthStore();
+
+  if (!authStore.isAuthenticated) {
+    await authStore.initializeAuth();
+  }
 
   const publicPages = ["/", "/login", "/register", "/utilisateur/restaurant"];
 

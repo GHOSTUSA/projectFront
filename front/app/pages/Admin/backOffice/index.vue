@@ -9,6 +9,8 @@ definePageMeta({
 
 const authStore = useAuthStore();
 
+import { ApiService } from "~/services/ApiService";
+
 const stats = ref({
   totalUsers: 0,
   totalRestaurants: 0,
@@ -17,40 +19,32 @@ const stats = ref({
   todayRevenue: 0,
 });
 
-onMounted(async () => {
-  try {
-    const data = await $fetch<any>("/api/data.json");
-
-    stats.value = {
-      totalUsers: data.users?.length || 0,
-      totalRestaurants: data.restaurants?.length || 0,
-      totalCommands: data.commands?.length || 0,
-      pendingCommands:
-        data.commands?.filter((c: any) => c.status === "pending").length || 0,
-      todayRevenue:
-        data.commands?.reduce(
-          (total: number, cmd: any) => total + (cmd.totalPrice || 0),
-          0
-        ) || 0,
-    };
-  } catch (error) {
-    console.error("Erreur lors du chargement des statistiques:", error);
-  }
-});
-
 const recentCommands = ref<any[]>([]);
 
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
-    recentCommands.value = (data.commands || [])
-      .sort(
-        (a: any, b: any) =>
-          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
-      )
+    const token = authStore.token;
+    const [users, restaurants, commands] = await Promise.all([
+      ApiService.getAllUsers(token),
+      ApiService.getRestaurants(),
+      ApiService.getAllCommands(token),
+    ]);
+
+    stats.value = {
+      totalUsers: users?.length || 0,
+      totalRestaurants: restaurants?.length || 0,
+      totalCommands: commands?.length || 0,
+      pendingCommands:
+        (commands || []).filter((c: any) => c.status === "PENDING" || c.status === "pending").length || 0,
+      todayRevenue:
+        (commands || []).reduce((total: number, cmd: any) => total + (cmd.totalPrice || 0), 0) || 0,
+    };
+
+    recentCommands.value = (commands || [])
+      .sort((a: any, b: any) => new Date(b.orderDate || b.createdAt).getTime() - new Date(a.orderDate || a.createdAt).getTime())
       .slice(0, 5);
   } catch (error) {
-    console.error("Erreur lors du chargement des commandes récentes:", error);
+    console.error("Erreur lors du chargement des statistiques:", error);
   }
 });
 
@@ -159,13 +153,9 @@ const getStatusBadge = (status: string) => {
           <span>Montant</span>
           <span>Statut</span>
         </div>
-        <div
-          v-for="command in recentCommands"
-          :key="command.id"
-          class="table-row"
-        >
+        <div v-for="command in recentCommands" :key="command.id" class="table-row">
           <span>#{{ command.id }}</span>
-          <span>{{ formatDate(command.orderDate) }}</span>
+          <span>{{ formatDate(command.orderDate || command.createdAt) }}</span>
           <span>User {{ command.userId }}</span>
           <span>{{ command.totalPrice }}€</span>
           <span>
@@ -341,18 +331,22 @@ const getStatusBadge = (status: string) => {
   background-color: #fff3cd;
   color: #856404;
 }
+
 .badge-info {
   background-color: #d1ecf1;
   color: #0c5460;
 }
+
 .badge-success {
   background-color: #d4edda;
   color: #155724;
 }
+
 .badge-danger {
   background-color: #f8d7da;
   color: #721c24;
 }
+
 .badge-secondary {
   background-color: #e2e3e5;
   color: #383d41;

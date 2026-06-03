@@ -10,6 +10,8 @@ export interface LoginInput {
 export interface RegisterInput {
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
   role?: "USER" | "ADMIN" | "RESTAURANT";
 }
 

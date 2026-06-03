@@ -24,25 +24,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <article
-    ref="cardRef"
-    class="dish-card card-accessible"
-    :aria-label="`${props.dish.name}, ${props.dish.price}€, ${props.dish.category}`"
-    tabindex="0"
-    role="button"
-    @click="emit('dishSelected', props.dish)"
-    @keydown.enter="emit('dishSelected', props.dish)"
-    @keydown.space.prevent="emit('dishSelected', props.dish)"
-  >
+  <article ref="cardRef" class="dish-card card-accessible"
+    :aria-label="`${props.dish.name}, ${props.dish.price}€, ${props.dish.category}`" tabindex="0" role="button"
+    @click="emit('dishSelected', props.dish)" @keydown.enter="emit('dishSelected', props.dish)"
+    @keydown.space.prevent="emit('dishSelected', props.dish)">
     <div class="dish-image">
-      <img
-        :src="props.dish.image"
-        :alt="`Photo de ${props.dish.name}`"
-        loading="lazy"
-        width="300"
-        height="200"
-        class="dish-img"
-      />
+      <img :src="props.dish.image" :alt="`Photo de ${props.dish.name}`" loading="lazy" width="300" height="200"
+        class="dish-img" />
       <div class="price-badge" aria-hidden="true">{{ props.dish.price }}€</div>
     </div>
     <div class="dish-content">
@@ -52,24 +40,14 @@ onMounted(() => {
       <div class="sr-only">Prix: {{ props.dish.price }} euros</div>
 
       <div class="dish-footer">
-        <span
-          class="dish-category"
-          :aria-label="`Catégorie: ${props.dish.category}`"
-        >
+        <span class="dish-category" :aria-label="`Catégorie: ${props.dish.category}`">
           {{ props.dish.category }}
         </span>
 
-        <div
-          v-if="props.dish.allergens && props.dish.allergens.length > 0"
-          class="allergens"
-          role="alert"
-          :aria-label="`Attention allergènes: ${props.dish.allergens.join(
-            ', '
-          )}`"
-        >
-          <span class="allergens-label" aria-hidden="true"
-            >⚠️ Allergènes :</span
-          >
+        <div v-if="props.dish.allergens && props.dish.allergens.length > 0" class="allergens" role="alert" :aria-label="`Attention allergènes: ${props.dish.allergens.join(
+          ', '
+        )}`">
+          <span class="allergens-label" aria-hidden="true">⚠️ Allergènes :</span>
           <span class="allergen-list">{{
             props.dish.allergens.join(", ")
           }}</span>
@@ -86,18 +64,19 @@ onMounted(() => {
 <style scoped>
 .dish-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  box-shadow: none;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+  border: 1px solid #eef2f7;
 }
 
 .dish-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
 }
 
 .dish-image {
@@ -146,11 +125,15 @@ onMounted(() => {
 }
 
 .dish-description {
-  color: #7f8c8d;
+  color: #5f7080;
   font-size: 0.95rem;
   line-height: 1.5;
   margin: 0 0 1rem 0;
   flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .dish-footer {
@@ -161,12 +144,12 @@ onMounted(() => {
 
 .dish-category {
   display: inline-block;
-  background: #f8f9fa;
-  color: #2c3e50;
+  background: #eef4ff;
+  color: #294a6b;
   padding: 0.25rem 0.75rem;
-  border-radius: 15px;
+  border-radius: 999px;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.75rem;
 }
 

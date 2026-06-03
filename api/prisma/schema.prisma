@@ -35,7 +35,7 @@ model Restaurant {
   rating      Float     @default(0)
   address     String
   phoneNumber String
-  picture     String?
+  picture     String?   @db.Text
   userId      String    @unique
   user        User      @relation(fields: [userId], references: [id])
   dishes      Dish[]
@@ -47,7 +47,7 @@ model Dish {
   name         String
   description  String
   price        Float
-  image        String
+  image        String       @db.Text
   restaurantId String
   restaurant   Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   orderItems   OrderItem[]

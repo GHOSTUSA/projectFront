@@ -22,6 +22,7 @@ const formData = ref({
   lastName: "",
   email: "",
   password: "",
+  role: "USER",
 });
 
 const isLoading = ref<boolean>(false);
@@ -70,13 +71,14 @@ async function submitForm() {
 
   try {
     // Appel REST pour inscription
-    const response = await $fetch("http://localhost:8080/api/auth/register", {
+    const response = await $fetch("http://localhost:8082/api/auth/register", {
       method: "POST",
       body: {
         firstName: formData.value.firstName,
         lastName: formData.value.lastName,
         email: formData.value.email,
         password: formData.value.password,
+        role: formData.value.role,
       },
     });
 
@@ -88,7 +90,14 @@ async function submitForm() {
       email: formData.value.email,
       password: formData.value.password,
     });
-    navigateTo("/utilisateur/restaurant");
+
+    if (authStore.user?.role === "restaurateur") {
+      navigateTo("/Admin/restaurateur/restaurant");
+    } else if (authStore.user?.role === "admin") {
+      navigateTo("/Admin/backOffice");
+    } else {
+      navigateTo("/utilisateur/restaurant");
+    }
   } catch (error) {
     console.error("Erreur lors de la création du compte:", error);
     errorMessage.value = t("errors.network.connectionError");
@@ -127,70 +136,45 @@ function clearMessages() {
           <!-- Nom et prénom -->
           <div class="form-row">
             <div class="form-group">
-              <label for="firstName"
-                >{{ t("pages.auth.register.firstName") }} *</label
-              >
-              <input
-                type="text"
-                v-model="formData.firstName"
-                id="firstName"
-                name="firstName"
-                :placeholder="t('pages.auth.register.placeholders.firstName')"
-                :disabled="isLoading"
-                required
-                autocomplete="given-name"
-              />
+              <label for="firstName">{{ t("pages.auth.register.firstName") }} *</label>
+              <input type="text" v-model="formData.firstName" id="firstName" name="firstName"
+                :placeholder="t('pages.auth.register.placeholders.firstName')" :disabled="isLoading" required
+                autocomplete="given-name" />
             </div>
 
             <div class="form-group">
-              <label for="lastName"
-                >{{ t("pages.auth.register.lastName") }} *</label
-              >
-              <input
-                type="text"
-                v-model="formData.lastName"
-                id="lastName"
-                name="lastName"
-                :placeholder="t('pages.auth.register.placeholders.lastName')"
-                :disabled="isLoading"
-                required
-                autocomplete="family-name"
-              />
+              <label for="lastName">{{ t("pages.auth.register.lastName") }} *</label>
+              <input type="text" v-model="formData.lastName" id="lastName" name="lastName"
+                :placeholder="t('pages.auth.register.placeholders.lastName')" :disabled="isLoading" required
+                autocomplete="family-name" />
             </div>
           </div>
 
           <!-- Email -->
           <div class="form-group">
             <label for="email">{{ t("pages.auth.register.email") }} *</label>
-            <input
-              type="email"
-              v-model="formData.email"
-              id="email"
-              name="email"
-              :placeholder="t('pages.auth.register.placeholders.email')"
-              :disabled="isLoading"
-              required
-              autocomplete="email"
-            />
+            <input type="email" v-model="formData.email" id="email" name="email"
+              :placeholder="t('pages.auth.register.placeholders.email')" :disabled="isLoading" required
+              autocomplete="email" />
           </div>
 
           <!-- Mots de passe -->
           <div class="form-row">
             <div class="form-group">
-              <label for="password"
-                >{{ t("pages.auth.register.password") }} *</label
-              >
-              <input
-                type="password"
-                v-model="formData.password"
-                id="password"
-                name="password"
-                :placeholder="t('pages.auth.register.placeholders.password')"
-                :disabled="isLoading"
-                required
-                autocomplete="new-password"
-              />
+              <label for="password">{{ t("pages.auth.register.password") }} *</label>
+              <input type="password" v-model="formData.password" id="password" name="password"
+                :placeholder="t('pages.auth.register.placeholders.password')" :disabled="isLoading" required
+                autocomplete="new-password" />
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="role">Je crée un compte pour</label>
+            <select id="role" v-model="formData.role" :disabled="isLoading">
+              <option value="USER">Un client</option>
+              <option value="RESTAURANT">Un restaurateur</option>
+              <option value="ADMIN">Un administrateur</option>
+            </select>
           </div>
 
           <button type="submit" class="register-btn" :disabled="isLoading">
@@ -363,6 +347,7 @@ function clearMessages() {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -445,7 +430,7 @@ function clearMessages() {
   font-weight: 600;
 }
 
-.image-content > p {
+.image-content>p {
   font-size: 1rem;
   margin: 0 0 2rem 0;
   opacity: 0.9;

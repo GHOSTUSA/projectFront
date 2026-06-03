@@ -3,6 +3,51 @@ import type { Command } from "@/types/Command";
 import type { Dish } from "@/types/Dish";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 
+type ApiOrder = {
+  id: string | number;
+  userId: string | number;
+  restaurantId: string | number;
+  status: string;
+  totalPrice: number;
+  createdAt?: string;
+  updatedAt?: string;
+  items?: Array<{
+    dishId: string | number;
+    quantity: number;
+    price: number;
+  }>;
+};
+
+const mapOrderStatus = (status?: string): Command["status"] => {
+  const normalized = (status || "").toUpperCase();
+
+  if (normalized === "DELIVERED") return "delivered";
+  if (normalized === "CANCELLED") return "cancelled";
+  if (["CONFIRMED", "PREPARING", "READY"].includes(normalized)) {
+    return "in-progress";
+  }
+
+  return "pending";
+};
+
+const mapApiOrderToCommand = (order: ApiOrder): Command => ({
+  id: order.id,
+  userId: order.userId,
+  restaurantId: order.restaurantId,
+  status: mapOrderStatus(order.status),
+  orderDate: order.createdAt || new Date().toISOString(),
+  deliveryDate:
+    mapOrderStatus(order.status) === "delivered"
+      ? order.updatedAt || null
+      : null,
+  totalPrice: Number(order.totalPrice || 0),
+  items: (order.items || []).map((item) => ({
+    productId: item.dishId,
+    quantity: item.quantity,
+    unitPrice: Number(item.price || 0),
+  })),
+});
+
 export const useCommandStore = defineStore("command", {
   state: () => ({
     commands: [] as Command[],
@@ -11,15 +56,32 @@ export const useCommandStore = defineStore("command", {
     userCommands: (state) => {
       const authStore = useAuthStore();
       return state.commands.filter(
-        (command) => command.userId === authStore.user?.id
+        (command) => String(command.userId) === String(authStore.user?.id),
       );
     },
   },
   actions: {
     async loadCommands() {
+      const authStore = useAuthStore();
+
       try {
-        const data = await $fetch<{ commands: Command[] }>("/api/data.json");
-        this.commands = data.commands || [];
+        if (!authStore.token) {
+          this.commands = [];
+          return;
+        }
+
+        const endpoint =
+          authStore.user?.role === "restaurateur"
+            ? "http://localhost:8082/api/orders/restaurant"
+            : "http://localhost:8082/api/orders/me";
+
+        const orders = await $fetch<ApiOrder[]>(endpoint, {
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+          },
+        });
+
+        this.commands = orders.map(mapApiOrderToCommand);
       } catch (error) {
         console.error("Erreur lors du chargement des commandes:", error);
         this.commands = [];
@@ -29,52 +91,62 @@ export const useCommandStore = defineStore("command", {
     async createCommand(cartItems: Dish[], restaurantId: number) {
       const authStore = useAuthStore();
 
-      if (!authStore.user) {
+      if (!authStore.user || !authStore.token) {
         throw new Error("Utilisateur non connecté");
       }
 
-      const newId =
-        this.commands.length > 0
-          ? Math.max(...this.commands.map((c) => c.id)) + 1
-          : 1;
-
-      const totalPrice = cartItems.reduce((total, item) => {
-        const price = typeof item.price === "number" ? item.price : 0;
-        return total + price;
-      }, 0);
-
-      const newCommand: Command = {
-        id: newId,
-        userId: authStore.user.id,
-        restaurantId: restaurantId,
-        status: "pending",
-        orderDate: new Date().toISOString(),
-        deliveryDate: null,
-        totalPrice: Math.round(totalPrice * 100) / 100,
+      // Préparer le payload attendu par l'API
+      const payload = {
+        restaurantId: String(restaurantId),
         items: cartItems.map((item) => ({
-          productId: item.id,
-          quantity: 1,
-          unitPrice: typeof item.price === "number" ? item.price : 0,
+          dishId: String(item.id),
+          quantity: item.quantity || 1,
         })),
       };
 
-      this.commands.push(newCommand);
+      try {
+        const created = await $fetch<ApiOrder>(
+          "http://localhost:8082/api/orders",
+          {
+            method: "POST",
+            body: payload,
+            headers: {
+              Authorization: `Bearer ${authStore.token}`,
+            },
+          },
+        );
 
-      console.log("Nouvelle commande créée:", newCommand);
-      return newCommand;
+        // Mettre à jour le store local si nécessaire
+        if (created) {
+          this.commands.unshift(mapApiOrderToCommand(created));
+        }
+
+        return mapApiOrderToCommand(created);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la création de la commande sur le back:",
+          error,
+        );
+        throw error;
+      }
     },
 
     async saveCommandToLocalData(command: Command) {
+      // À remplacer par un POST réel sur l'API back si besoin
       try {
-        const data = await $fetch<any>("/api/data.json");
-
-        if (!data.commands) {
-          data.commands = [];
+        const authStore = useAuthStore();
+        if (authStore.token) {
+          await $fetch("http://localhost:8082/api/orders", {
+            method: "POST",
+            body: command,
+            headers: { Authorization: `Bearer ${authStore.token}` },
+          });
+          console.log("Commande sauvegardée sur le back:", command);
+          return true;
         }
-        data.commands.push(command);
 
-        console.log("Commande sauvegardée localement:", command);
-
+        // No token: push locally as fallback
+        this.commands.push(command);
         return true;
       } catch (error) {
         console.error("Erreur lors de la sauvegarde:", error);

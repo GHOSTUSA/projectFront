@@ -16,32 +16,21 @@ const handleImageError = () => {
 <template>
   <div class="restaurant-card">
     <div class="restaurant-image">
-      <NuxtImg
-        :src="restaurant.image"
-        :alt="`Photo du restaurant ${restaurant.name}`"
-        width="400"
-        height="250"
-        sizes="sm:400px md:320px lg:400px"
-        format="webp"
-        quality="85"
-        loading="lazy"
-        placeholder
-        class="restaurant-img"
-        @error="handleImageError"
-      />
+      <NuxtImg :src="restaurant.image" :alt="`Photo du restaurant ${restaurant.name}`" width="400" height="250"
+        sizes="sm:400px md:320px lg:400px" format="webp" quality="85" loading="lazy" placeholder class="restaurant-img"
+        @error="handleImageError" />
       <div class="image-overlay"></div>
     </div>
     <div class="restaurant-info">
       <h3 class="restaurant-name">{{ props.restaurant.name }}</h3>
-      <p class="restaurant-cuisine">{{ props.restaurant.cuisineType }}</p>
+      <div class="top-meta">
+        <p class="restaurant-cuisine">{{ props.restaurant.cuisineType }}</p>
+        <span class="dish-count">{{ props.restaurant.dishes?.length || 0 }} plats</span>
+      </div>
       <div class="restaurant-rating">
         <div class="stars">
-          <span
-            v-for="n in 5"
-            :key="n"
-            class="star"
-            :class="{ filled: n <= Math.floor(props.restaurant.averageRating) }"
-          >
+          <span v-for="n in 5" :key="n" class="star"
+            :class="{ filled: n <= Math.floor(props.restaurant.averageRating) }">
             ★
           </span>
         </div>
@@ -51,6 +40,7 @@ const handleImageError = () => {
         <p class="restaurant-address">{{ props.restaurant.address }}</p>
         <p class="restaurant-phone">{{ props.restaurant.phone }}</p>
       </div>
+      <div class="card-cta">Voir les plats</div>
     </div>
   </div>
 </template>
@@ -98,11 +88,9 @@ const handleImageError = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 100%);
 }
 
 .restaurant-info {
@@ -118,10 +106,28 @@ const handleImageError = () => {
 }
 
 .restaurant-cuisine {
-  color: #7f8c8d;
-  font-style: italic;
-  margin: 0 0 1rem 0;
+  color: #43667d;
+  font-style: normal;
+  margin: 0;
   font-size: 1rem;
+  font-weight: 600;
+}
+
+.top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.dish-count {
+  font-size: 0.78rem;
+  color: #39556b;
+  background: #edf4ff;
+  border: 1px solid #dbe8ff;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
 }
 
 .restaurant-rating {
@@ -159,7 +165,7 @@ const handleImageError = () => {
 
 .restaurant-address,
 .restaurant-phone {
-  color: #7f8c8d;
+  color: #5d6f7e;
   font-size: 0.85rem;
   margin: 0.25rem 0;
   line-height: 1.4;
@@ -167,6 +173,17 @@ const handleImageError = () => {
 
 .restaurant-address {
   font-weight: 500;
+}
+
+.card-cta {
+  margin-top: 1rem;
+  background: #1f7a4f;
+  color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  padding: 0.55rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.88rem;
 }
 
 /* Responsive Design */

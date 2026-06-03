@@ -16,7 +16,9 @@ export default class RestaurantService {
   }
 
   getAllRestaurants = async (): Promise<{ restaurants: any[] }> => {
-    const restaurants = await this.prisma.restaurant.findMany();
+    const restaurants = await this.prisma.restaurant.findMany({
+      include: { dishes: true },
+    });
 
     return {
       restaurants: restaurants,
@@ -76,6 +78,9 @@ export default class RestaurantService {
       where: { id: restaurant.id },
       data: {
         name: data.name !== undefined ? data.name : undefined,
+        address: data.address !== undefined ? data.address : undefined,
+        phoneNumber:
+          data.phoneNumber !== undefined ? data.phoneNumber : undefined,
         picture: data.picture !== undefined ? data.picture : undefined,
       },
     });

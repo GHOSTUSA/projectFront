@@ -12,27 +12,37 @@ const route = useRoute();
 const restaurantId = route.params.id;
 
 const isValidId = !(!restaurantId || Array.isArray(restaurantId));
-const {
-  data: restaurantData,
-  error,
-  pending,
-} = await useLazyFetch("/api/data.json", {
-  key: `restaurant-${restaurantId}`,
-  server: false,
-  transform: (data: any) => {
-    if (!data?.restaurants) {
-      return null;
+import { ApiService } from "~/services/ApiService";
+
+const restaurantData = ref<Restaurant | null>(null);
+const pending = ref(true);
+const error = ref(null as any);
+const showAddToast = ref(false);
+const addedDishName = ref("");
+
+const resolveId = (id: unknown) => (Array.isArray(id) ? id[0] : id) as string;
+
+try {
+  const rid = resolveId(restaurantId);
+  restaurantData.value = await ApiService.getRestaurantById(rid);
+
+  // If dishes are not present on the restaurant payload, fetch them explicitly
+  if (restaurantData.value && (!restaurantData.value.dishes || restaurantData.value.dishes.length === 0)) {
+    try {
+      const dishes = await ApiService.getDishesByRestaurant(rid);
+      // assign cautiously (backend may return different shape)
+      restaurantData.value.dishes = (dishes as any) || [];
+    } catch (dErr) {
+      console.warn("Impossible de charger les plats du restaurant:", dErr);
     }
+  }
+} catch (e) {
+  error.value = e;
+} finally {
+  pending.value = false;
+}
 
-    const restaurant = data.restaurants.find(
-      (r: any) => String(r.id) === String(restaurantId)
-    );
-
-    return restaurant || null;
-  },
-});
-
-const restaurant = computed(() => restaurantData.value);
+const restaurant = computed(() => restaurantData.value as Restaurant | null);
 const hasError = computed(() => !isValidId || !!error.value);
 const errorMessage = computed(() => {
   if (!isValidId) return t("errors.restaurant.invalidId");
@@ -60,10 +70,21 @@ function addToCart(dish: any) {
   }
 
   cartStore.addToCart(dish);
+  addedDishName.value = dish.name;
+  showAddToast.value = true;
+  setTimeout(() => {
+    showAddToast.value = false;
+  }, 1800);
 }
 </script>
 
 <template>
+  <Teleport to="body">
+    <div v-if="showAddToast" class="cart-toast" role="status" aria-live="polite">
+      {{ addedDishName }} ajouté au panier
+    </div>
+  </Teleport>
+
   <div v-if="pending" class="loading-state">
     <div class="loading-spinner"></div>
     <p>Chargement du restaurant...</p>
@@ -79,11 +100,7 @@ function addToCart(dish: any) {
 
   <div v-else-if="restaurant" class="restaurant-detail">
     <div class="restaurant-header">
-      <img
-        :src="restaurant.image"
-        :alt="restaurant.name"
-        class="restaurant-image"
-      />
+      <img :src="restaurant.image" :alt="restaurant.name" class="restaurant-image" />
       <div class="restaurant-info">
         <h1>{{ restaurant.name }}</h1>
         <p class="cuisine-type">{{ restaurant.cuisineType }}</p>
@@ -93,12 +110,7 @@ function addToCart(dish: any) {
           <div class="rating-content">
             <span class="rating-value">{{ restaurant.averageRating }}</span>
             <div class="stars">
-              <span
-                v-for="n in 5"
-                :key="n"
-                class="star"
-                :class="{ filled: n <= Math.floor(restaurant.averageRating) }"
-              >
+              <span v-for="n in 5" :key="n" class="star" :class="{ filled: n <= Math.floor(restaurant.averageRating) }">
                 ★
               </span>
             </div>
@@ -119,18 +131,13 @@ function addToCart(dish: any) {
         <div v-for="dish in restaurant.dishes" :key="dish.id" class="dish-item">
           <DishCard :dish="dish" />
           <div class="dish-actions">
-            <button
-              @click="addToCart(dish)"
-              :class="[
-                'add-to-cart-btn',
-                { 'auth-required': !authStore.isAuth },
-              ]"
-              :title="
-                !authStore.isAuth
-                  ? 'Vous devez être connecté pour ajouter au panier'
-                  : 'Ajouter ce plat au panier'
-              "
-            >
+            <button @click="addToCart(dish)" :class="[
+              'add-to-cart-btn',
+              { 'auth-required': !authStore.isAuth },
+            ]" :title="!authStore.isAuth
+              ? 'Vous devez être connecté pour ajouter au panier'
+              : 'Ajouter ce plat au panier'
+              ">
               {{
                 authStore.isAuth
                   ? "Ajouter au panier"
@@ -168,6 +175,7 @@ function addToCart(dish: any) {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -208,6 +216,19 @@ function addToCart(dish: any) {
 .back-link:hover {
   background: #27ae60;
   color: white;
+}
+
+.cart-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #1f7a4f;
+  color: #fff;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-weight: 600;
 }
 
 .restaurant-detail {

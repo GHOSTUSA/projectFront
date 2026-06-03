@@ -4,7 +4,6 @@ import { useCartStore } from "~/stores/panier/cardStore";
 import { useCommandStore } from "~/stores/commande/commandStore";
 import { useAuthStore } from "~/stores/authentification/AuthStore";
 import type { Dish } from "~/types/Dish";
-import type { Restaurant } from "~/types/Restaurant";
 
 const { t } = useI18n();
 
@@ -27,24 +26,30 @@ const authStore = useAuthStore();
 const isOrderProcessing = ref(false);
 const orderSuccess = ref(false);
 const orderError = ref("");
+const deliveryFee = computed(() => (cartStore.cartItems.length > 0 ? 2.9 : 0));
+const subtotal = computed(() => cartStore.cartPrice);
+const grandTotal = computed(() => Number((subtotal.value + deliveryFee.value).toFixed(2)));
 
-const getRestaurantId = async (): Promise<number> => {
+const getRestaurantId = async (): Promise<string | number> => {
   if (cartStore.cartItems.length === 0) return 1;
 
   try {
-    const data = await $fetch<{ restaurants: Restaurant[] }>("/api/data.json");
-
-    for (const restaurant of data.restaurants) {
+    const restaurants = await import("~/services/ApiService").then((m) =>
+      m.ApiService.getRestaurants(),
+    );
+    for (const restaurant of restaurants) {
       if (restaurant.dishes && cartStore.cartItems[0]) {
         const firstItem = cartStore.cartItems[0];
-        const dish = restaurant.dishes.find((d: Dish) => d.id === firstItem.id);
+        const dish = restaurant.dishes.find(
+          (d: Dish) => String(d.id) === String(firstItem.id),
+        );
         if (dish) {
           return restaurant.id;
         }
       }
     }
 
-    return 1;
+    return restaurants.length > 0 ? restaurants[0].id : 1;
   } catch (error) {
     console.error("Erreur lors de la récupération du restaurant:", error);
     return 1;
@@ -63,10 +68,7 @@ async function validateOrder() {
   try {
     const restaurantId = await getRestaurantId();
 
-    const newCommand = await commandStore.createCommand(
-      cartStore.cartItems,
-      restaurantId
-    );
+    await commandStore.createCommand(cartStore.cartItems, restaurantId as any);
 
     cartStore.clearCart();
 
@@ -82,12 +84,23 @@ async function validateOrder() {
     isOrderProcessing.value = false;
   }
 }
+
+function increment(dishId: number) {
+  cartStore.incrementItem(dishId);
+}
+
+function decrement(dishId: number) {
+  cartStore.decrementItem(dishId);
+}
 </script>
 
 <template>
   <div class="cart-page">
     <div class="page-header">
       <h1>{{ t("pages.cart.title") }}</h1>
+      <p class="header-meta">
+        {{ cartStore.cartItemCount }} article(s) • {{ cartStore.uniqueItemsCount }} plat(s)
+      </p>
     </div>
 
     <div v-if="orderSuccess" class="success-message">
@@ -102,10 +115,7 @@ async function validateOrder() {
       </button>
     </div>
 
-    <div
-      v-if="cartStore.cartItems.length === 0 && !orderSuccess"
-      class="empty-cart"
-    >
+    <div v-if="cartStore.cartItems.length === 0 && !orderSuccess" class="empty-cart">
       <h3>{{ t("pages.cart.empty") }}</h3>
       <p>{{ t("pages.restaurant.noResultsMessage") }}</p>
       <NuxtLink to="/utilisateur/restaurant" class="browse-restaurants-btn">
@@ -115,15 +125,26 @@ async function validateOrder() {
 
     <div v-else-if="!orderSuccess" class="cart-content">
       <div class="cart-items">
-        <div
-          v-for="dish in cartStore.cartItems"
-          :key="dish.id"
-          class="cart-item"
-        >
-          <DishCard :dish="dish" />
+        <div v-for="dish in cartStore.cartItems" :key="dish.id" class="cart-item">
+          <img :src="dish.image" :alt="dish.name" class="item-image" />
+          <div class="item-main">
+            <h3>{{ dish.name }}</h3>
+            <p>{{ dish.description }}</p>
+            <div class="item-bottom">
+              <div class="qty-controls">
+                <button class="qty-btn" @click="decrement(dish.id)">-</button>
+                <span class="qty-value">{{ dish.quantity }}</span>
+                <button class="qty-btn" @click="increment(dish.id)">+</button>
+              </div>
+              <div class="item-prices">
+                <span class="unit-price">{{ dish.price.toFixed(2) }}€ / unité</span>
+                <strong class="line-price">{{ dish.totalPrice.toFixed(2) }}€</strong>
+              </div>
+            </div>
+          </div>
           <div class="item-actions">
             <button @click="cartStore.removeFromCart(dish)" class="remove-btn">
-              {{ t("pages.cart.removeFromCart") }}
+              Retirer
             </button>
           </div>
         </div>
@@ -131,23 +152,24 @@ async function validateOrder() {
 
       <div class="cart-summary">
         <div class="summary-content">
-          <h3>{{ t("pages.cart.summary") }}</h3>
-          <div class="total-price">
-            <span>Total: {{ cartStore.cartPrice }}€</span>
+          <h3>Résumé</h3>
+          <div class="summary-line">
+            <span>Sous-total</span>
+            <strong>{{ subtotal.toFixed(2) }}€</strong>
+          </div>
+          <div class="summary-line">
+            <span>Livraison</span>
+            <strong>{{ deliveryFee.toFixed(2) }}€</strong>
+          </div>
+          <div class="summary-line total-line">
+            <span>Total</span>
+            <strong>{{ grandTotal.toFixed(2) }}€</strong>
           </div>
           <div class="action-buttons">
-            <button
-              class="clear-button"
-              @click="cartStore.clearCart()"
-              :disabled="isOrderProcessing"
-            >
+            <button class="clear-button" @click="cartStore.clearCart()" :disabled="isOrderProcessing">
               {{ t("pages.cart.clearCart") }}
             </button>
-            <button
-              class="order-button"
-              @click="validateOrder"
-              :disabled="isOrderProcessing"
-            >
+            <button class="order-button" @click="validateOrder" :disabled="isOrderProcessing">
               <span v-if="isOrderProcessing">{{
                 t("pages.cart.processing")
               }}</span>
@@ -162,7 +184,7 @@ async function validateOrder() {
 
 <style scoped>
 .cart-page {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
@@ -177,6 +199,12 @@ async function validateOrder() {
   color: #2c3e50;
   margin: 0;
   font-weight: 600;
+}
+
+.header-meta {
+  margin: 0.5rem 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
 }
 
 .success-message {
@@ -267,8 +295,8 @@ async function validateOrder() {
 
 .cart-content {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 2rem;
   align-items: start;
 }
 
@@ -280,36 +308,106 @@ async function validateOrder() {
 
 .cart-item {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
   overflow: hidden;
-  transition: transform 0.3s ease;
+  border: 1px solid #eef2f7;
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .cart-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+}
+
+.item-image {
+  width: 150px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.item-main h3 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.item-main p {
+  margin: 0.4rem 0 0.8rem;
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.item-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.qty-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+
+.qty-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #1f7a4f;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qty-value {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.item-prices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.unit-price {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.line-price {
+  color: #111827;
 }
 
 .item-actions {
-  padding: 1rem;
-  text-align: center;
-  background: #f8f9fa;
+  display: flex;
+  align-items: center;
 }
 
 .remove-btn {
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
+  background: #fff;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .remove-btn:hover {
-  background: linear-gradient(135deg, #c0392b, #a93226);
-  transform: translateY(-2px);
+  background: #fef2f2;
 }
 
 .cart-summary {
@@ -319,39 +417,38 @@ async function validateOrder() {
 
 .summary-content {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
   padding: 2rem;
+  border: 1px solid #eef2f7;
 }
 
 .summary-content h3 {
-  margin: 0 0 1.5rem 0;
-  color: #2c3e50;
-  font-size: 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid #27ae60;
-  padding-bottom: 1rem;
+  margin: 0 0 1rem;
+  color: #1f2937;
+  font-size: 1.3rem;
 }
 
-.total-price {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #27ae60;
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0;
+  color: #334155;
+  border-bottom: 1px dashed #e2e8f0;
 }
 
-.total-price span {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
+.total-line {
+  margin-top: 0.4rem;
+  font-size: 1.1rem;
+  border-bottom: none;
 }
 
 .action-buttons {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 .clear-button {
@@ -408,6 +505,20 @@ async function validateOrder() {
   .cart-content {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .cart-item {
+    grid-template-columns: 1fr;
+  }
+
+  .item-image {
+    width: 100%;
+    height: 170px;
+  }
+
+  .item-bottom {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .cart-summary {

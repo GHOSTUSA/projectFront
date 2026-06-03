@@ -21,68 +21,27 @@ if (
   });
 }
 
-const {
-  data: dishData,
-  error,
-  pending,
-  refresh,
-} = await useFetch(`/api/data.json`, {
-  key: `dish-${restaurantId}-${dishId}`,
-  server: true,
-  lazy: false,
-  transform: (data: any) => {
-    const restaurant: Restaurant | undefined = data.restaurants?.find(
-      (r: Restaurant) => String(r.id) === restaurantId
-    );
+import { ApiService } from "~/services/ApiService";
 
-    if (!restaurant) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: `Restaurant avec l'ID ${restaurantId} introuvable`,
-      });
-    }
+let dish: Dish;
+let restaurant: Restaurant;
+const showAddToast = ref(false);
 
-    const dish: Dish | undefined = restaurant.dishes?.find(
-      (d: Dish) => String(d.id) === dishId
-    );
-
-    if (!dish) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: `Plat avec l'ID ${dishId} introuvable dans ce restaurant`,
-      });
-    }
-
-    console.log(
-      `Plat ${dish.name} du restaurant ${restaurant.name} chargé côté serveur (SSR)`
-    );
-    return { dish, restaurant };
-  },
-  onResponseError({ error }) {
-    console.error("Erreur de réponse:", error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Erreur lors du chargement du plat",
-    });
-  },
-  onRequestError({ error }) {
-    console.error("Erreur de requête:", error);
-    throw createError({
-      statusCode: 503,
-      statusMessage: "Service temporairement indisponible",
-    });
-  },
-});
-
-if (error.value) {
-  throw createError({
-    statusCode: error.value.statusCode || 500,
-    statusMessage:
-      error.value.statusMessage || "Erreur lors du chargement du plat",
-  });
+try {
+  const rest = await ApiService.getRestaurantById(restaurantId as string);
+  if (!rest) {
+    throw createError({ statusCode: 404, statusMessage: `Restaurant avec l'ID ${restaurantId} introuvable` });
+  }
+  restaurant = rest as Restaurant;
+  const found = restaurant.dishes?.find((d: Dish) => String(d.id) === String(dishId));
+  if (!found) {
+    throw createError({ statusCode: 404, statusMessage: `Plat avec l'ID ${dishId} introuvable dans ce restaurant` });
+  }
+  dish = found as Dish;
+} catch (err) {
+  console.error("Erreur lors du chargement du plat:", err);
+  throw err;
 }
-
-const { dish, restaurant } = dishData.value!;
 
 useDishSEO(dish, restaurant);
 
@@ -92,7 +51,10 @@ definePageMeta({
 
 function addToCart() {
   cartStore.addToCart(dish);
-  console.log(`${dish.name} ajouté au panier`);
+  showAddToast.value = true;
+  setTimeout(() => {
+    showAddToast.value = false;
+  }, 1800);
 }
 
 function goToRestaurant() {
@@ -101,10 +63,18 @@ function goToRestaurant() {
 </script>
 
 <template>
+  <Teleport to="body">
+    <div v-if="showAddToast" class="cart-toast" role="status" aria-live="polite">
+      {{ dish.name }} ajouté au panier
+    </div>
+  </Teleport>
+
   <div class="dish-detail">
     <nav class="breadcrumb" aria-label="Fil d'Ariane">
       <ol>
-        <li><NuxtLink to="/utilisateur/restaurant">Restaurants</NuxtLink></li>
+        <li>
+          <NuxtLink to="/utilisateur/restaurant">Restaurants</NuxtLink>
+        </li>
         <li>
           <button @click="goToRestaurant">{{ restaurant.name }}</button>
         </li>
@@ -114,12 +84,7 @@ function goToRestaurant() {
 
     <header class="dish-header">
       <div class="dish-image-container">
-        <img
-          :src="dish.image"
-          :alt="`${dish.name} - ${restaurant.name}`"
-          class="dish-image"
-          loading="eager"
-        />
+        <img :src="dish.image" :alt="`${dish.name} - ${restaurant.name}`" class="dish-image" loading="eager" />
         <div class="category-badge">{{ dish.category }}</div>
       </div>
 
@@ -137,13 +102,8 @@ function goToRestaurant() {
           <div class="rating">
             <span class="rating-value">{{ restaurant.averageRating }}</span>
             <div class="stars">
-              <span
-                v-for="n in 5"
-                :key="n"
-                class="star"
-                :class="{ filled: n <= Math.floor(restaurant.averageRating) }"
-                :aria-label="`${n} étoile${n > 1 ? 's' : ''}`"
-              >
+              <span v-for="n in 5" :key="n" class="star" :class="{ filled: n <= Math.floor(restaurant.averageRating) }"
+                :aria-label="`${n} étoile${n > 1 ? 's' : ''}`">
                 ★
               </span>
             </div>
@@ -158,17 +118,10 @@ function goToRestaurant() {
         <p class="description">{{ dish.description }}</p>
       </div>
 
-      <div
-        v-if="dish.allergens && dish.allergens.length > 0"
-        class="allergens-section"
-      >
+      <div v-if="dish.allergens && dish.allergens.length > 0" class="allergens-section">
         <h3>Allergènes</h3>
         <div class="allergens-list">
-          <span
-            v-for="allergen in dish.allergens"
-            :key="allergen"
-            class="allergen-tag"
-          >
+          <span v-for="allergen in dish.allergens" :key="allergen" class="allergen-tag">
             {{ allergen }}
           </span>
         </div>
@@ -184,20 +137,14 @@ function goToRestaurant() {
 
     <!-- Actions -->
     <section class="dish-actions">
-      <button
-        @click="addToCart"
-        class="add-to-cart-btn"
-        :aria-label="`Ajouter ${dish.name} au panier pour ${dish.price}€`"
-      >
+      <button @click="addToCart" class="add-to-cart-btn"
+        :aria-label="`Ajouter ${dish.name} au panier pour ${dish.price}€`">
         <span class="btn-icon">🛒</span>
         Ajouter au panier - {{ dish.price }}€
       </button>
 
-      <button
-        @click="goToRestaurant"
-        class="view-restaurant-btn"
-        :aria-label="`Voir tous les plats de ${restaurant.name}`"
-      >
+      <button @click="goToRestaurant" class="view-restaurant-btn"
+        :aria-label="`Voir tous les plats de ${restaurant.name}`">
         Voir le restaurant
       </button>
     </section>
@@ -252,6 +199,19 @@ function goToRestaurant() {
 
 .breadcrumb [aria-current="page"] {
   color: #2c3e50;
+  font-weight: 600;
+}
+
+.cart-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #1f7a4f;
+  color: #fff;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
   font-weight: 600;
 }
 

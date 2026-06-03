@@ -9,7 +9,17 @@ definePageMeta({
 
 const authStore = useAuthStore();
 
+const DISH_META_STORAGE_KEY = "dish-meta-map";
+
+type DishMeta = {
+  category?: string;
+  allergens?: string[];
+};
+
+const actionMessage = ref("");
+
 const dishes = ref<any[]>([]);
+const restaurantId = ref<string | null>(null);
 const loading = ref(true);
 const showAddForm = ref(false);
 const editingDish = ref<any>(null);
@@ -22,6 +32,33 @@ const newDish = ref({
   image: "",
   allergens: [],
 });
+
+const readDishMetaMap = (): Record<string, DishMeta> => {
+  if (!import.meta.client) return {};
+
+  try {
+    return JSON.parse(localStorage.getItem(DISH_META_STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+};
+
+const writeDishMetaMap = (map: Record<string, DishMeta>) => {
+  if (!import.meta.client) return;
+  localStorage.setItem(DISH_META_STORAGE_KEY, JSON.stringify(map));
+};
+
+const normalizeDish = (dish: any) => {
+  const map = readDishMetaMap();
+  const meta = map[String(dish.id)] || {};
+
+  return {
+    ...dish,
+    description: dish.description || "Description non renseignée",
+    category: dish.category || meta.category || "Plat",
+    allergens: Array.isArray(dish.allergens) ? dish.allergens : (meta.allergens || []),
+  };
+};
 
 const categories = [
   "Appetizer",
@@ -41,17 +78,26 @@ const availableAllergens = [
   "soy",
 ];
 
+const loadDishes = async () => {
+  const token = authStore.token;
+  if (!token) throw new Error("Token manquant");
+
+  const restaurant = await $fetch<any>("http://localhost:8082/api/restaurants/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  restaurantId.value = restaurant.id;
+
+  const rawDishes = await $fetch<any[]>(
+    `http://localhost:8082/api/dishes/restaurant/${restaurant.id}`,
+  );
+
+  dishes.value = rawDishes.map(normalizeDish);
+};
+
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
-    const userRestaurantId = authStore.user?.restaurantId;
-    const restaurant = data.restaurants.find(
-      (r: any) => r.id === userRestaurantId
-    );
-
-    if (restaurant) {
-      dishes.value = restaurant.dishes || [];
-    }
+    await loadDishes();
   } catch (error) {
     console.error("Erreur lors du chargement des plats:", error);
   } finally {
@@ -59,53 +105,108 @@ onMounted(async () => {
   }
 });
 
-const addDish = () => {
-  const newId =
-    dishes.value.length > 0
-      ? Math.max(...dishes.value.map((d) => d.id)) + 1
-      : 1;
+const addDish = async () => {
+  const token = authStore.token;
+  if (!token) return;
 
-  const dish = {
-    id: newId,
-    ...newDish.value,
-    price: Number(newDish.value.price),
-  };
+  try {
+    const created = await $fetch<{ id: string }>("http://localhost:8082/api/dishes", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        name: newDish.value.name,
+        description: newDish.value.description,
+        price: Number(newDish.value.price),
+        image: newDish.value.image,
+      },
+    });
 
-  dishes.value.push(dish);
+    const map = readDishMetaMap();
+    map[String(created.id)] = {
+      category: newDish.value.category || "Plat",
+      allergens: [...newDish.value.allergens],
+    };
+    writeDishMetaMap(map);
 
-  newDish.value = {
-    name: "",
-    description: "",
-    price: 0,
-    category: "",
-    image: "",
-    allergens: [],
-  };
+    newDish.value = {
+      name: "",
+      description: "",
+      price: 0,
+      category: "",
+      image: "",
+      allergens: [],
+    };
 
-  showAddForm.value = false;
-
-  console.log("Nouveau plat ajouté:", dish);
+    showAddForm.value = false;
+    actionMessage.value = "Plat ajouté avec succès";
+    await loadDishes();
+  } catch (error) {
+    console.error("Erreur lors de la création du plat:", error);
+    actionMessage.value = "Erreur lors de l'ajout du plat";
+  }
 };
 
 const editDish = (dish: any) => {
   editingDish.value = { ...dish };
 };
 
-const saveDish = () => {
-  if (editingDish.value) {
-    const index = dishes.value.findIndex((d) => d.id === editingDish.value.id);
-    if (index !== -1) {
-      dishes.value[index] = { ...editingDish.value };
-    }
+const saveDish = async () => {
+  if (!editingDish.value) return;
+
+  const token = authStore.token;
+  if (!token) return;
+
+  try {
+    await $fetch(`http://localhost:8082/api/dishes/${editingDish.value.id}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        name: editingDish.value.name,
+        description: editingDish.value.description,
+        price: Number(editingDish.value.price),
+        image: editingDish.value.image,
+      },
+    });
+
+    const map = readDishMetaMap();
+    map[String(editingDish.value.id)] = {
+      category: editingDish.value.category || "Plat",
+      allergens: Array.isArray(editingDish.value.allergens)
+        ? [...editingDish.value.allergens]
+        : [],
+    };
+    writeDishMetaMap(map);
+
     editingDish.value = null;
-    console.log("Plat modifié");
+    actionMessage.value = "Plat modifié avec succès";
+    await loadDishes();
+  } catch (error) {
+    console.error("Erreur lors de la modification du plat:", error);
+    actionMessage.value = "Erreur lors de la modification du plat";
   }
 };
 
-const deleteDish = (dishId: number) => {
-  if (confirm("Êtes-vous sûr de vouloir supprimer ce plat ?")) {
-    dishes.value = dishes.value.filter((d) => d.id !== dishId);
-    console.log("Plat supprimé:", dishId);
+const deleteDish = async (dishId: string | number) => {
+  if (!confirm("Êtes-vous sûr de vouloir supprimer ce plat ?")) return;
+
+  const token = authStore.token;
+  if (!token) return;
+
+  try {
+    await $fetch(`http://localhost:8082/api/dishes/${dishId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const map = readDishMetaMap();
+    delete map[String(dishId)];
+    writeDishMetaMap(map);
+
+    actionMessage.value = "Plat supprimé";
+    await loadDishes();
+  } catch (error) {
+    console.error("Erreur lors de la suppression du plat:", error);
+    actionMessage.value = "Erreur lors de la suppression du plat";
   }
 };
 
@@ -138,6 +239,10 @@ const isAllergenSelected = (allergen: string, dish: any) => {
       <p>Gérez les plats de votre restaurant</p>
     </div>
 
+    <div v-if="actionMessage" class="status-message">
+      {{ actionMessage }}
+    </div>
+
     <div class="stats-section">
       <div class="stat-card">
         <div class="stat-icon"></div>
@@ -153,8 +258,8 @@ const isAllergenSelected = (allergen: string, dish: any) => {
             {{
               dishes.length > 0
                 ? (
-                    dishes.reduce((sum, d) => sum + d.price, 0) / dishes.length
-                  ).toFixed(2)
+                  dishes.reduce((sum, d) => sum + d.price, 0) / dishes.length
+                ).toFixed(2)
                 : "0"
             }}€
           </h3>
@@ -164,7 +269,7 @@ const isAllergenSelected = (allergen: string, dish: any) => {
       <div class="stat-card">
         <div class="stat-icon"></div>
         <div class="stat-content">
-          <h3>{{ [...new Set(dishes.map((d) => d.category))].length }}</h3>
+          <h3>{{[...new Set(dishes.map((d) => d.category))].length}}</h3>
           <p>Catégories</p>
         </div>
       </div>
@@ -188,12 +293,7 @@ const isAllergenSelected = (allergen: string, dish: any) => {
         </div>
         <div class="form-group">
           <label>Prix (€)</label>
-          <input
-            v-model.number="newDish.price"
-            type="number"
-            min="0"
-            step="0.1"
-          />
+          <input v-model.number="newDish.price" type="number" min="0" step="0.1" />
         </div>
         <div class="form-group">
           <label>Catégorie</label>
@@ -206,11 +306,7 @@ const isAllergenSelected = (allergen: string, dish: any) => {
         </div>
         <div class="form-group full-width">
           <label>Description</label>
-          <textarea
-            v-model="newDish.description"
-            placeholder="Description du plat"
-            rows="3"
-          ></textarea>
+          <textarea v-model="newDish.description" placeholder="Description du plat" rows="3"></textarea>
         </div>
         <div class="form-group full-width">
           <label>URL de l'image</label>
@@ -219,16 +315,9 @@ const isAllergenSelected = (allergen: string, dish: any) => {
         <div class="form-group full-width">
           <label>Allergènes</label>
           <div class="allergens-grid">
-            <label
-              v-for="allergen in availableAllergens"
-              :key="allergen"
-              class="allergen-checkbox"
-            >
-              <input
-                type="checkbox"
-                :checked="isAllergenSelected(allergen, newDish)"
-                @change="toggleAllergen(allergen, newDish)"
-              />
+            <label v-for="allergen in availableAllergens" :key="allergen" class="allergen-checkbox">
+              <input type="checkbox" :checked="isAllergenSelected(allergen, newDish)"
+                @change="toggleAllergen(allergen, newDish)" />
               <span>{{ allergen }}</span>
             </label>
           </div>
@@ -254,10 +343,7 @@ const isAllergenSelected = (allergen: string, dish: any) => {
               <span class="dish-price">{{ dish.price }}€</span>
               <span class="dish-category">{{ dish.category }}</span>
             </div>
-            <div
-              v-if="dish.allergens && dish.allergens.length > 0"
-              class="dish-allergens"
-            >
+            <div v-if="dish.allergens && dish.allergens.length > 0" class="dish-allergens">
               <strong>Allergènes:</strong> {{ dish.allergens.join(", ") }}
             </div>
           </div>
@@ -277,12 +363,7 @@ const isAllergenSelected = (allergen: string, dish: any) => {
             </div>
             <div class="form-group">
               <label>Prix (€)</label>
-              <input
-                v-model.number="editingDish.price"
-                type="number"
-                min="0"
-                step="0.1"
-              />
+              <input v-model.number="editingDish.price" type="number" min="0" step="0.1" />
             </div>
             <div class="form-group">
               <label>Catégorie</label>
@@ -303,16 +384,9 @@ const isAllergenSelected = (allergen: string, dish: any) => {
             <div class="form-group full-width">
               <label>Allergènes</label>
               <div class="allergens-grid">
-                <label
-                  v-for="allergen in availableAllergens"
-                  :key="allergen"
-                  class="allergen-checkbox"
-                >
-                  <input
-                    type="checkbox"
-                    :checked="isAllergenSelected(allergen, editingDish)"
-                    @change="toggleAllergen(allergen, editingDish)"
-                  />
+                <label v-for="allergen in availableAllergens" :key="allergen" class="allergen-checkbox">
+                  <input type="checkbox" :checked="isAllergenSelected(allergen, editingDish)"
+                    @change="toggleAllergen(allergen, editingDish)" />
                   <span>{{ allergen }}</span>
                 </label>
               </div>
@@ -359,6 +433,15 @@ const isAllergenSelected = (allergen: string, dish: any) => {
 .page-header p {
   color: #7f8c8d;
   font-size: 1rem;
+}
+
+.status-message {
+  background: #ecfdf3;
+  border: 1px solid #b7efcc;
+  color: #166534;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
 .stats-section {

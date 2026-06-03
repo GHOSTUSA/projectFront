@@ -70,7 +70,11 @@ if (process.env.NODE_ENV !== "test") {
       const port = Number(process.env.PORT) || 3000;
       const host = "0.0.0.0";
 
-      await appServer.register(cors, {});
+      await appServer.register(cors, {
+        origin: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
       // Todo: Enregistrer Swagger uniquement en développement
       // Todo: Register Swagger-ui uniquement en développement
 

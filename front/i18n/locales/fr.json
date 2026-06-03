@@ -11,6 +11,12 @@
   },
   "account": {
     "title": "Mon compte",
+    "seo": {
+      "title": "Mon compte - FoodDelivery",
+      "description": "Consultez et mettez a jour vos informations personnelles et vos commandes.",
+      "creationTitle": "Creer un compte - FoodDelivery",
+      "creationDescription": "Creer votre compte FoodDelivery pour commander vos plats preferes."
+    },
     "welcome": "Bienvenue {firstName} {lastName}",
     "personalInfo": "Informations personnelles",
     "updateProfile": "Mettre à jour le profil",
@@ -156,6 +162,19 @@
       "list": {
         "title": "Restaurants disponibles",
         "description": "Découvrez {count} restaurants de qualité. Où voulez-vous commander aujourd'hui ?",
+        "loadingCardAriaLabel": "Chargement de la carte restaurant {index}",
+        "stats": {
+          "restaurants": "restaurants",
+          "dishes": "plats",
+          "averageRating": "note moyenne"
+        },
+        "filters": {
+          "searchPlaceholder": "Rechercher un restaurant, une cuisine, une adresse...",
+          "allCuisines": "Toutes les cuisines",
+          "sortByName": "Tri: Nom",
+          "sortByRating": "Tri: Note",
+          "sortByCuisine": "Tri: Cuisine"
+        },
         "seo": {
           "noRestaurantsTitle": "Aucun restaurant disponible - FoodDelivery",
           "noRestaurantsDescription": "Nos restaurants sont temporairement indisponibles. Revenez bientôt pour découvrir notre sélection."
@@ -163,6 +182,7 @@
         "noRestaurants": {
           "title": "Aucun restaurant disponible",
           "description": "Nos restaurants sont temporairement indisponibles. Veuillez réessayer plus tard.",
+          "filteredDescription": "Aucun résultat avec ces filtres. Essaie une autre recherche.",
           "refreshAriaLabel": "Actualiser pour recharger les restaurants"
         },
         "screenReader": {
@@ -176,6 +196,7 @@
   },
   "common": {
     "loading": {
+      "general": "Chargement...",
       "restaurants": "Chargement des restaurants..."
     },
     "buttons": {
@@ -348,6 +369,7 @@
     "languageChanged": "Langue changée vers {language}"
   },
   "accessibility": {
+    "loading": "Chargement en cours",
     "skipToMainContent": "Aller au contenu principal",
     "skipToRestaurantList": "Aller à la liste des restaurants",
     "pleaseWait": "Veuillez patienter pendant le chargement",

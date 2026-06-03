@@ -32,7 +32,7 @@ onMounted(() => {
     <div class="loading-content">
       <h1>FoodDelivery</h1>
       <div class="loading-spinner">⟳</div>
-      <p>{{ t("common.loading") }}</p>
+      <p>{{ t("common.loading.general") }}</p>
     </div>
   </div>
 </template>

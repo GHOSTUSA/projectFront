@@ -16,6 +16,32 @@ const users = ref<any[]>([]);
 const loading = ref(true);
 const selectedStatus = ref("all");
 
+const normalizeOrderStatus = (status?: string) => {
+  const normalized = (status || "").toUpperCase();
+
+  if (normalized === "DELIVERED") return "delivered";
+  if (normalized === "CANCELLED") return "cancelled";
+  if (["CONFIRMED", "PREPARING", "READY"].includes(normalized)) {
+    return "in-progress";
+  }
+
+  return "pending";
+};
+
+const toApiStatus = (newStatus: string, currentApiStatus: string) => {
+  if (newStatus === "in-progress") {
+    if (currentApiStatus === "PENDING" || currentApiStatus === "CONFIRMED") return "PREPARING";
+    if (currentApiStatus === "PREPARING") return "READY";
+    return "PREPARING";
+  }
+  if (newStatus === "delivered") return "DELIVERED";
+  if (newStatus === "cancelled") return "CANCELLED";
+  if (newStatus === "pending") return "PENDING";
+  return newStatus.toUpperCase();
+};
+
+const getOrderDate = (order: any) => order.orderDate || order.createdAt || null;
+
 const statusOptions = computed(() => [
   { value: "all", label: t("admin.orders.filters.all") },
   { value: "pending", label: t("admin.orders.filters.pending") },
@@ -26,13 +52,29 @@ const statusOptions = computed(() => [
 
 onMounted(async () => {
   try {
-    const data = await $fetch<any>("/api/data.json");
-    const userRestaurantId = authStore.user?.restaurantId;
+    const token = authStore.token;
+    if (!token) throw new Error("Token manquant");
 
-    orders.value = (data.commands || []).filter(
-      (cmd: any) => cmd.restaurantId === userRestaurantId
-    );
-    users.value = data.users || [];
+    const apiOrders = await $fetch<any[]>("http://localhost:8082/api/orders/restaurant", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    orders.value = apiOrders.map((order) => ({
+      ...order,
+      orderDate: getOrderDate(order),
+      deliveryDate:
+        normalizeOrderStatus(order.status) === "delivered"
+          ? order.updatedAt || order.deliveryDate || null
+          : null,
+      apiStatus: (order.status || "").toUpperCase(),
+      status: normalizeOrderStatus(order.status),
+      items: (order.items || []).map((item: any) => ({
+        productId: item.productId || item.dishId || item.dish?.id,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice ?? item.price ?? 0,
+        name: item.dish?.name,
+      })),
+    }));
   } catch (error) {
     console.error("Erreur lors du chargement des commandes:", error);
   } finally {
@@ -65,11 +107,8 @@ const orderStats = computed(() => {
   return { total, pending, inProgress, delivered, totalRevenue };
 });
 
-const getUserName = (userId: number) => {
-  const user = users.value.find((u) => u.id === userId);
-  return user
-    ? `${user.firstName} ${user.lastName}`
-    : t("admin.orders.labels.unknownClient");
+const getUserName = (order: any) => {
+  return order.user?.email || t("admin.orders.labels.unknownClient");
 };
 
 const formatDate = (dateString: string) => {
@@ -106,23 +145,40 @@ const getStatusBadge = (status: string) => {
   );
 };
 
-const updateOrderStatus = (orderId: number, newStatus: string) => {
+const updateOrderStatus = async (orderId: string | number, newStatus: string) => {
+  const token = authStore.token;
+  if (!token) return;
+
   const orderIndex = orders.value.findIndex((order) => order.id === orderId);
-  if (orderIndex !== -1) {
+  if (orderIndex === -1) return;
+
+  const currentApiStatus = orders.value[orderIndex].apiStatus || "PENDING";
+  const apiStatus = toApiStatus(newStatus, currentApiStatus);
+
+  try {
+    await $fetch(`http://localhost:8082/api/orders/${orderId}/status`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` },
+      body: { status: apiStatus },
+    });
+
     orders.value[orderIndex].status = newStatus;
+    orders.value[orderIndex].apiStatus = apiStatus;
 
     if (newStatus === "delivered") {
       orders.value[orderIndex].deliveryDate = new Date().toISOString();
     }
 
     console.log(`Commande ${orderId} mise à jour: ${newStatus}`);
+  } catch (error) {
+    console.error(`Erreur lors de la mise à jour de la commande ${orderId}:`, error);
   }
 };
 
 const getOrderDetails = (order: any) => {
   return {
     itemsCount: order.items?.length || 0,
-    customer: getUserName(order.userId),
+    customer: getUserName(order),
     date: formatDate(order.orderDate),
     deliveryDate: order.deliveryDate ? formatDate(order.deliveryDate) : null,
   };
@@ -177,16 +233,8 @@ const getOrderDetails = (order: any) => {
     <div class="filters-section">
       <div class="filter-group">
         <label for="status-filter">{{ t("admin.orders.filters.label") }}</label>
-        <select
-          id="status-filter"
-          v-model="selectedStatus"
-          class="filter-select"
-        >
-          <option
-            v-for="option in statusOptions"
-            :key="option.value"
-            :value="option.value"
-          >
+        <select id="status-filter" v-model="selectedStatus" class="filter-select">
+          <option v-for="option in statusOptions" :key="option.value" :value="option.value">
             {{ option.label }}
           </option>
         </select>
@@ -234,31 +282,22 @@ const getOrderDetails = (order: any) => {
           <div class="order-items">
             <h4>{{ t("admin.orders.labels.orderedItems") }}:</h4>
             <div class="items-list">
-              <div
-                v-for="item in order.items"
-                :key="item.productId"
-                class="item"
-              >
+              <div v-for="item in order.items" :key="item.productId" class="item">
                 <span class="item-quantity">{{ item.quantity }}x</span>
+                <span class="item-name">{{ item.name || t("components.commandCard.unknownDish") }}</span>
                 <span class="item-price">{{ item.unitPrice }}€</span>
               </div>
             </div>
           </div>
 
           <div class="order-actions">
-            <label for="status-select"
-              >{{ t("admin.orders.labels.statusLabel") }}:</label
-            >
-            <select
-              :value="order.status"
-              @change="
-                updateOrderStatus(
-                  order.id,
-                  ($event.target as HTMLSelectElement).value
-                )
-              "
-              class="status-select"
-            >
+            <label for="status-select">{{ t("admin.orders.labels.statusLabel") }}:</label>
+            <select :value="order.status" @change="
+              updateOrderStatus(
+                order.id,
+                ($event.target as HTMLSelectElement).value
+              )
+              " class="status-select">
               <option value="pending">
                 {{ t("admin.orders.status.pending") }}
               </option>
@@ -325,12 +364,15 @@ const getOrderDetails = (order: any) => {
 .stat-card.stat-warning {
   border-left-color: #f39c12;
 }
+
 .stat-card.stat-info {
   border-left-color: #3498db;
 }
+
 .stat-card.stat-success {
   border-left-color: #27ae60;
 }
+
 .stat-card.stat-revenue {
   border-left-color: #8e44ad;
 }
@@ -504,14 +546,17 @@ const getOrderDetails = (order: any) => {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
 }
+
 .badge-info {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
 }
+
 .badge-success {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
 }
+
 .badge-danger {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;

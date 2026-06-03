@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Restaurant` MODIFY `picture` LONGTEXT NULL;
+
+-- AlterTable
+ALTER TABLE `Dish` MODIFY `image` LONGTEXT NOT NULL;

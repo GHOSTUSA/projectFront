@@ -23,28 +23,25 @@ watch(
   { immediate: true }
 );
 
-function logout() {
+async function logout() {
   authStore.logout();
-  navigateTo("/");
+  await navigateTo("/login", { replace: true });
 }
 </script>
 
 <template>
   <div class="restaurateur-layout">
-    <header
-      v-if="isAuthenticated && isRestaurateur"
-      class="restaurateur-header"
-    >
+    <header v-if="isAuthenticated && isRestaurateur" class="restaurateur-header">
       <nav class="restaurateur-nav">
         <div class="nav-brand">
           <h2>Espace Restaurateur</h2>
         </div>
         <ul class="nav-menu">
-          <li><NuxtLink to="/Admin/restaurateur">Dashboard</NuxtLink></li>
           <li>
-            <NuxtLink to="/Admin/restaurateur/restaurant"
-              >Mon Restaurant</NuxtLink
-            >
+            <NuxtLink to="/Admin/restaurateur">Dashboard</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/Admin/restaurateur/restaurant">Mon Restaurant</NuxtLink>
           </li>
           <li>
             <NuxtLink to="/Admin/restaurateur/dishes">Mes Plats</NuxtLink>
@@ -53,10 +50,8 @@ function logout() {
             <NuxtLink to="/Admin/restaurateur/orders">Commandes</NuxtLink>
           </li>
           <li class="user-info">
-            <span
-              >{{ authStore.user?.firstName }}
-              {{ authStore.user?.lastName }}</span
-            >
+            <span>{{ authStore.user?.firstName }}
+              {{ authStore.user?.lastName }}</span>
           </li>
           <li>
             <button @click="logout" class="logout-btn">Déconnexion</button>

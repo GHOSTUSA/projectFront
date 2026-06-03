@@ -1,14 +1,16 @@
 /** Types TypeScript - Commande et cycle de vie */
+export type EntityId = string | number;
+
 export interface Command {
-  id: number;
-  userId: number;
-  restaurantId: number;
+  id: EntityId;
+  userId: EntityId;
+  restaurantId: EntityId;
   status: "pending" | "in-progress" | "delivered" | "cancelled";
   orderDate: string;
   deliveryDate: string | null;
   totalPrice: number;
   items: Array<{
-    productId: number;
+    productId: EntityId;
     quantity: number;
     unitPrice: number;
   }>;
@@ -19,7 +21,7 @@ export type CreateCommandData = Omit<Command, "id" | "orderDate"> & {
 };
 
 export interface UpdateCommandStatus {
-  id: number;
+  id: EntityId;
   status: Command["status"];
   deliveryDate?: string;
 }

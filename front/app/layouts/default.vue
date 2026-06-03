@@ -57,9 +57,9 @@ watch(
   { immediate: true }
 );
 
-function logout() {
+async function logout() {
   authStore.logout();
-  navigateTo("/login");
+  await navigateTo("/login", { replace: true });
   closeMobileMenu();
 }
 </script>
@@ -77,32 +77,16 @@ function logout() {
         <div class="nav-controls">
           <LanguageSelector />
 
-          <button
-            class="mobile-menu-toggle"
-            @click="toggleMobileMenu"
-            :aria-expanded="isMobileMenuOpen"
-            aria-label="Toggle navigation menu"
-          >
-            <span
-              class="hamburger-line"
-              :class="{ open: isMobileMenuOpen }"
-            ></span>
-            <span
-              class="hamburger-line"
-              :class="{ open: isMobileMenuOpen }"
-            ></span>
-            <span
-              class="hamburger-line"
-              :class="{ open: isMobileMenuOpen }"
-            ></span>
+          <button class="mobile-menu-toggle" @click="toggleMobileMenu" :aria-expanded="isMobileMenuOpen"
+            aria-label="Toggle navigation menu">
+            <span class="hamburger-line" :class="{ open: isMobileMenuOpen }"></span>
+            <span class="hamburger-line" :class="{ open: isMobileMenuOpen }"></span>
+            <span class="hamburger-line" :class="{ open: isMobileMenuOpen }"></span>
           </button>
         </div>
 
-        <ul
-          v-if="isAuthenticated && !isAdmin && !isRestaurateur"
-          class="nav-menu"
-          :class="{ 'mobile-open': isMobileMenuOpen }"
-        >
+        <ul v-if="isAuthenticated && !isAdmin && !isRestaurateur" class="nav-menu"
+          :class="{ 'mobile-open': isMobileMenuOpen }">
           <li>
             <NuxtLink to="/utilisateur/restaurant" @click="closeMobileMenu">{{
               t("nav.restaurants")
@@ -119,10 +103,8 @@ function logout() {
             }}</NuxtLink>
           </li>
           <li class="user-info">
-            <span
-              >{{ authStore.user?.firstName }}
-              {{ authStore.user?.lastName }}</span
-            >
+            <span>{{ authStore.user?.firstName }}
+              {{ authStore.user?.lastName }}</span>
           </li>
           <li>
             <button @click="logout" class="logout-btn">
@@ -131,23 +113,14 @@ function logout() {
           </li>
         </ul>
 
-        <ul
-          v-else-if="!isAuthenticated"
-          class="nav-menu guest-menu"
-          :class="{ 'mobile-open': isMobileMenuOpen }"
-        >
+        <ul v-else-if="!isAuthenticated" class="nav-menu guest-menu" :class="{ 'mobile-open': isMobileMenuOpen }">
           <li>
             <NuxtLink to="/login" class="nav-link" @click="closeMobileMenu">{{
               t("nav.login")
             }}</NuxtLink>
           </li>
           <li>
-            <NuxtLink
-              to="/register"
-              class="nav-link"
-              @click="closeMobileMenu"
-              >{{ t("nav.register") }}</NuxtLink
-            >
+            <NuxtLink to="/register" class="nav-link" @click="closeMobileMenu">{{ t("nav.register") }}</NuxtLink>
           </li>
         </ul>
       </nav>
@@ -424,12 +397,10 @@ function logout() {
 .skeleton-flag {
   width: 24px;
   height: 18px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 75%);
   background-size: 200% 100%;
   animation: skeleton-wave 1.5s infinite;
   border-radius: 3px;
@@ -438,12 +409,10 @@ function logout() {
 .skeleton-text {
   width: 40px;
   height: 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 75%);
   background-size: 200% 100%;
   animation: skeleton-wave 1.5s infinite;
   border-radius: 4px;
@@ -453,6 +422,7 @@ function logout() {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -462,6 +432,7 @@ function logout() {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.7;
   }

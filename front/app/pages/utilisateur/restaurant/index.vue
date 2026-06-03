@@ -22,7 +22,7 @@ const RestaurantCard = defineAsyncComponent({
   errorComponent: defineComponent({
     template: `
       <div class="restaurant-card-error" role="alert">
-        <p>{{ t('errors.generic') }}</p>
+        <p>{{ t('errors.loading.general') }}</p>
       </div>
     `,
   }),
@@ -31,72 +31,44 @@ const RestaurantCard = defineAsyncComponent({
 });
 
 const restaurantStore = useRestaurantStore();
+const searchQuery = ref("");
+const selectedCuisine = ref("");
+const selectedSort = ref<"name" | "rating" | "cuisine">("name");
 
-const {
-  data: restaurantsData,
-  pending: loading,
-  error: fetchError,
-  refresh: refreshRestaurants,
-} = await useFetch("/api/data.json", {
-  key: "restaurants-list",
-  server: false,
-  lazy: false,
-  default: () => ({ restaurants: [] }),
-  transform: (data: any) => {
-    const restaurants = data.restaurants || [];
-    console.log(
-      `${restaurants.length} restaurants chargés avec useFetch + store`
-    );
+const loading = ref(true);
+const fetchError = ref<any>(null);
 
-    restaurantStore.restaurants = restaurants;
-    restaurantStore.cache.restaurantsLastFetch = new Date();
-
-    return restaurants;
-  },
-  getCachedData(key) {
-    const nuxtApp = useNuxtApp();
-    if (
-      restaurantStore.isCacheValid &&
-      restaurantStore.restaurants.length > 0
-    ) {
-      console.log("🎯 Utilisation du cache store");
-      return restaurantStore.restaurants;
-    }
-    return (
-      (nuxtApp.ssrContext?.cache as any)?.[key] ??
-      (nuxtApp.payload.data as any)[key]
-    );
-  },
-  onResponseError({ error }) {
-    console.error("Erreur de réponse restaurants:", error);
-    restaurantStore.errors.restaurants = restaurantStore.errors.restaurants = t(
-      "errors.network.connectionError"
-    );
-  },
-  onRequestError({ error }) {
-    console.error("Erreur de requête restaurants:", error);
-    restaurantStore.errors.restaurants = t("errors.server");
-  },
+await restaurantStore.fetchRestaurants().catch((e) => {
+  fetchError.value = e;
+}).finally(() => {
+  loading.value = false;
 });
 
-const restaurants = computed(() =>
-  restaurantStore.restaurants.length > 0
-    ? restaurantStore.filteredRestaurants
-    : restaurantsData.value || []
-);
+const restaurants = computed(() => restaurantStore.filteredRestaurants);
 
 const restaurantStats = computed(() => restaurantStore.restaurantStats);
 
 const retryCount = ref(0);
 const maxRetries = 3;
 
+const cuisineTypes = computed(() => restaurantStore.availableCuisineTypes);
+
 async function retryFetch() {
   if (retryCount.value < maxRetries) {
     retryCount.value++;
     console.log(`Tentative de rechargement ${retryCount.value}/${maxRetries}`);
-    await refreshRestaurants();
+    await handleRefresh();
   }
 }
+
+watch([searchQuery, selectedCuisine, selectedSort], ([query, cuisine, sort]) => {
+  restaurantStore.updateFilters({
+    searchQuery: query,
+    cuisineType: cuisine,
+    sortBy: sort,
+    sortOrder: sort === "rating" ? "desc" : "asc",
+  });
+});
 
 watchEffect(() => {
   if (restaurants.value.length > 0) {
@@ -110,7 +82,12 @@ definePageMeta({
 });
 
 async function handleRefresh() {
-  await refreshRestaurants();
+  loading.value = true;
+  await restaurantStore.fetchRestaurants(true).catch((e) => {
+    fetchError.value = e;
+  }).finally(() => {
+    loading.value = false;
+  });
 }
 
 watchEffect(() => {
@@ -141,6 +118,39 @@ watchEffect(() => {
           t("pages.restaurant.list.description", { count: restaurants.length })
         }}
       </p>
+
+      <div class="stats-row" v-if="restaurants.length > 0">
+        <div class="stat-pill">
+          <strong>{{ restaurants.length }}</strong>
+          <span>{{ t("pages.restaurant.list.stats.restaurants") }}</span>
+        </div>
+        <div class="stat-pill">
+          <strong>{{ restaurantStats.totalDishes }}</strong>
+          <span>{{ t("pages.restaurant.list.stats.dishes") }}</span>
+        </div>
+        <div class="stat-pill">
+          <strong>{{ restaurantStats.averageRating.toFixed(1) }}</strong>
+          <span>{{ t("pages.restaurant.list.stats.averageRating") }}</span>
+        </div>
+      </div>
+
+      <div class="filters-bar" v-if="!loading && !fetchError">
+        <input v-model="searchQuery" type="search" class="filter-input"
+          :placeholder="t('pages.restaurant.list.filters.searchPlaceholder')" />
+
+        <select v-model="selectedCuisine" class="filter-select">
+          <option value="">{{ t("pages.restaurant.list.filters.allCuisines") }}</option>
+          <option v-for="cuisine in cuisineTypes" :key="cuisine" :value="cuisine">
+            {{ cuisine }}
+          </option>
+        </select>
+
+        <select v-model="selectedSort" class="filter-select">
+          <option value="name">{{ t("pages.restaurant.list.filters.sortByName") }}</option>
+          <option value="rating">{{ t("pages.restaurant.list.filters.sortByRating") }}</option>
+          <option value="cuisine">{{ t("pages.restaurant.list.filters.sortByCuisine") }}</option>
+        </select>
+      </div>
     </header>
 
     <div v-if="loading" class="loading-state" role="status" aria-live="polite">
@@ -149,31 +159,20 @@ watchEffect(() => {
       <span class="sr-only">{{ t("accessibility.pleaseWait") }}</span>
     </div>
 
-    <div
-      v-else-if="fetchError"
-      class="error-state status-error"
-      role="alert"
-      aria-live="assertive"
-    >
+    <div v-else-if="fetchError" class="error-state status-error" role="alert" aria-live="assertive">
       <div class="error-content">
         <h2>{{ t("errors.loading.title") }}</h2>
         <p>
           {{ fetchError.message || t("errors.loading.restaurantsGeneral") }}
         </p>
         <div class="error-actions">
-          <button
-            @click="retryFetch"
-            class="btn-accessible retry-btn"
-            :disabled="retryCount >= maxRetries"
-            :aria-label="
-              retryCount > 0
-                ? t('common.buttons.retryAttempt', {
-                    current: retryCount,
-                    max: maxRetries,
-                  })
-                : t('common.buttons.retryLoading')
-            "
-          >
+          <button @click="retryFetch" class="btn-accessible retry-btn" :disabled="retryCount >= maxRetries" :aria-label="retryCount > 0
+            ? t('common.buttons.retryAttempt', {
+              current: retryCount,
+              max: maxRetries,
+            })
+            : t('common.buttons.retryLoading')
+            ">
             <span v-if="retryCount > 0">{{
               t("common.buttons.attempt", {
                 current: retryCount,
@@ -182,27 +181,18 @@ watchEffect(() => {
             }}</span>
             <span v-else>{{ t("common.buttons.retry") }}</span>
           </button>
-          <button
-            @click="handleRefresh"
-            class="btn-accessible btn-secondary refresh-btn"
-            :aria-label="t('common.buttons.refreshList')"
-          >
+          <button @click="handleRefresh" class="btn-accessible btn-secondary refresh-btn"
+            :aria-label="t('common.buttons.refreshList')">
             <span aria-hidden="true">↻</span> {{ t("common.buttons.refresh") }}
           </button>
         </div>
       </div>
     </div>
 
-    <div
-      v-else-if="restaurants && restaurants.length > 0"
-      class="restaurants-container"
-    >
+    <div v-else-if="restaurants && restaurants.length > 0" class="restaurants-container">
       <div class="restaurants-actions">
-        <button
-          @click="handleRefresh"
-          class="btn-accessible btn-secondary refresh-data-btn"
-          :aria-label="t('common.buttons.refreshList')"
-        >
+        <button @click="handleRefresh" class="btn-accessible btn-secondary refresh-data-btn"
+          :aria-label="t('common.buttons.refreshList')">
           <span aria-hidden="true">↻</span>
           {{ t("common.buttons.refreshList") }}
         </button>
@@ -218,44 +208,26 @@ watchEffect(() => {
 
       <Suspense>
         <template #default>
-          <section
-            class="restaurants-grid"
-            id="restaurant-list"
-            role="region"
-            :aria-label="
-              t('pages.restaurant.list.screenReader.listOf', {
-                count: restaurants.length,
+          <section class="restaurants-grid" id="restaurant-list" role="region" :aria-label="t('pages.restaurant.list.screenReader.listOf', {
+            count: restaurants.length,
+          })
+            ">
+            <NuxtLink v-for="(restaurant, index) in restaurants" :key="restaurant.id"
+              :to="`/utilisateur/restaurant/${restaurant.id}`" class="restaurant-link link-accessible" :aria-label="t('pages.restaurant.list.screenReader.viewRestaurant', {
+                name: restaurant.name,
+                cuisine: restaurant.cuisineType,
+                rating: restaurant.averageRating,
               })
-            "
-          >
-            <router-link
-              v-for="(restaurant, index) in restaurants"
-              :key="restaurant.id"
-              :to="`/utilisateur/restaurant/${restaurant.id}`"
-              class="restaurant-link link-accessible"
-              :aria-label="
-                t('pages.restaurant.list.screenReader.viewRestaurant', {
-                  name: restaurant.name,
-                  cuisine: restaurant.cuisineType,
-                  rating: restaurant.averageRating,
-                })
-              "
-              :aria-posinset="index + 1"
-              :aria-setsize="restaurants.length"
-            >
+                " :aria-posinset="index + 1" :aria-setsize="restaurants.length">
               <RestaurantCard :restaurant="restaurant" />
-            </router-link>
+            </NuxtLink>
           </section>
         </template>
 
         <template #fallback>
           <div class="restaurants-grid" role="status" aria-live="polite">
-            <div
-              v-for="i in Math.min(6, restaurants.length || 6)"
-              :key="`skeleton-${i}`"
-              class="restaurant-card-skeleton"
-              :aria-label="`Chargement de la carte restaurant ${i}`"
-            >
+            <div v-for="i in Math.min(6, restaurants.length || 6)" :key="`skeleton-${i}`"
+              class="restaurant-card-skeleton" :aria-label="t('pages.restaurant.list.loadingCardAriaLabel', { index: i })">
               <div class="skeleton-image"></div>
               <div class="skeleton-content">
                 <div class="skeleton-title"></div>
@@ -276,19 +248,17 @@ watchEffect(() => {
       </div>
     </div>
 
-    <div
-      v-else
-      class="no-restaurants status-info"
-      role="status"
-      aria-live="polite"
-    >
+    <div v-else class="no-restaurants status-info" role="status" aria-live="polite">
       <h2>{{ t("pages.restaurant.list.noRestaurants.title") }}</h2>
-      <p>{{ t("pages.restaurant.list.noRestaurants.description") }}</p>
-      <button
-        @click="handleRefresh"
-        class="btn-accessible retry-btn"
-        :aria-label="t('pages.restaurant.list.noRestaurants.refreshAriaLabel')"
-      >
+      <p>
+        {{
+          searchQuery || selectedCuisine
+            ? t("pages.restaurant.list.noRestaurants.filteredDescription")
+            : t("pages.restaurant.list.noRestaurants.description")
+        }}
+      </p>
+      <button @click="handleRefresh" class="btn-accessible retry-btn"
+        :aria-label="t('pages.restaurant.list.noRestaurants.refreshAriaLabel')">
         {{ t("common.buttons.refresh") }}
       </button>
     </div>
@@ -316,6 +286,50 @@ watchEffect(() => {
   font-size: 1.2rem;
   color: #7f8c8d;
   margin: 0;
+}
+
+.stats-row {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #eef7f0;
+  color: #1f5132;
+  border: 1px solid #cfe9d5;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.filters-bar {
+  margin-top: 1.2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.filter-input,
+.filter-select {
+  border: 1px solid #dbe3ea;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+  font-size: 0.92rem;
+  color: #2c3e50;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #27ae60;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.14);
 }
 
 .restaurants-container {
@@ -387,6 +401,7 @@ watchEffect(() => {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -529,6 +544,7 @@ watchEffect(() => {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -538,6 +554,7 @@ watchEffect(() => {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.7;
   }
@@ -569,6 +586,10 @@ watchEffect(() => {
 
   .restaurants-page {
     padding: 1rem 0;
+  }
+
+  .filters-bar {
+    grid-template-columns: 1fr;
   }
 }
 

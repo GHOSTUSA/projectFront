@@ -11,6 +11,12 @@
   },
   "account": {
     "title": "My account",
+    "seo": {
+      "title": "My Account - FoodDelivery",
+      "description": "View and update your personal information and orders.",
+      "creationTitle": "Create account - FoodDelivery",
+      "creationDescription": "Create your FoodDelivery account to order your favorite dishes."
+    },
     "welcome": "Welcome {firstName} {lastName}",
     "personalInfo": "Personal information",
     "updateProfile": "Update profile",
@@ -156,6 +162,19 @@
       "list": {
         "title": "Available restaurants",
         "description": "Discover {count} quality restaurants. Where would you like to order today?",
+        "loadingCardAriaLabel": "Loading restaurant card {index}",
+        "stats": {
+          "restaurants": "restaurants",
+          "dishes": "dishes",
+          "averageRating": "average rating"
+        },
+        "filters": {
+          "searchPlaceholder": "Search for a restaurant, cuisine, address...",
+          "allCuisines": "All cuisines",
+          "sortByName": "Sort: Name",
+          "sortByRating": "Sort: Rating",
+          "sortByCuisine": "Sort: Cuisine"
+        },
         "seo": {
           "noRestaurantsTitle": "No restaurants available - FoodDelivery",
           "noRestaurantsDescription": "Our restaurants are temporarily unavailable. Come back soon to discover our selection."
@@ -163,6 +182,7 @@
         "noRestaurants": {
           "title": "No restaurants available",
           "description": "Our restaurants are temporarily unavailable. Please try again later.",
+          "filteredDescription": "No results with these filters. Try another search.",
           "refreshAriaLabel": "Refresh to reload restaurants"
         },
         "screenReader": {
@@ -176,6 +196,7 @@
   },
   "common": {
     "loading": {
+      "general": "Loading...",
       "restaurants": "Loading restaurants..."
     },
     "buttons": {
@@ -348,6 +369,7 @@
     "languageChanged": "Language changed to {language}"
   },
   "accessibility": {
+    "loading": "Loading",
     "skipToMainContent": "Skip to main content",
     "skipToRestaurantList": "Skip to restaurant list",
     "pleaseWait": "Please wait while loading",

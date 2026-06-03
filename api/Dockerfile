@@ -31,9 +31,9 @@ COPY --from=builder /app/.env ./prisma/.env
 COPY --from=builder /app/prisma.config.ts ./
 # COPY --from=builder /app/public ./public
 
-EXPOSE 8080
+EXPOSE 8082
 ENV HOST=0.0.0.0
-ENV PORT=8080
+ENV PORT=8082
 
 # Attendre MariaDB, migrer, puis lancer l'app
 # Remplacer la dernière ligne par celle-ci :

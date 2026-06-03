@@ -12,6 +12,8 @@ export const RegisterSchema = Type.Object(
   {
     email: Type.String({ format: "email" }),
     password: Type.String({ minLength: 6 }),
+    firstName: Type.Optional(Type.String()),
+    lastName: Type.Optional(Type.String()),
     role: Type.Optional(Type.String({ enum: ["USER", "ADMIN", "RESTAURANT"] })),
   },
   { additionalProperties: false },

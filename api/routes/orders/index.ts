@@ -13,6 +13,17 @@ const orderRoutes = async (app: FastifyInstance) => {
   const orderService = new OrderService(app.prisma);
   const restaurantService = new RestaurantService(app.prisma);
 
+  app.get(
+    "/",
+    {
+      onRequest: [app.authorize(["ADMIN"])],
+    },
+    async (request, reply) => {
+      const orders = await orderService.getAllOrders();
+      return reply.status(200).send(orders);
+    },
+  );
+
   app.post<{ Body: CreateOrderRequest }>(
     "/",
     {
@@ -98,12 +109,16 @@ const orderRoutes = async (app: FastifyInstance) => {
       onRequest: [app.authorize(["RESTAURANT", "ADMIN"])],
     },
     async (request, reply) => {
-      const restaurant = await restaurantService.getMyRestaurant(
-        request.user.id,
-      );
+      let restaurantId: string | undefined = undefined;
+      if (request.user.role !== "ADMIN") {
+        const restaurant = await restaurantService.getMyRestaurant(
+          request.user.id,
+        );
+        restaurantId = restaurant.id;
+      }
       const updated = await orderService.updateOrderStatus(
         request.params.id,
-        restaurant.id,
+        restaurantId,
         request.body.status as
           | "PENDING"
           | "CONFIRMED"
