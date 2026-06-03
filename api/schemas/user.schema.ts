@@ -11,6 +11,8 @@ export const UpdateUserSchema = Type.Object(
   {
     email: Type.Optional(Type.String({ minLength: 2, format: "email" })),
     password: Type.Optional(Type.String({ minLength: 6 })),
+    firstName: Type.Optional(Type.String({ minLength: 1 })),
+    lastName: Type.Optional(Type.String({ minLength: 1 })),
   },
   { additionalProperties: false },
 );

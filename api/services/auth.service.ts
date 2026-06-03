@@ -54,6 +54,8 @@ export default class AuthService {
         email: input.email,
         password: hashedPassword,
         role: input.role || "USER",
+        firstName: input.firstName || null,
+        lastName: input.lastName || null,
       },
     });
 

@@ -7,7 +7,14 @@ class UsersService {
 
   async getAllUsers() {
     return await this.prisma.user.findMany({
-      select: { id: true, email: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: "desc" },
     });
   }
@@ -15,7 +22,14 @@ class UsersService {
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, email: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+      },
     });
 
     if (!user) {
@@ -25,7 +39,15 @@ class UsersService {
     return user;
   }
 
-  async updateUser(id: string, data: { email?: string; password?: string }) {
+  async updateUser(
+    id: string,
+    data: {
+      email?: string;
+      password?: string;
+      firstName?: string;
+      lastName?: string;
+    },
+  ) {
     if (data.email) {
       const existingUser = await this.prisma.user.findUnique({
         where: { email: data.email },
@@ -43,7 +65,14 @@ class UsersService {
     const user = await this.prisma.user.update({
       where: { id },
       data: updateData,
-      select: { id: true, email: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+      },
     });
 
     return user;
